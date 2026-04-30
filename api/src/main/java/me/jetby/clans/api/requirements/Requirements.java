@@ -1,0 +1,65 @@
+package me.jetby.clans.api.requirements;
+
+import lombok.experimental.UtilityClass;
+import me.jetby.clans.api.util.Papi;
+import org.bukkit.entity.Player;
+
+@UtilityClass
+public class Requirements {
+
+    public boolean check(Player player, Requirement req) {
+        return checkInternal(player, req.type(), req.permission(), req.input(), req.output());
+    }
+
+    private boolean checkInternal(Player player,
+                                  String type,
+                                  String permission,
+                                  String input,
+                                  String output) {
+
+        if (!type.equalsIgnoreCase("permission") && input==null) return true;
+        String parsedInput = Papi.setPapi(player, input);
+
+        String parsedOutput = "";
+        if (output!=null) {
+            parsedOutput = Papi.setPapi(player, output);
+        }
+        return switch (type.toLowerCase()) {
+            case "has permission" -> player.hasPermission(permission);
+            case "!has permission" -> !player.hasPermission(permission);
+            case "string equals" -> parsedInput.equalsIgnoreCase(parsedOutput);
+            case "!string equals" -> !parsedInput.equalsIgnoreCase(parsedOutput);
+            case "javascript", "math" -> evalJavascriptLike(player, input);
+            default -> false;
+        };
+    }
+
+
+    private boolean evalJavascriptLike(Player player, String input) {
+        String[] args = input.split(" ");
+        if (args.length < 3) return false;
+
+        args[0] = Papi.setPapi(player, args[0]);
+        args[2] = Papi.setPapi(player, args[2]);
+
+        try {
+            double x = Double.parseDouble(args[0]);
+            double x1 = Double.parseDouble(args[2]);
+            return switch (args[1]) {
+                case ">" -> x > x1;
+                case ">=" -> x >= x1;
+                case "==" -> x == x1;
+                case "!=" -> x != x1;
+                case "<=" -> x <= x1;
+                case "<" -> x < x1;
+                default -> false;
+            };
+        } catch (NumberFormatException e) {
+            return switch (args[1]) {
+                case "==" -> args[0].equals(args[2]);
+                case "!=" -> !args[0].equals(args[2]);
+                default -> false;
+            };
+        }
+    }
+}

@@ -1,0 +1,102 @@
+id: members
+title: "&0&lУчастники клана"
+size: 54
+open_args: { }
+
+listen: members
+
+# Available types
+# leader
+# members
+Items:
+
+  leader:
+    type: leader
+    display_name: "%rank% &f&l%target_name%"
+    slot: 13
+    lore:
+      - "&6&m                    "
+      - "&6⌚ &a%last-online%"
+      - "&6&m                    "
+      - "&6&lСтатистика"
+      - "&6⚗ &fОпыта принёс клану: &6&l%exp%"
+      - "&6♦ &fЗаработано коинов: &6&l%coin%"
+      - "&6⚔ &fУбийств: &6&l%kills%"
+      - "&6☠ &fСмертей: &6&l%deaths%"
+      - "&6🛡 &fК/Д: &6&l%kd%"
+      - "&6&m                    "
+
+  members:
+    type: members
+    slots:
+      - '19-25'
+      - '28-34'
+      - '37-43'
+    display_name: "%rank% &f%target_name%"
+    lore:
+      - "&6&m                    "
+      - "&6⌚ &fБыл в сети: &a%last-online%"
+      - "&6⛨ &fВступил в клан &6&l%joined-at% назад"
+      - "&6&m                    "
+      - "&6&lСтатистика"
+      - "&6⚗ &fОпыта принёс клану: &6&l%exp%"
+      - "&6♦ &fЗаработано коинов: &6&l%coin%"
+      - "&6⚔ &fУбийств: &6&l%kills%"
+      - "&6☠ &fСмертей: &6&l%deaths%"
+      - "&6🛡 &fК/Д: &6&l%kd%"
+      - "&6&m                    "
+
+
+  next_page:
+    material: SPECTRAL_ARROW
+    type: next_page
+    slot: 52
+    display_name: "&aСледующая страница ▶"
+
+  prev_page:
+    material: ARROW
+    slot: 46
+    type: prev_page
+    display_name: "&c◀ Предыдущая страница"
+
+  orange:
+    material: ORANGE_STAINED_GLASS_PANE
+    slots:
+      - 0-2
+      - 6-8
+      - 45
+      - 47
+      - 51
+      - 53
+    display_name: " "
+
+  black:
+    material: BLACK_STAINED_GLASS_PANE
+    slots:
+      - 3
+      - 5
+      - 48
+      - 50
+    display_name: " "
+
+
+  gray:
+    material: GRAY_STAINED_GLASS_PANE
+    slots:
+      - 4
+    display_name: " "
+
+
+
+  menu:
+    material: DARK_OAK_DOOR
+    slot: 49
+    display_name: "&6Вернуться в меню"
+    on_click:
+      any:
+      - "[open] main"
+
+
+
+
+

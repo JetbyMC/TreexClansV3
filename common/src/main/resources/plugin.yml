@@ -1,0 +1,14 @@
+name: TreexClans
+version: '1.0'
+main: me.jetby.clans.common.TreexClans
+api-version: '1.20'
+load: POSTWORLD
+authors: [ MrJetby ]
+website: https://dsc.gg/jmdev
+depend:
+  - packetevents
+  - Libb
+
+commands:
+  clan: {}
+  xclan: {}

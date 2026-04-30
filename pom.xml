@@ -1,0 +1,14 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.jetby.treexclans</groupId>
+    <artifactId>Parent</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>api</module>
+        <module>common</module>
+    </modules>
+
+</project>
