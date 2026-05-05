@@ -141,6 +141,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         messages = new Messages(this);
         LOGGER.success(" └  ✔  messages.yml");
 
+
         formatTime = new FormatTime(this);
 
         modules = new Modules();
