@@ -1,9 +1,8 @@
 package me.jetby.clans.common.gui.impl;
 
-import me.jetby.clans.api.gui.Gui;
+import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.libb.gui.item.ItemWrapper;
 import me.jetby.libb.gui.parser.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -95,13 +94,12 @@ public class ChestGui extends Gui {
                 .findFirst()
                 .ifPresent(i -> {
                     ItemStack stack = i.itemStack();
-                    if (stack != null) {
                         blockedSlotItem = stack.clone();
                         ItemMeta meta = blockedSlotItem.getItemMeta();
                         if (meta != null) {
                             meta.getPersistentDataContainer().set(NAMESPACED_KEY, PersistentDataType.STRING, "blocked_slot");
                             blockedSlotItem.setItemMeta(meta);
-                        }
+                        
                     }
                 });
 
@@ -151,7 +149,7 @@ public class ChestGui extends Gui {
             }
 
             ItemStack cursor = e.getCursor();
-            if (cursor != null && cursor.getType() != Material.AIR) {
+            if (cursor.getType() != Material.AIR) {
                 if (!getAllowedMaterials().contains(cursor.getType()) || isGuiItem(cursor)) {
                     e.setCancelled(true);
                     return;
@@ -190,7 +188,10 @@ public class ChestGui extends Gui {
                     toSet.setAmount(toPlace);
                     topInv.setItem(guiSlot, toSet);
                     remaining -= toPlace;
-                    if (remaining <= 0) { e.setCurrentItem(null); break; }
+                    if (remaining <= 0) {
+                        e.setCurrentItem(null);
+                        break;
+                    }
                     continue;
                 }
 
@@ -199,7 +200,10 @@ public class ChestGui extends Gui {
                     int toAdd = Math.min(space, remaining);
                     slotItem.setAmount(slotItem.getAmount() + toAdd);
                     remaining -= toAdd;
-                    if (remaining <= 0) { e.setCurrentItem(null); break; }
+                    if (remaining <= 0) {
+                        e.setCurrentItem(null);
+                        break;
+                    }
                 }
             }
 

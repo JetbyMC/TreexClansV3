@@ -1,6 +1,7 @@
 package me.jetby.clans.common.commands.clan;
 
 import me.jetby.clans.api.addons.commands.CommandService;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.RankPerms;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.Config;
@@ -60,7 +61,13 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                 apiArg.onCommand(sender, Arrays.copyOfRange(args, 1, args.length));
                 return true;
             }
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            player.sendMessage("menuArgs keys: " + menuArgs.keySet());
+            player.sendMessage("menuArgs values: " + menuArgs.values());
+            player.sendMessage("arg[0]: " + args[0]);
+            for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
+                player.sendMessage("checking: " + entry.getValue() + " contains " + args[0] + " = " + entry.getValue().contains(args[0]));
+            }
 
             for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
                 if (entry.getValue().contains(args[0])) {
@@ -78,7 +85,7 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                                     .player(player)
                                     .plugin(plugin)
                                     .configuration(configuration)
-                                    .clan(clanImpl)
+                                    .clan(clan)
                                     .build())
                             .open(player);
 

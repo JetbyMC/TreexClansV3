@@ -144,7 +144,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                     new Level("1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>())
             );
 
-            var clan = new ClanImpl(
+            Clan clan = new ClanImpl(
                     name,
                     null,
                     leader,

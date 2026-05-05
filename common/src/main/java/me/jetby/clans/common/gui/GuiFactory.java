@@ -1,7 +1,6 @@
 package me.jetby.clans.common.gui;
 
 import lombok.Getter;
-import me.jetby.clans.api.gui.Gui;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import me.jetby.clans.common.gui.impl.*;
 
@@ -11,7 +10,7 @@ public class GuiFactory {
     public static Gui create(GuiFactoryRequest request) {
         GuiType type;
         try {
-            type = GuiType.valueOf(request.configuration().getString("type", "default").toUpperCase());
+            type = GuiType.valueOf(request.configuration().getString("listen", "default").toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
@@ -27,10 +26,10 @@ public class GuiFactory {
             case CHOOSE_COLOR        -> { return new ChooseColorGui(player, config, plugin, clan, request.target()); }
             case CHOOSE_PLAYER_COLOR -> { return new ChoosePlayerColorGui(player, config, plugin, clan); }
             case MEMBERS             -> { return new MembersGui(player, config, plugin, clan); }
-            case RANKS               -> { return new RanksGui(player, config, plugin, clan); }
+            case RANKS               -> { return new me.jetby.clans.common.gui.core.RanksGui(player, config, plugin, clan); }
             case TOP_CLANS           -> { return new TopClansGui(player, config, plugin, clan, LeaderboardService.TopType.KILLS); }
             case RANK_PERMISSIONS    -> { return new RankPermissionsGui(player, config, plugin, clan, request.rank()); }
-            default                  -> { return new DefaultGui(player, config, plugin, clan); }
+            default                  -> { return new Gui(player, config, plugin, clan); }
         }
     }
 

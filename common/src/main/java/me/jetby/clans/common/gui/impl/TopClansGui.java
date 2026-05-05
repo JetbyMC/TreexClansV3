@@ -1,7 +1,7 @@
 package me.jetby.clans.common.gui.impl;
 
 
-import me.jetby.clans.api.gui.Gui;
+import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import me.jetby.clans.common.TreexClans;

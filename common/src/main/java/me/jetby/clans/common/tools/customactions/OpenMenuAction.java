@@ -1,30 +1,38 @@
 package me.jetby.clans.common.tools.customactions;
 
-import me.jetby.clans.api.InstanceFactory;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
+import me.jetby.clans.common.gui.GuiFactory;
+import me.jetby.clans.common.gui.GuiFactoryRequest;
+import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.libb.action.Action;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionInput;
-import me.jetby.libb.gui.parser.Gui;
-import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class OpenMenuAction implements Action {
-    private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
         Player player = ctx.getPlayer();
-        ClanImpl clanImpl = ctx.get(ClanImpl.class);
-        // todo sex
-        //
-        //        var menu = plugin.getGuiLoader().getGuis().get(message);
-//        if (menu != null && player != null && clanImpl != null) {
-//            Gui gui = InstanceFactory.GUI_FACTORY.create(plugin, menu, player, clanImpl);
-//            Bukkit.getScheduler().runTaskLater(plugin, () -> gui.open(player), 1L);
-//        }
+        Clan clan = ctx.get(ClanImpl.class);
+
+        System.out.println(ctx.getObjects());
+
+        System.out.println("open " + input.rawText());
+
+        FileConfiguration config = GuiLoader.ALL_GUIS.get(input.rawText());
+        if (config != null && player != null && clan != null) {
+            GuiFactory.create(GuiFactoryRequest.builder()
+                            .configuration(config)
+                            .plugin(TreexClans.getInstance())
+                            .player(player)
+                            .clan(clan)
+                            .build())
+                    .open(player);
+        }
     }
 }

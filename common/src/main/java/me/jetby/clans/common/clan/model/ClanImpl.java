@@ -10,7 +10,6 @@ import me.jetby.clans.api.service.clan.member.rank.Rank;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionExecute;
-import me.jetby.libb.action.ActionRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;

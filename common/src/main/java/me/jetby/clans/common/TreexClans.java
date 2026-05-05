@@ -69,7 +69,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     private LeaderboardService leaderboardService;
     private Storage storage;
 
-    public static Logger LOGGER = new Logger();
+    public static Logger LOGGER;
     public static NamespacedKey NAMESPACED_KEY;
     @Setter
     private GuiLoader guiLoader;
@@ -96,6 +96,10 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     public void onEnable() {
         this.plugin = this;
         INSTANCE = this;
+        LOGGER = new Logger(this);
+
+        LOGGER.info("→ Enabling TreexClans");
+
 //        this.guiFactory = new GuiFactoryImpl();
 //        InstanceFactory.GUI_FACTORY = guiFactory;
         InstanceFactory.ITEM_KEY = new NamespacedKey("treexclans", "item");
@@ -174,6 +178,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         );
 
         ((AddonManagerImpl) addonManager).loadAddons();
+        LOGGER.success("⚡ TreexClans is ready");
     }
 
     @Override

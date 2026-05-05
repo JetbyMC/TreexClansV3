@@ -1,24 +1,30 @@
 package me.jetby.clans.common.tools;
 
-import org.bukkit.Bukkit;
+import me.jetby.libb.color.Serializer;
+import org.bukkit.plugin.Plugin;
 
 public final class Logger {
 
 
+    private final Plugin plugin;
 
-    public  void warn(String message) {
-        Bukkit.getConsoleSender().sendMessage("§e[TreexBuyer] §e" + message);
+    public Logger(Plugin plugin) {
+        this.plugin = plugin;
     }
 
-    public  void info(String message) {
-        Bukkit.getConsoleSender().sendMessage("§a[TreexBuyer] §f" + message);
+    public void warn(String message) {
+        plugin.getComponentLogger().warn(Serializer.UNIFIED.deserialize(message));
     }
 
-    public  void success(String message) {
-        Bukkit.getConsoleSender().sendMessage("§a[TreexBuyer] §a" + message);
+    public void info(String message) {
+        plugin.getComponentLogger().info(Serializer.UNIFIED.deserialize(message));
     }
 
-    public  void error(String message) {
-        Bukkit.getConsoleSender().sendMessage("§c[TreexBuyer] §c" + message);
+    public void success(String message) {
+        plugin.getComponentLogger().info(Serializer.UNIFIED.deserialize("&a" + message));
+    }
+
+    public void error(String message) {
+        plugin.getComponentLogger().error(Serializer.UNIFIED.deserialize(message));
     }
 }
