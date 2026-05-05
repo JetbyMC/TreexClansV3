@@ -29,10 +29,6 @@ public class DepositSubcommand implements Subcommand {
                 plugin.getMessages().sendActions(player, null, "commands.deposit");
                 return true;
             }
-            if (plugin.getEconomy() == null) {
-                player.sendMessage(Config.CONFIG_COLORIZER.deserialize(plugin.getMessages().getConfig().getString("null-economy", "null-economy")));
-                return true;
-            }
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
                 plugin.getMessages().sendActions(player, null, "your-not-in-clan");
                 return true;

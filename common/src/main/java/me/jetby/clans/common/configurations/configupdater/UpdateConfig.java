@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class AutoUpdate {
+public class UpdateConfig {
 
     private static final Set<Updater> versions = new HashSet<>();
 
@@ -18,7 +18,7 @@ public class AutoUpdate {
         versions.add(new V3());
     }
 
-    public AutoUpdate(int currentVersion) {
+    public UpdateConfig(int currentVersion) {
 
         for (Updater updater : versions) {
             if (currentVersion == updater.version()) {

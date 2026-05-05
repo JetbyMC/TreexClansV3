@@ -18,7 +18,7 @@ public class MoneyTakeAction implements Action {
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
         Player player = ctx.getPlayer();
 
-        if (player != null && plugin.getEconomy() != null) {
+        if (player != null) {
             try {
                 int amount = Integer.parseInt(input.rawText());
                 plugin.getEconomy().withdrawPlayer(player, amount);

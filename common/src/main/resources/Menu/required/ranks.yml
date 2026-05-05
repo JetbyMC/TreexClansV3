@@ -85,4 +85,4 @@ Items:
     material: DARK_OAK_DOOR
     display_name: "&6Вернуться в меню"
     click_commands:
-      - '[open_menu] main'
+      - '[open] main'

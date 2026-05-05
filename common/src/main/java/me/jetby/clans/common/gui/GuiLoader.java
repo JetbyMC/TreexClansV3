@@ -5,6 +5,7 @@ import me.jetby.libb.command.CommandRegistrar;
 import me.jetby.libb.util.Logger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.HashMap;
@@ -12,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiLoader {
-    public static final Map<String, FileConfiguration> ALL_GUIS = new HashMap<>();
+    public static final Map<GuiType, FileConfiguration> REQUIRED_GUIS = new HashMap<>();
+    public static final Map<String, FileConfiguration> CUSTOM_GUIS = new HashMap<>();
 
     private final TreexClans plugin;
 
@@ -20,13 +22,41 @@ public class GuiLoader {
         this.plugin = plugin;
     }
 
-    private void loadFilesRecursive(File folder) {
+    /**
+     * @return Required gui only
+     */
+    public static FileConfiguration getGuiConfiguration(GuiType type) {
+        return REQUIRED_GUIS.get(type);
+    }
+
+    /**
+     * @param name Required gui type or Custom gui id
+     * @return Custom gui if it's not Required
+     */
+    public static FileConfiguration getGuiConfiguration(@NotNull String name) {
+        return REQUIRED_GUIS.values().stream()
+                .filter(configuration -> {
+                    String listen = configuration.getString("listen");
+                    if (listen == null) return false;
+                    GuiType type;
+                    try {
+                        type = GuiType.valueOf(listen.toUpperCase());
+                        return REQUIRED_GUIS.containsKey(type);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }).findFirst()
+                .orElse(CUSTOM_GUIS.get(name));
+    }
+
+    private void loadFilesRecursive(File folder, boolean isRequired) {
         File[] files = folder.listFiles();
         if (files == null) return;
 
         for (File file : files) {
             if (file.isDirectory()) {
-                loadFilesRecursive(file);
+                loadFilesRecursive(file, isRequired);
+
                 continue;
             }
 
@@ -35,19 +65,40 @@ public class GuiLoader {
             FileConfiguration config = YamlConfiguration.loadConfiguration(file);
             String id = config.getString("id", file.getName().replace(".yml", ""));
 
-            loadGui(id, file);
+            if (isRequired) {
+                GuiType guiType;
+                try {
+                    guiType = GuiType.valueOf(config.getString("listen").toUpperCase());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                loadRequiredGui(guiType, file);
+            } else {
+                loadCustomGui(id, file);
+
+            }
         }
     }
 
-    public void loadGuis() {
-        ALL_GUIS.clear();
-        File folder = new File(plugin.getDataFolder(), "Menu");
+    public void load() {
+        createRequiredGuis();
+        createCustomGuis();
+    }
 
-
+    public void createRequiredGuis() {
+        REQUIRED_GUIS.clear();
+        File folder = new File(plugin.getDataFolder(), "Menu/required");
         if (!folder.exists() && folder.mkdirs()) {
             String[] defaults = {
-                    "main.yml", "quests.yml", "members.yml", "choose-player-color.yml",
-                    "glow-color.yml", "rank-perms.yml", "ranks.yml", "storage.yml", "top-clans.yml", "shop.yml"
+                    "quests.yml",
+                    "members.yml",
+                    "choose-player-color.yml",
+                    "glow-color.yml",
+                    "rank-perms.yml",
+                    "ranks.yml",
+                    "storage.yml",
+                    "top-clans.yml"
             };
 
             for (String name : defaults) {
@@ -55,17 +106,39 @@ public class GuiLoader {
                 target.getParentFile().mkdirs();
 
                 if (!target.exists()) {
-                    plugin.saveResource("Menu/" + name, false);
+                    plugin.saveResource("Menu/required/" + name, false);
+                }
+            }
+        }
+        loadFilesRecursive(folder, true);
+    }
+
+    public void createCustomGuis() {
+        CUSTOM_GUIS.clear();
+        File folder = new File(plugin.getDataFolder(), "Menu/optional");
+
+
+        if (!folder.exists() && folder.mkdirs()) {
+            String[] defaults = {
+                    "main.yml", "shop.yml"
+            };
+
+            for (String name : defaults) {
+                File target = new File(folder, name);
+                target.getParentFile().mkdirs();
+
+                if (!target.exists()) {
+                    plugin.saveResource("Menu/optional/" + name, false);
                 }
             }
         }
 
-        loadFilesRecursive(folder);
+        loadFilesRecursive(folder, false);
     }
 
-    private void loadGui(String menuId, File file) {
-        if (ALL_GUIS.containsKey(menuId)) {
-            Logger.error(plugin, "A duplicate of " + menuId + " was found");
+    private void loadCustomGui(String menuId, File file) {
+        if (CUSTOM_GUIS.containsKey(menuId)) {
+            Logger.error(plugin, "A duplicate of " + menuId + " was skipped");
             return;
         }
         try {
@@ -74,11 +147,23 @@ public class GuiLoader {
             List<String> commands = config.getStringList("command");
             for (String cmd : commands) {
                 CommandRegistrar.registerCommand(plugin, cmd, (sender, command, label, args) -> {
-
                     return true;
                 });
             }
-            ALL_GUIS.put(menuId, config);
+            CUSTOM_GUIS.put(menuId, config);
+        } catch (Exception e) {
+            Logger.error(plugin, "Error trying to load menu: " + e.getMessage());
+        }
+    }
+
+    private void loadRequiredGui(GuiType type, File file) {
+        if (REQUIRED_GUIS.containsKey(type)) {
+            Logger.error(plugin, "A duplicate of " + type + " was skipped");
+            return;
+        }
+        try {
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            REQUIRED_GUIS.put(type, config);
         } catch (Exception e) {
             Logger.error(plugin, "Error trying to load menu: " + e.getMessage());
         }

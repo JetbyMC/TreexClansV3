@@ -20,12 +20,16 @@ public class Gui extends ParsedGui {
     private final GuiType type;
     private final List<String> args;
 
+    private final FileConfiguration config;
     private final Clan clan;
+    private final JavaPlugin plugin;
 
     public Gui(@NotNull Player viewer, @NotNull FileConfiguration config, @NotNull JavaPlugin plugin, Clan clan) {
         // todo get serializer from config
         super(viewer, config, plugin, ParserContext.of(Serializer.UNIFIED, clan));
 
+        this.plugin = plugin;
+        this.config = config;
         this.clan = clan;
         this.type = GuiType.valueOf(config.getString("type", "default").toUpperCase());
         this.listen = config.getString("listen");
@@ -43,4 +47,6 @@ public class Gui extends ParsedGui {
                 .filter(item -> !cancelRegistration(item))
                 .toList());
     }
+
+
 }

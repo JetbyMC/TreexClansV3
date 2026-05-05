@@ -46,12 +46,19 @@ public class Messages {
                 })
                 .toList();
 
-        ActionExecute.run(ActionContext.of(player, plugin).replace("{prefix}", prefix).with(clan), actions);
+
+        if (clan == null) {
+            ActionExecute.run(ActionContext.of(player, plugin).replace("{prefix}", prefix), actions);
+        } else {
+            ActionExecute.run(ActionContext.of(player, plugin).replace("{prefix}", prefix).with(clan), actions);
+
+        }
     }
 
     public Component getMessage(String path) {
         return Config.CONFIG_COLORIZER.deserialize(config.getString(path));
     }
+
     public String getCleanMessage(String path) {
         return config.getString(path);
     }

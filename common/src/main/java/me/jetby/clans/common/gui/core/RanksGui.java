@@ -5,6 +5,8 @@ import me.jetby.clans.api.service.clan.member.rank.Rank;
 import me.jetby.clans.api.service.clan.member.rank.RankPerms;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.gui.Gui;
+import me.jetby.clans.common.gui.GuiFactory;
+import me.jetby.clans.common.gui.GuiFactoryRequest;
 import me.jetby.libb.gui.parser.Item;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -19,16 +21,25 @@ import java.util.Map;
 public class RanksGui extends Gui {
 
     private final TreexClans plugin;
+    private final FileConfiguration permissionConfig;
 
 
-    public RanksGui(@NotNull Player viewer, @NotNull FileConfiguration config, @NotNull JavaPlugin plugin, @NotNull Clan clan) {
+    public RanksGui(@NotNull Player viewer,
+                    @NotNull FileConfiguration config,
+                    @NotNull JavaPlugin plugin,
+                    @NotNull Clan clan,
+                    @NotNull FileConfiguration permissionConfig
+    ) {
         super(viewer, config, plugin, clan);
+        this.permissionConfig = permissionConfig;
         this.plugin = (TreexClans) plugin;
 
+        setup();
     }
 
     @Override
     public void buildItems(List<Item> items) {
+        if (getClan() == null) return;
 
         List<Rank> ranks = getClan().getRanks().values().stream().toList();
         List<Item> result = new ArrayList<>();
@@ -44,12 +55,9 @@ public class RanksGui extends Gui {
                 result.add(cloneItemForRank(item, slots.get(i), ranks.get(i)));
             }
         }
-
-        for (Item item : result) {
-            System.out.println("SLOT: " + item.slots() + " | NAME: " + item.displayName() + " | LORE[0]: " + (item.lore() != null && !item.lore().isEmpty() ? item.lore().get(0) : "null"));
-        }
         super.buildItems(result);
     }
+
     private String applyRankString(String text, Rank rank) {
         for (Map.Entry<String, String> entry : placeholders(rank).entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue());
@@ -59,7 +67,7 @@ public class RanksGui extends Gui {
 
     private Item cloneItemForRank(Item item, int slot, Rank rank) {
         Item copy = new Item(item.itemStack().clone());
-        copy.type(item.type());
+        item.type("rank-" + rank.id());
         copy.slots(new ArrayList<>(List.of(slot)));
         copy.flags(item.flags());
         copy.enchantments(item.enchantments());
@@ -75,8 +83,22 @@ public class RanksGui extends Gui {
     }
 
     private void setup() {
+        addClickHandler("type", event -> {
+            String type = event.getSection().getString("type");
+            if (!type.startsWith("rank-")) return;
+            String rankName = type.replace("rank-", "");
+            Rank rank = getClan().getRanks().get(rankName);
+            if (rank == null) return;
 
-
+            GuiFactory.create(GuiFactoryRequest
+                    .builder()
+                    .player(getViewer())
+                    .clan(getClan())
+                    .configuration(permissionConfig)
+                    .plugin(plugin)
+                    .build());
+            new RankPermissionGui(getViewer(), getConfig(), getPlugin(), getClan()).open(player);
+        });
     }
 
     @Override

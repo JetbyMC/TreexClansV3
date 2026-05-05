@@ -6,9 +6,11 @@ load: POSTWORLD
 authors: [ MrJetby ]
 website: https://dsc.gg/jmdev
 depend:
+  - Vault
   - packetevents
   - Libb
-
+softdepend:
+  - PlaceholderAPI
 commands:
   clan: {}
   xclan: {}

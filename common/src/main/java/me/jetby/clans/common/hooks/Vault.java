@@ -1,6 +1,5 @@
 package me.jetby.clans.common.hooks;
 
-import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -9,22 +8,17 @@ import static me.jetby.clans.common.TreexClans.LOGGER;
 
 
 public class Vault {
-    @Getter
-    private final Economy economy;
 
-    public Vault() {
+    public Economy load() {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
-            LOGGER.error("Vault was not found!");
-            this.economy = null;
-            return;
+            return null;
         }
 
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             LOGGER.error("Vault economy plugin was not found!");
-            this.economy = null;
-            return;
+            return null;
         }
-        this.economy = rsp.getProvider();
+        return rsp.getProvider();
     }
 }

@@ -4,8 +4,6 @@ size: 54
 open_args:
   - 'menu'
 
-listen: MENU
-
 Items:
 
   info:

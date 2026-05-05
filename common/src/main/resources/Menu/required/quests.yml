@@ -62,7 +62,7 @@ Items:
     slot: 49
     display_name: "&6Вернуться в меню"
     click_commands:
-      - "[open_menu] main"
+      - "[open] main"
 
 
 

@@ -51,7 +51,7 @@ public interface TreexClansAPI {
      *
      * @return the active Vault {@link Economy} instance
      */
-    Economy getEconomy();
+    @NotNull Economy getEconomy();
 
     /**
      * Returns the global command service.

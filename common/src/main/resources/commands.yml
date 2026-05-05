@@ -1,0 +1,42 @@
+
+clan:
+  - clan
+  - team
+
+args:
+  create:
+    - create # /clan create
+  invite:
+    - invite # /clan invite
+  disband:
+    - disband # /clan disband
+  accept:
+    - accept # /clan accept
+  deny:
+    - deny # /clan deny
+  kick:
+    - kick # /clan kick
+  leave:
+    - leave # /clan leave
+  chat:
+    - chat # /clan chat
+  balance:
+    - balance # /clan balance
+    - bal # /clan bal
+  deposit:
+    - deposit # /clan deposit
+    - invest # /clan invest
+  withdraw:
+    - withdraw # /clan withdraw
+  base:
+    - base # /clan base
+  setbase:
+    - setbase # /clan setbase
+  setslogan:
+    - setslogan # /clan setslogan
+  pvp:
+    - pvp # /clan pvp
+  setrank:
+    - setrank # /clan setrank
+  setprefix:
+    - setprefix # /clan setprefix

@@ -5,7 +5,6 @@ import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.addon.AddonManagerImpl;
-import me.jetby.clans.common.commands.clan.ClanCommand;
 import me.jetby.clans.common.configurations.Config;
 import me.jetby.clans.common.configurations.QuestsLoader;
 import me.jetby.clans.common.gui.GuiLoader;
@@ -39,7 +38,7 @@ public class ReloadSubcommand implements Subcommand {
             plugin.setCfg(cfg);
 
             GuiLoader guiLoader = new GuiLoader(plugin);
-            guiLoader.loadGuis();
+            guiLoader.load();
 
             plugin.setGuiLoader(guiLoader);
 //            todo why you do that?

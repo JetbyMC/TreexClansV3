@@ -32,9 +32,11 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
     public ClanCommand(TreexClans plugin) {
         this.plugin = plugin;
         this.commandService = plugin.getCommandService();
-        // TODO sex
-        GuiLoader.ALL_GUIS.forEach((key, configuration) -> {
+        GuiLoader.CUSTOM_GUIS.forEach((key, configuration) -> {
             menuArgs.put(key, configuration.getStringList("open_args"));
+        });
+        GuiLoader.REQUIRED_GUIS.forEach((key, configuration) -> {
+            menuArgs.put(key.name(), configuration.getStringList("open_args"));
         });
 
     }
@@ -62,16 +64,10 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            player.sendMessage("menuArgs keys: " + menuArgs.keySet());
-            player.sendMessage("menuArgs values: " + menuArgs.values());
-            player.sendMessage("arg[0]: " + args[0]);
-            for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
-                player.sendMessage("checking: " + entry.getValue() + " contains " + args[0] + " = " + entry.getValue().contains(args[0]));
-            }
 
             for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
                 if (entry.getValue().contains(args[0])) {
-                    FileConfiguration configuration = GuiLoader.ALL_GUIS.get(entry.getKey());
+                    FileConfiguration configuration = GuiLoader.getGuiConfiguration(entry.getKey());
                     String listen = configuration.getString("listen", "default");
                     GuiType type = isBuiltInGuiType(listen);
 
@@ -85,6 +81,7 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                                     .player(player)
                                     .plugin(plugin)
                                     .configuration(configuration)
+                                    .permissionConfig(GuiLoader.getGuiConfiguration(GuiType.RANK_PERMISSIONS))
                                     .clan(clan)
                                     .build())
                             .open(player);
@@ -159,7 +156,7 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                         .collect(Collectors.toList());
 
                 for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
-                    FileConfiguration configuration = GuiLoader.ALL_GUIS.get(entry.getKey());
+                    FileConfiguration configuration = GuiLoader.getGuiConfiguration(entry.getKey());
                     String listen = configuration.getString("listen");
                     GuiType type = isBuiltInGuiType(listen);
 
@@ -189,8 +186,8 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                 case "setbase" -> !perms.contains(RankPerms.SETBASE);
                 case "base" -> !perms.contains(RankPerms.BASE);
                 case "invite" -> !perms.contains(RankPerms.INVITE);
-                case "withdraw" -> !perms.contains(RankPerms.WITHDRAW) || plugin.getEconomy() == null;
-                case "deposit", "invest" -> !perms.contains(RankPerms.DEPOSIT) || plugin.getEconomy() == null;
+                case "withdraw" -> !perms.contains(RankPerms.WITHDRAW);
+                case "deposit", "invest" -> !perms.contains(RankPerms.DEPOSIT);
                 case "kick" -> !perms.contains(RankPerms.KICK);
                 case "pvp" -> !perms.contains(RankPerms.PVP);
                 case "setslogan" -> !perms.contains(RankPerms.SETSLOGAN);
@@ -202,10 +199,7 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
 
             // todo sex
             for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
-                FileConfiguration configuration = GuiLoader.ALL_GUIS.get(entry.getKey());
-                String listen = configuration.getString("listen");
-                GuiType type = isBuiltInGuiType(listen);
-
+                FileConfiguration configuration = GuiLoader.getGuiConfiguration(entry.getKey());
                 // todo OpenRequirements perm
 //                if (player.hasPermission(menu.permission())) {
                     completions.addAll(entry.getValue().stream()
