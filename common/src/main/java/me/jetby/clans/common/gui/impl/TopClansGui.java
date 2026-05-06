@@ -81,7 +81,7 @@ public class TopClansGui extends Gui {
 
     @Override
     public boolean cancelRegistration(@NotNull Item item) {
-        return (item.type().equalsIgnoreCase("clans"));
+        return (item.type()!=null && item.type().equalsIgnoreCase("clans"));
     }
 
     private void setupMembersPagination() {

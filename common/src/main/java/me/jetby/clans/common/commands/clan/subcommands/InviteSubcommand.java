@@ -3,7 +3,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.Messages;
 import me.jetby.clans.common.tools.Cooldown;
@@ -36,7 +36,7 @@ public class InviteSubcommand implements Subcommand {
                 return true;
             }
             var clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerms.INVITE)) {
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.INVITE)) {
                 plugin.getMessages().sendActions(player, clan, "your-rank-is-not-allowed-to-do-that");
                 return true;
             }

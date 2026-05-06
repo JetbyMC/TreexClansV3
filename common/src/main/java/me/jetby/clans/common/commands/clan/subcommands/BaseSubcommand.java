@@ -3,7 +3,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.Clan;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -29,7 +29,7 @@ public class BaseSubcommand implements Subcommand {
                 plugin.getMessages().sendActions(player, clan, "clan-base-unset");
                 return true;
             }
-            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerms.BASE)) {
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.BASE)) {
                 plugin.getMessages().sendActions(player, clan, "your-rank-is-not-allowed-to-do-that");
                 return true;
             }

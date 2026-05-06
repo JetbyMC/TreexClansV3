@@ -34,7 +34,6 @@ Items:
     slots:
       - 10-16
     type: all_ranks
-    open-gui: rank-perms
     hide_attributes: true
     display_name: "%rank%"
     lore:

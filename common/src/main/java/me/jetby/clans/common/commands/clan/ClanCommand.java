@@ -1,8 +1,9 @@
 package me.jetby.clans.common.commands.clan;
 
 import me.jetby.clans.api.addons.commands.CommandService;
+import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.Clan;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.Config;
 import me.jetby.clans.common.gui.GuiFactory;
@@ -58,9 +59,9 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
 
                 return true;
             }
-            var apiArg = commandService.getCommands().get(args[0]);
-            if (apiArg != null && apiArg.type() == CommandService.CommandType.CLAN) {
-                apiArg.onCommand(sender, Arrays.copyOfRange(args, 1, args.length));
+            Subcommand sub = commandService.getCommands().get(args[0]);
+            if (sub != null && sub.type() == CommandService.CommandType.CLAN) {
+                sub.onCommand(sender, Arrays.copyOfRange(args, 1, args.length));
                 return true;
             }
             Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
@@ -81,7 +82,6 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                                     .player(player)
                                     .plugin(plugin)
                                     .configuration(configuration)
-                                    .permissionConfig(GuiLoader.getGuiConfiguration(GuiType.RANK_PERMISSIONS))
                                     .clan(clan)
                                     .build())
                             .open(player);
@@ -108,7 +108,7 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
             }
         }
         try {
-            var arg = ClanCommandArgs.valueOf(args[0].toUpperCase());
+            ClanCommandArgs arg = ClanCommandArgs.valueOf(args[0].toUpperCase());
             arg.getSubcommand().onCommand(sender, Arrays.copyOfRange(args, 1, args.length));
         } catch (IllegalArgumentException e) {
             sender.sendMessage("§cUnknown command. Use /" + command.getName() + " for help.");
@@ -163,7 +163,7 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                     if ((type == GuiType.DEFAULT || type == GuiType.TOP_CLANS)
                         // todo OpenRequirements perm
 //                                && player.hasPermission(menu.permission())
-                    ){
+                    ) {
                         extra.addAll(entry.getValue());
                     }
 
@@ -183,15 +183,15 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
             var perms = memberImpl.getRank().perms();
 
             completions.removeIf(cmd -> switch (cmd) {
-                case "setbase" -> !perms.contains(RankPerms.SETBASE);
-                case "base" -> !perms.contains(RankPerms.BASE);
-                case "invite" -> !perms.contains(RankPerms.INVITE);
-                case "withdraw" -> !perms.contains(RankPerms.WITHDRAW);
-                case "deposit", "invest" -> !perms.contains(RankPerms.DEPOSIT);
-                case "kick" -> !perms.contains(RankPerms.KICK);
-                case "pvp" -> !perms.contains(RankPerms.PVP);
-                case "setslogan" -> !perms.contains(RankPerms.SETSLOGAN);
-                case "setprefix" -> !perms.contains(RankPerms.SETPREFIX);
+                case "setbase" -> !perms.contains(RankPerm.SETBASE);
+                case "base" -> !perms.contains(RankPerm.BASE);
+                case "invite" -> !perms.contains(RankPerm.INVITE);
+                case "withdraw" -> !perms.contains(RankPerm.WITHDRAW);
+                case "deposit", "invest" -> !perms.contains(RankPerm.DEPOSIT);
+                case "kick" -> !perms.contains(RankPerm.KICK);
+                case "pvp" -> !perms.contains(RankPerm.PVP);
+                case "setslogan" -> !perms.contains(RankPerm.SETSLOGAN);
+                case "setprefix" -> !perms.contains(RankPerm.SETPREFIX);
                 default -> false;
             });
             completions.remove("create");
@@ -202,9 +202,9 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                 FileConfiguration configuration = GuiLoader.getGuiConfiguration(entry.getKey());
                 // todo OpenRequirements perm
 //                if (player.hasPermission(menu.permission())) {
-                    completions.addAll(entry.getValue().stream()
-                            .filter(str -> str.toLowerCase().startsWith(args[0].toLowerCase()))
-                            .toList());
+                completions.addAll(entry.getValue().stream()
+                        .filter(str -> str.toLowerCase().startsWith(args[0].toLowerCase()))
+                        .toList());
 //                }
             }
 

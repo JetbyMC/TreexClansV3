@@ -4,7 +4,7 @@ package me.jetby.clans.common.storage;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
 import me.jetby.clans.common.clan.model.MemberImpl;
@@ -66,38 +66,38 @@ public class YAML implements Storage {
                     String displayName = ranksSection.getString(key + ".display-name");
                     ConfigurationSection permission = ranksSection.getConfigurationSection(key + ".permissions");
                     if (permission == null) continue;
-                    Set<RankPerms> perms = new HashSet<>();
+                    Set<RankPerm> perms = new HashSet<>();
                     for (String perm : permission.getKeys(false)) {
                         switch (perm.toLowerCase()) {
                             case "invite" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.INVITE);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.INVITE);
                             }
                             case "kick" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.KICK);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.KICK);
                             }
                             case "base" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.BASE);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.BASE);
                             }
                             case "setbase" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.SETBASE);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETBASE);
                             }
                             case "setrank" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.SETRANK);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETRANK);
                             }
                             case "deposit" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.DEPOSIT);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.DEPOSIT);
                             }
                             case "withdraw" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.WITHDRAW);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.WITHDRAW);
                             }
                             case "pvp" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.PVP);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.PVP);
                             }
                             case "setslogan" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.SETSLOGAN);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETSLOGAN);
                             }
                             case "setprefix" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.SETPREFIX);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETPREFIX);
                             }
                         }
 
@@ -186,9 +186,9 @@ public class YAML implements Storage {
                 for (String key : clanImpl.getRanks().keySet()) {
                     Rank rank = clanImpl.getRanks().get(key);
                     configuration.set(clanId + ".ranks." + rank.id() + ".display-name", rank.name());
-                    Set<RankPerms> perms = rank.perms();
+                    Set<RankPerm> perms = rank.perms();
                     configuration.set(clanId + ".ranks." + rank.id() + ".permissions.ALWAYS", true);
-                    for (RankPerms perm : perms) {
+                    for (RankPerm perm : perms) {
                         configuration.set(clanId + ".ranks." + rank.id() + ".permissions." + perm.name(), true);
                     }
                 }

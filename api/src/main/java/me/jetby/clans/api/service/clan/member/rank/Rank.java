@@ -5,6 +5,6 @@ import java.util.Set;
 public record Rank(
         String id,
         String name,
-        Set<RankPerms> perms
+        Set<RankPerm> perms
 ) {
 }

@@ -12,7 +12,7 @@ Items:
     display_name: "&aВсем"
     on_click:
       any:
-        - '[open] glow_color'
+        - '[open] model:glow_color'
 
 
   members:

@@ -81,7 +81,7 @@ public class ChestGui extends Gui {
 
     @Override
     public boolean cancelRegistration(@NotNull Item item) {
-        if (item.section() == null) return false;
+        if (item.type()!=null && item.section() == null) return false;
         String type = item.section().getString("type", "");
         return type.equals("item") || type.equals("chest") || type.equals("blocked-slot");
     }

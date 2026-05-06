@@ -8,7 +8,7 @@ import me.jetby.clans.api.requirements.SimpleRequirement;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.level.Level;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.tools.FileLoader;
 import me.jetby.libb.color.HashedSerializer;
 import me.jetby.libb.color.SerializerType;
@@ -137,39 +137,39 @@ public class Config {
                 if (rank == null) continue;
                 String name = rank.getString("display-name");
                 ConfigurationSection permission = rank.getConfigurationSection("permissions");
-                Set<RankPerms> perms = new HashSet<>();
+                Set<RankPerm> perms = new HashSet<>();
                 if (permission != null) {
                     for (String perm : permission.getKeys(false)) {
                         switch (perm.toLowerCase()) {
                             case "invite" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.INVITE);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.INVITE);
                             }
                             case "kick" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.KICK);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.KICK);
                             }
                             case "base" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.BASE);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.BASE);
                             }
                             case "setbase" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.SETBASE);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETBASE);
                             }
                             case "setrank" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.SETRANK);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETRANK);
                             }
                             case "deposit" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.DEPOSIT);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.DEPOSIT);
                             }
                             case "withdraw" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.WITHDRAW);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.WITHDRAW);
                             }
                             case "pvp" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.PVP);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.PVP);
                             }
                             case "setslogan" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.SETSLOGAN);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETSLOGAN);
                             }
                             case "setprefix" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerms.SETPREFIX);
+                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETPREFIX);
                             }
                         }
 

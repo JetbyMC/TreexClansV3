@@ -14,27 +14,21 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class OpenMenuAction implements Action {
+public class OpenRequiredMenuAction implements Action {
 
     @Override
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
         Player player = ctx.getPlayer();
         Clan clan = ctx.get(ClanImpl.class);
-        FileConfiguration config;
 
-        String raw = input.rawText();
-        if (raw.startsWith("model:")) {
-            GuiType type;
-            try {
-                type = GuiType.valueOf(raw.replace("model:", "").toUpperCase());
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            config = GuiLoader.getGuiConfiguration(type);
-        } else {
-            config = GuiLoader.getGuiConfiguration(input.rawText());
+        GuiType type;
+        try {
+            type = GuiType.valueOf(input.rawText().toUpperCase());
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
 
+        FileConfiguration config = GuiLoader.getGuiConfiguration(type);
         if (config != null && player != null && clan != null) {
             GuiFactory.create(GuiFactoryRequest.builder()
                             .configuration(config)

@@ -22,10 +22,4 @@ public class InstanceFactory {
      * Example: global NamespacedKey factory base
      */
     public NamespacedKey ITEM_KEY;
-
-    // todo idk, хз нужно не нужно ну по идее да но каждый плагин хочет по своему хранить кланы
-    /**
-     * @see Clan
-     */
-    public Map<String, Clan> CLAN_LIST = new HashMap<>();
 }

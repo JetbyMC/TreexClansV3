@@ -4,7 +4,7 @@ package me.jetby.clans.common.gui.impl;
 import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,9 +33,9 @@ public class RankPermissionsGui extends Gui {
             String type = event.getSection().getString("type");
             if (type == null) return;
             String permName = type.replace("perm-", "").toUpperCase();
-            RankPerms perm = RankPerms.valueOf(permName);
+            RankPerm perm = RankPerm.valueOf(permName);
 
-            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerms.SETRANK)) return;
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.SETRANK)) return;
             if (clan.getMember(player.getUniqueId()).getRank().equals(rank)) return;
             if (!clan.getLeader().getRank().perms().contains(perm)) return;
             if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(perm)) return;
@@ -60,8 +60,8 @@ public class RankPermissionsGui extends Gui {
         Rank rank = clan.getRanks().get(rankName);
         if (rank == null) return;
 
-        Set<RankPerms> perms = EnumSet.allOf(RankPerms.class);
-        for (RankPerms perm : perms) {
+        Set<RankPerm> perms = EnumSet.allOf(RankPerm.class);
+        for (RankPerm perm : perms) {
             setReplace("%" + perm.name().toLowerCase() + "_status%", getStatus(rank.perms().contains(perm)));
         }
         setReplace("%rank%", rank.name());

@@ -92,6 +92,7 @@ public class QuestsGui extends Gui {
             itemStack.setItemMeta(itemMeta);
 
             ItemWrapper wrapper = new ItemWrapper(itemStack);
+            wrapper.serializer(defaultSerializer);
             wrapper.displayName(applyPlaceholders(template.section().getString("display_name", "")));
 
             List<String> lore = new ArrayList<>(template.section().getStringList("lore"));
@@ -125,7 +126,7 @@ public class QuestsGui extends Gui {
 
     @Override
     public boolean cancelRegistration(@NotNull Item item) {
-        if (item != null && item.section() != null) {
+        if (item.type()!=null && item.section() != null) {
             String type = item.section().getString("type", "");
             return type.equals("all_quests") || type.startsWith("category-");
         }

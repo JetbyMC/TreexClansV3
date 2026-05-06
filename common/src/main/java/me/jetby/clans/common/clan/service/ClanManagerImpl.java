@@ -414,7 +414,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
         public boolean isInClan(@NotNull UUID uuid) {
             return clans().values().stream()
                     .anyMatch(clan ->
-                            (clan.getLeader() != null && clan.getLeader().getUuid().equals(uuid)) ||
+                            (clan.getLeader().getUuid().equals(uuid)) ||
                                     clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
                     );
         }
@@ -437,7 +437,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
         public @Nullable Clan getClanByMember(@NotNull UUID uuid) {
             return clans().values().stream()
                     .filter(clan ->
-                            (clan.getLeader() != null && clan.getLeader().getUuid().equals(uuid)) ||
+                            (clan.getLeader().getUuid().equals(uuid)) ||
                                     clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
                     )
                     .findFirst()
@@ -457,7 +457,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
         public @Nullable Clan getClanByMember(@NotNull Member member) {
             return clans().values().stream()
                     .filter(clan ->
-                            (clan.getLeader() != null && clan.getLeader().equals(member)) ||
+                            (clan.getLeader().equals(member)) ||
                                     clan.getMembers().contains(member)
                     )
                     .findFirst()

@@ -4,7 +4,7 @@ package me.jetby.clans.common.gui.impl;
 import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.libb.gui.item.ItemWrapper;
 import me.jetby.libb.gui.parser.Item;
@@ -43,9 +43,6 @@ public class RanksGui extends Gui {
                 }
                 case "leader_rank": {
                     Rank rank = clan.getLeader().getRank();
-                    if (rank == null) {
-                        break;
-                    }
                     replaceMemberPlaceholders(rank);
                     break;
                 }
@@ -63,7 +60,7 @@ public class RanksGui extends Gui {
 
     @Override
     public boolean cancelRegistration(@NotNull Item item) {
-        return item.type().equalsIgnoreCase("all_ranks");
+        return item.type()!=null && item.type().equalsIgnoreCase("all_ranks");
     }
 
     private void setupRanksPagination() {
@@ -108,16 +105,16 @@ public class RanksGui extends Gui {
     }
 
     private void replaceMemberPlaceholders(Rank rank) {
-        setReplace("%invite_status%", getStatus(rank.perms().contains(RankPerms.INVITE)));
-        setReplace("%kick_status%", getStatus(rank.perms().contains(RankPerms.KICK)));
-        setReplace("%base_status%", getStatus(rank.perms().contains(RankPerms.BASE)));
-        setReplace("%setrank_status%", getStatus(rank.perms().contains(RankPerms.SETRANK)));
-        setReplace("%setbase_status%", getStatus(rank.perms().contains(RankPerms.SETBASE)));
-        setReplace("%deposit_status%", getStatus(rank.perms().contains(RankPerms.DEPOSIT)));
-        setReplace("%withdraw_status%", getStatus(rank.perms().contains(RankPerms.WITHDRAW)));
-        setReplace("%pvp_status%", getStatus(rank.perms().contains(RankPerms.PVP)));
-        setReplace("%setslogan_status%", getStatus(rank.perms().contains(RankPerms.SETSLOGAN)));
-        setReplace("%setprefix_status%", getStatus(rank.perms().contains(RankPerms.SETPREFIX)));
+        setReplace("%invite_status%", getStatus(rank.perms().contains(RankPerm.INVITE)));
+        setReplace("%kick_status%", getStatus(rank.perms().contains(RankPerm.KICK)));
+        setReplace("%base_status%", getStatus(rank.perms().contains(RankPerm.BASE)));
+        setReplace("%setrank_status%", getStatus(rank.perms().contains(RankPerm.SETRANK)));
+        setReplace("%setbase_status%", getStatus(rank.perms().contains(RankPerm.SETBASE)));
+        setReplace("%deposit_status%", getStatus(rank.perms().contains(RankPerm.DEPOSIT)));
+        setReplace("%withdraw_status%", getStatus(rank.perms().contains(RankPerm.WITHDRAW)));
+        setReplace("%pvp_status%", getStatus(rank.perms().contains(RankPerm.PVP)));
+        setReplace("%setslogan_status%", getStatus(rank.perms().contains(RankPerm.SETSLOGAN)));
+        setReplace("%setprefix_status%", getStatus(rank.perms().contains(RankPerm.SETPREFIX)));
         setReplace("%rank%", rank.name());
     }
 

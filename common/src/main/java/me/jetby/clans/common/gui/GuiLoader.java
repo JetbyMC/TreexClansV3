@@ -34,19 +34,7 @@ public class GuiLoader {
      * @return Custom gui if it's not Required
      */
     public static FileConfiguration getGuiConfiguration(@NotNull String name) {
-        return REQUIRED_GUIS.values().stream()
-                .filter(configuration -> {
-                    String listen = configuration.getString("listen");
-                    if (listen == null) return false;
-                    GuiType type;
-                    try {
-                        type = GuiType.valueOf(listen.toUpperCase());
-                        return REQUIRED_GUIS.containsKey(type);
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }).findFirst()
-                .orElse(CUSTOM_GUIS.get(name));
+        return CUSTOM_GUIS.get(name);
     }
 
     private void loadFilesRecursive(File folder, boolean isRequired) {
@@ -88,7 +76,7 @@ public class GuiLoader {
 
     public void createRequiredGuis() {
         REQUIRED_GUIS.clear();
-        File folder = new File(plugin.getDataFolder(), "Menu/required");
+        File folder = new File(plugin.getDataFolder(), "Menu/models");
         if (!folder.exists() && folder.mkdirs()) {
             String[] defaults = {
                     "quests.yml",
@@ -106,7 +94,7 @@ public class GuiLoader {
                 target.getParentFile().mkdirs();
 
                 if (!target.exists()) {
-                    plugin.saveResource("Menu/required/" + name, false);
+                    plugin.saveResource("Menu/models/" + name, false);
                 }
             }
         }

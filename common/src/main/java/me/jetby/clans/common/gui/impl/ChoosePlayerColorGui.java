@@ -59,7 +59,7 @@ public class ChoosePlayerColorGui extends Gui {
 
     @Override
     public boolean cancelRegistration(@NotNull Item item) {
-        return item != null && item.type().equalsIgnoreCase("players");
+        return item.type()!=null && item.type().equalsIgnoreCase("players");
     }
 
     @Override

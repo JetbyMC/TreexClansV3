@@ -15,6 +15,5 @@ import javax.annotation.Nullable;
 public record GuiFactoryRequest(@NonNull TreexClans plugin, @NonNull Player player,
                                 @NonNull FileConfiguration configuration, @Nullable Clan clan,
                                 @Nullable Member target,
-                                @Nullable Rank rank,
-                                @Nullable FileConfiguration permissionConfig) {
+                                @Nullable Rank rank) {
 }

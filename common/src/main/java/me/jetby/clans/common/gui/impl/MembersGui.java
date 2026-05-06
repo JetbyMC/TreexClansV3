@@ -77,7 +77,7 @@ public class MembersGui extends Gui {
 
     @Override
     public boolean cancelRegistration(@NotNull Item item) {
-        return item.type().equalsIgnoreCase("members");
+        return item.type()!=null && item.type().equalsIgnoreCase("members");
     }
 
     private void setupMembersPagination() {

@@ -130,7 +130,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
             LOGGER.success(" └  ✔  Vault");
         }
         LOGGER.success("┗ Hooks loaded ("+Speedometer.result()+"ms)");
-        LOGGER.info("--------------");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading configurations:");
         Speedometer.start();
         new UpdateConfig(getConfig().getInt("config-version", 1));
@@ -160,9 +160,10 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         storage.load();
         LOGGER.success(" └  ✔  Storage");
         LOGGER.success("Configuration loaded ("+Speedometer.result()+"ms)");
-        LOGGER.info("--------------");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading commands:");
         Speedometer.start();
+        this.commandService = new CommandServiceImpl();
         PluginCommand xClanCommand = this.getCommand("xclan");
         if (xClanCommand != null) {
             AdminCommand cmd = new AdminCommand(commandService);
@@ -176,13 +177,11 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
             clanCommand.setTabCompleter(cmd);
         }
         LOGGER.success("┗ Commands created ("+Speedometer.result()+"ms)");
-        LOGGER.info("--------------");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading API:");
         Speedometer.start();
 
         clanManager = new ClanManagerImpl(this);
-
-        this.commandService = new CommandServiceImpl();
 
         questManager = new QuestManager(this);
         leaderboardService = new LeaderboardServiceImpl(this);
@@ -199,7 +198,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
 
         ((AddonManagerImpl) addonManager).loadAddons();
         LOGGER.success("┗ API loaded ("+Speedometer.result()+"ms)");
-        LOGGER.info("--------------");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6Last details");
         getServer().getPluginManager().registerEvents(new ClanListeners(this), this);
         getServer().getPluginManager().registerEvents(new QuestsListeners(this), this);

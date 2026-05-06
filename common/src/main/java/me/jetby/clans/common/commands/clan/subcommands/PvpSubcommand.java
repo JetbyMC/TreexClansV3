@@ -2,7 +2,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,7 +26,7 @@ public class PvpSubcommand implements Subcommand {
             }
             var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
 
-            if (!clanImpl.getMember(player.getUniqueId()).getRank().perms().contains(RankPerms.PVP)) {
+            if (!clanImpl.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.PVP)) {
                 plugin.getMessages().sendActions(player, clanImpl, "your-rank-is-not-allowed-to-do-that");
                 return true;
             }

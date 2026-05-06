@@ -2,11 +2,9 @@ package me.jetby.clans.common.gui.core;
 
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
-import me.jetby.clans.api.service.clan.member.rank.RankPerms;
+import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.gui.Gui;
-import me.jetby.clans.common.gui.GuiFactory;
-import me.jetby.clans.common.gui.GuiFactoryRequest;
+import me.jetby.clans.common.gui.*;
 import me.jetby.libb.gui.parser.Item;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -21,53 +19,73 @@ import java.util.Map;
 public class RanksGui extends Gui {
 
     private final TreexClans plugin;
-    private final FileConfiguration permissionConfig;
 
 
     public RanksGui(@NotNull Player viewer,
                     @NotNull FileConfiguration config,
                     @NotNull JavaPlugin plugin,
-                    @NotNull Clan clan,
-                    @NotNull FileConfiguration permissionConfig
+                    @NotNull Clan clan
     ) {
         super(viewer, config, plugin, clan);
-        this.permissionConfig = permissionConfig;
         this.plugin = (TreexClans) plugin;
 
-        setup();
+        addClickHandler("type", event -> {
+            if (!event.getSection().getString("type").equalsIgnoreCase("all_ranks")) return;
+            String type = event.getItem().type();
+            if (type == null) return;
+            if (!type.startsWith("rank-")) return;
+            String rankName = type.replace("rank-", "");
+            Rank rank = getClan().getRanks().get(rankName);
+            if (rank == null) return;
+
+            GuiFactory.create(GuiFactoryRequest
+                            .builder()
+                            .player(getViewer())
+                            .clan(getClan())
+                            .rank(rank)
+                            .configuration(GuiLoader.getGuiConfiguration(GuiType.RANK_PERMISSIONS))
+                            .plugin((TreexClans) plugin)
+                            .build())
+                    .open(player);
+        });
     }
 
     @Override
     public void buildItems(List<Item> items) {
         if (getClan() == null) return;
 
-        List<Rank> ranks = getClan().getRanks().values().stream().toList();
+        List<Rank> ranks = getClan().getRanks().values()
+                .stream()
+                .filter(rank ->
+                        getClan().getLeader().getRank() != rank
+                ).toList();
         List<Item> result = new ArrayList<>();
 
         for (Item item : items) {
-            if (!"all_ranks".equalsIgnoreCase(item.type())) {
+            if (!("all_ranks").equalsIgnoreCase(item.type())) {
                 result.add(item);
                 continue;
             }
 
             List<Integer> slots = item.slots();
             for (int i = 0; i < Math.min(slots.size(), ranks.size()); i++) {
-                result.add(cloneItemForRank(item, slots.get(i), ranks.get(i)));
+                Rank rank = ranks.get(i);
+                int slot = slots.get(i);
+
+                result.add(cloneItemForRank(item, slot, rank));
             }
         }
         super.buildItems(result);
     }
 
-    private String applyRankString(String text, Rank rank) {
-        for (Map.Entry<String, String> entry : placeholders(rank).entrySet()) {
-            text = text.replace(entry.getKey(), entry.getValue());
-        }
-        return text;
+    @Override
+    public void everyPageLogic() {
+
     }
 
     private Item cloneItemForRank(Item item, int slot, Rank rank) {
         Item copy = new Item(item.itemStack().clone());
-        item.type("rank-" + rank.id());
+        copy.type("rank-" + rank.id());
         copy.slots(new ArrayList<>(List.of(slot)));
         copy.flags(item.flags());
         copy.enchantments(item.enchantments());
@@ -77,81 +95,41 @@ public class RanksGui extends Gui {
         copy.section(item.section());
         copy.viewRequirements(item.viewRequirements());
         copy.priority(item.priority());
-        copy.displayName(item.displayName() == null ? null : applyRankString(item.displayName(), rank));
-        copy.lore(item.lore() == null ? null : item.lore().stream().map(line -> applyRankString(line, rank)).toList());
+        copy.displayName(item.displayName() == null ? null : applyRankPlaceholders(applyPlaceholders(item.displayName()), rank));
+        copy.lore(item.lore() == null ? null : item.lore()
+                .stream()
+                .map(line -> applyRankPlaceholders(applyPlaceholders(line), rank))
+                .toList());
         return copy;
     }
 
-    private void setup() {
-        addClickHandler("type", event -> {
-            String type = event.getSection().getString("type");
-            if (!type.startsWith("rank-")) return;
-            String rankName = type.replace("rank-", "");
-            Rank rank = getClan().getRanks().get(rankName);
-            if (rank == null) return;
-
-            GuiFactory.create(GuiFactoryRequest
-                    .builder()
-                    .player(getViewer())
-                    .clan(getClan())
-                    .configuration(permissionConfig)
-                    .plugin(plugin)
-                    .build());
-            new RankPermissionGui(getViewer(), getConfig(), getPlugin(), getClan()).open(player);
-        });
-    }
-
-    @Override
-    public void everyPageLogic() {
-
-    }
-
-    private Item applyRankPlaceholders(Item item, Rank rank) {
-        if (item.lore() == null) return item;
-
+    private static String applyRankPlaceholders(String text, Rank rank) {
         for (Map.Entry<String, String> entry : placeholders(rank).entrySet()) {
-            if (item.displayName() == null) break;
-            if (!item.displayName().contains(entry.getKey())) continue;
-            item.displayName().replace(entry.getKey(), entry.getValue());
+            text = text.replace(entry.getKey(), entry.getValue());
         }
-
-        List<String> lore = item.lore();
-        for (String line : lore) {
-            for (Map.Entry<String, String> entry : placeholders(rank).entrySet()) {
-                if (line == null) break;
-                if (!line.contains(entry.getKey())) continue;
-                line.replace(entry.getKey(), entry.getValue());
-            }
-        }
-        item.lore(lore);
-        return item;
+        return text;
     }
 
-    private Map<String, String> placeholders(Rank rank) {
+    private static Map<String, String> placeholders(Rank rank) {
         Map<String, String> placeholders = new HashMap<>();
 
-        placeholders.put("%invite_status%", getStatus(rank.perms().contains(RankPerms.INVITE)));
-        placeholders.put("%kick_status%", getStatus(rank.perms().contains(RankPerms.KICK)));
-        placeholders.put("%base_status%", getStatus(rank.perms().contains(RankPerms.BASE)));
-        placeholders.put("%setrank_status%", getStatus(rank.perms().contains(RankPerms.SETRANK)));
-        placeholders.put("%setbase_status%", getStatus(rank.perms().contains(RankPerms.SETBASE)));
-        placeholders.put("%deposit_status%", getStatus(rank.perms().contains(RankPerms.DEPOSIT)));
-        placeholders.put("%withdraw_status%", getStatus(rank.perms().contains(RankPerms.WITHDRAW)));
-        placeholders.put("%pvp_status%", getStatus(rank.perms().contains(RankPerms.PVP)));
-        placeholders.put("%setslogan_status%", getStatus(rank.perms().contains(RankPerms.SETSLOGAN)));
-        placeholders.put("%setprefix_status%", getStatus(rank.perms().contains(RankPerms.SETPREFIX)));
+        placeholders.put("%invite_status%", getStatus(rank.perms().contains(RankPerm.INVITE)));
+        placeholders.put("%kick_status%", getStatus(rank.perms().contains(RankPerm.KICK)));
+        placeholders.put("%base_status%", getStatus(rank.perms().contains(RankPerm.BASE)));
+        placeholders.put("%setrank_status%", getStatus(rank.perms().contains(RankPerm.SETRANK)));
+        placeholders.put("%setbase_status%", getStatus(rank.perms().contains(RankPerm.SETBASE)));
+        placeholders.put("%deposit_status%", getStatus(rank.perms().contains(RankPerm.DEPOSIT)));
+        placeholders.put("%withdraw_status%", getStatus(rank.perms().contains(RankPerm.WITHDRAW)));
+        placeholders.put("%pvp_status%", getStatus(rank.perms().contains(RankPerm.PVP)));
+        placeholders.put("%setslogan_status%", getStatus(rank.perms().contains(RankPerm.SETSLOGAN)));
+        placeholders.put("%setprefix_status%", getStatus(rank.perms().contains(RankPerm.SETPREFIX)));
         placeholders.put("%rank%", rank.name());
 
         return placeholders;
     }
 
-
-    private String getStatus(boolean status) {
-        if (status) {
-            return plugin.getMessages().getCleanMessage("rank-perm-yes");
-        } else {
-            return plugin.getMessages().getCleanMessage("rank-perm-no");
-        }
+    private static String getStatus(boolean status) {
+        return TreexClans.getInstance().getMessages().getCleanMessage(status ? "rank-perm-yes" : "rank-perm-no");
     }
 
 

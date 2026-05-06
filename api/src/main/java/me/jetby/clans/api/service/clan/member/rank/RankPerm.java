@@ -1,6 +1,6 @@
 package me.jetby.clans.api.service.clan.member.rank;
 
-public enum RankPerms {
+public enum RankPerm {
     INVITE,
     KICK,
     BASE,

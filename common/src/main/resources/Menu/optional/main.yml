@@ -4,6 +4,7 @@ size: 54
 open_args:
   - 'menu'
 
+
 Items:
 
   info:
@@ -25,7 +26,7 @@ Items:
       - "&7Нажмите чтобы открыть"
     on_click:
       any:
-        - '[open] storage'
+        - '[open] model:chest'
   members:
     material: PLAYER_HEAD
     slot: 24
@@ -34,7 +35,7 @@ Items:
       - "&7Нажмите чтобы открыть"
     on_click:
       any:
-        - '[open] members'
+        - '[open] model:members'
   quests:
     material: TOTEM_OF_UNDYING
     slot: 30
@@ -43,7 +44,7 @@ Items:
       - "&7Нажмите чтобы открыть"
     on_click:
       any:
-        - '[open] quests'
+        - '[open] model:quests'
   ranks:
     material: TURTLE_HELMET
     slot: 31
@@ -53,7 +54,7 @@ Items:
       - "&7Нажмите чтобы открыть"
     on_click:
       any:
-        - '[open] ranks'
+        - '[open] model:ranks'
   glow:
     material: LEATHER_CHESTPLATE
     color: YELLOW
@@ -64,7 +65,7 @@ Items:
       - "&7Нажмите чтобы открыть"
     on_click:
       any:
-        - '[open] choose_player_color'
+        - '[open] model:choose_player_color'
 
   orange:
     material: ORANGE_STAINED_GLASS_PANE

@@ -26,9 +26,9 @@ public class GuiFactory {
             case CHOOSE_COLOR        -> { return new ChooseColorGui(player, config, plugin, clan, request.target()); }
             case CHOOSE_PLAYER_COLOR -> { return new ChoosePlayerColorGui(player, config, plugin, clan); }
             case MEMBERS             -> { return new MembersGui(player, config, plugin, clan); }
-            case RANKS               -> { return new me.jetby.clans.common.gui.core.RanksGui(player, config, plugin, clan, request.permissionConfig()); }
+            case RANKS               -> { return new me.jetby.clans.common.gui.core.RanksGui(player, config, plugin, clan); }
+            case RANK_PERMISSIONS    -> { return new me.jetby.clans.common.gui.core.RankPermissionGui(player, config, plugin, clan, request.rank()); }
             case TOP_CLANS           -> { return new TopClansGui(player, config, plugin, clan, LeaderboardService.TopType.KILLS); }
-            case RANK_PERMISSIONS    -> { return new RankPermissionsGui(player, config, plugin, clan, request.rank()); }
             default                  -> { return new Gui(player, config, plugin, clan); }
         }
     }
