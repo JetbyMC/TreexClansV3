@@ -6,7 +6,6 @@ import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.gui.*;
 import me.jetby.libb.gui.parser.Item;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -18,16 +17,13 @@ import java.util.Map;
 
 public class RanksGui extends Gui {
 
-    private final TreexClans plugin;
-
 
     public RanksGui(@NotNull Player viewer,
-                    @NotNull FileConfiguration config,
+                    @NotNull ExtendedGui guiData,
                     @NotNull JavaPlugin plugin,
                     @NotNull Clan clan
     ) {
-        super(viewer, config, plugin, clan);
-        this.plugin = (TreexClans) plugin;
+        super(viewer, guiData, plugin, clan);
 
         addClickHandler("type", event -> {
             if (!event.getSection().getString("type").equalsIgnoreCase("all_ranks")) return;
@@ -43,7 +39,7 @@ public class RanksGui extends Gui {
                             .player(getViewer())
                             .clan(getClan())
                             .rank(rank)
-                            .configuration(GuiLoader.getGuiConfiguration(GuiType.RANK_PERMISSIONS))
+                            .guiData(GuiLoader.getGuiConfiguration(ListenType.RANK_PERMISSIONS))
                             .plugin((TreexClans) plugin)
                             .build())
                     .open(player);

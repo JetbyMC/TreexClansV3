@@ -1,6 +1,7 @@
 package me.jetby.clans.common.gui.impl;
 
 
+import me.jetby.clans.common.gui.ExtendedGui;
 import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.Member;
@@ -25,8 +26,8 @@ public class ChoosePlayerColorGui extends Gui {
 
     private final Clan clan;
 
-    public ChoosePlayerColorGui(@NotNull Player viewer, @NotNull FileConfiguration config, @NotNull TreexClans plugin, Clan clan) {
-        super(viewer, config, plugin, clan);
+    public ChoosePlayerColorGui(@NotNull Player viewer, @NotNull ExtendedGui guiData, @NotNull TreexClans plugin, Clan clan) {
+        super(viewer, guiData, plugin, clan);
         this.clan = clan;
 
         setupMembersPagination();

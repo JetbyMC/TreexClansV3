@@ -13,6 +13,7 @@ import me.jetby.clans.common.clan.model.ClanImpl;
 import me.jetby.clans.common.clan.model.MemberImpl;
 import me.jetby.clans.common.configurations.Config;
 import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.storage.Storage;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionExecute;
 import net.kyori.adventure.text.Component;
@@ -42,13 +43,13 @@ public final class ClanManagerImpl implements Listener, ClanManager {
     private final Validation validation = new ValidationImpl();
     private final Chat chat = new ChatImpl();
     private final Economy economy = new EconomyImpl();
-    private final Colors colors = new ColorsImpl();
     private final Lookup lookup = new LookupImpl();
 
     public ClanManagerImpl(@NotNull TreexClans plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+
 
     @Override
     public @NotNull Lifecycle lifecycle() {
@@ -71,11 +72,6 @@ public final class ClanManagerImpl implements Listener, ClanManager {
     }
 
     @Override
-    public @NotNull Colors colors() {
-        return colors;
-    }
-
-    @Override
     public @NotNull Lookup lookup() {
         return lookup;
     }
@@ -93,14 +89,13 @@ public final class ClanManagerImpl implements Listener, ClanManager {
         });
     }
 
-    @SuppressWarnings("unchecked")
-    private Map<String, Clan> clans() {
-        // cfg.getClans() is assumed to be Map<String, clan>
-        return plugin.getCfg().getClans();
+    @Override
+    public @NotNull Map<String, Clan> getClanList() {
+        return Storage.CLANS;
     }
 
     private boolean exists(@NotNull String name) {
-        return clans().containsKey(name);
+        return getClanList().containsKey(name);
     }
 
     private final class LifecycleImpl implements ClanManager.Lifecycle {
@@ -117,7 +112,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                 return false;
             }
 
-            clans().put(name, clan);
+            getClanList().put(name, clan);
             return true;
         }
 
@@ -170,7 +165,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                 return false;
             }
 
-            clans().put(name, clan);
+            getClanList().put(name, clan);
             return true;
         }
 
@@ -184,13 +179,13 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                 return false;
             }
 
-            clans().remove(clan.getId());
+            getClanList().remove(clan.getId());
             return true;
         }
 
         @Override
         public boolean deleteClan(@NotNull String name) {
-            var clan = clans().get(name);
+            var clan = getClanList().get(name);
             if (clan == null) {
                 return false;
             }
@@ -211,7 +206,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                 }
             }
 
-            clans().remove(clan.getId());
+            getClanList().remove(clan.getId());
             return true;
         }
 
@@ -369,50 +364,11 @@ public final class ClanManagerImpl implements Listener, ClanManager {
         }
     }
 
-    private static final class ColorsImpl implements ClanManager.Colors {
-
-        @Override
-        public void setColor(@NotNull Clan clan, @NotNull Member member, @NotNull Color color) {
-
-            Map<UUID, Color> colors = member.getGlowColors();
-            var scope = new HashSet<>(clan.getMembers());
-            if (!clan.getLeader().equals(member)) {
-                scope.add(clan.getLeader());
-            }
-
-            for (var target : scope) {
-                if (!target.equals(member)) {
-                    colors.put(target.getUuid(), color);
-                }
-            }
-
-            member.setGlowColors(colors);
-        }
-
-        @Override
-        public void setColor(@NotNull Member member, @NotNull Set<Member> members, @NotNull Color color) {
-            Map<UUID, Color> colors = member.getGlowColors();
-
-            for (Member raw : members) {
-                if (!raw.equals(member)) {
-                    colors.put(raw.getUuid(), color);
-                }
-            }
-
-            member.setGlowColors(colors);
-        }
-
-        @Override
-        public void setColor(@NotNull Member member, @NotNull Member target, @NotNull Color color) {
-            member.getGlowColors().put(target.getUuid(), color);
-        }
-    }
-
     private final class LookupImpl implements ClanManager.Lookup {
 
         @Override
         public boolean isInClan(@NotNull UUID uuid) {
-            return clans().values().stream()
+            return getClanList().values().stream()
                     .anyMatch(clan ->
                             (clan.getLeader().getUuid().equals(uuid)) ||
                                     clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
@@ -430,12 +386,12 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
         @Override
         public @Nullable Clan getClan(@NotNull String name) {
-            return clans().get(name);
+            return getClanList().get(name);
         }
 
         @Override
         public @Nullable Clan getClanByMember(@NotNull UUID uuid) {
-            return clans().values().stream()
+            return getClanList().values().stream()
                     .filter(clan ->
                             (clan.getLeader().getUuid().equals(uuid)) ||
                                     clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
@@ -455,7 +411,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
         @Override
         public @Nullable Clan getClanByMember(@NotNull Member member) {
-            return clans().values().stream()
+            return getClanList().values().stream()
                     .filter(clan ->
                             (clan.getLeader().equals(member)) ||
                                     clan.getMembers().contains(member)

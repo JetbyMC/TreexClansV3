@@ -8,28 +8,21 @@ import me.jetby.clans.common.gui.impl.*;
 public class GuiFactory {
 
     public static Gui create(GuiFactoryRequest request) {
-        GuiType type;
-        try {
-            type = GuiType.valueOf(request.configuration().getString("listen", "default").toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        }
 
+        ExtendedGui guiData = request.guiData();
         var player = request.player();
-        var config = request.configuration();
         var plugin = request.plugin();
         var clan   = request.clan();
 
-        switch (type) {
-            case QUESTS              -> { return new QuestsGui(player, config, plugin, clan); }
-            case CHEST               -> { return new ChestGui(player, config, plugin, clan); }
-            case CHOOSE_COLOR        -> { return new ChooseColorGui(player, config, plugin, clan, request.target()); }
-            case CHOOSE_PLAYER_COLOR -> { return new ChoosePlayerColorGui(player, config, plugin, clan); }
-            case MEMBERS             -> { return new MembersGui(player, config, plugin, clan); }
-            case RANKS               -> { return new me.jetby.clans.common.gui.core.RanksGui(player, config, plugin, clan); }
-            case RANK_PERMISSIONS    -> { return new me.jetby.clans.common.gui.core.RankPermissionGui(player, config, plugin, clan, request.rank()); }
-            case TOP_CLANS           -> { return new TopClansGui(player, config, plugin, clan, LeaderboardService.TopType.KILLS); }
-            default                  -> { return new Gui(player, config, plugin, clan); }
+        switch (guiData.getListenType()) {
+            case QUESTS              -> { return new QuestsGui(player, guiData, plugin, clan); }
+            case CHEST               -> { return new ChestGui(player, guiData, plugin, clan); }
+            case CHOOSE_PLAYER_COLOR -> { return new ChoosePlayerColorGui(player, guiData, plugin, clan); }
+            case MEMBERS             -> { return new MembersGui(player, guiData, plugin, clan); }
+            case RANKS               -> { return new me.jetby.clans.common.gui.core.RanksGui(player, guiData, plugin, clan); }
+            case RANK_PERMISSIONS    -> { return new me.jetby.clans.common.gui.core.RankPermissionGui(player, guiData, plugin, clan, request.rank()); }
+            case TOP_CLANS           -> { return new TopClansGui(player, guiData, plugin, clan, LeaderboardService.TopType.KILLS); }
+            default                  -> { return new Gui(player, guiData, plugin, clan); }
         }
     }
 

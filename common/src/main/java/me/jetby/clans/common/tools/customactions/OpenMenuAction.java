@@ -3,10 +3,7 @@ package me.jetby.clans.common.tools.customactions;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
-import me.jetby.clans.common.gui.GuiFactory;
-import me.jetby.clans.common.gui.GuiFactoryRequest;
-import me.jetby.clans.common.gui.GuiLoader;
-import me.jetby.clans.common.gui.GuiType;
+import me.jetby.clans.common.gui.*;
 import me.jetby.libb.action.Action;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionInput;
@@ -20,24 +17,24 @@ public class OpenMenuAction implements Action {
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
         Player player = ctx.getPlayer();
         Clan clan = ctx.get(ClanImpl.class);
-        FileConfiguration config;
+        ExtendedGui gui;
 
         String raw = input.rawText();
         if (raw.startsWith("model:")) {
-            GuiType type;
+            ListenType type;
             try {
-                type = GuiType.valueOf(raw.replace("model:", "").toUpperCase());
+                type = ListenType.valueOf(raw.replace("model:", "").toUpperCase());
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
-            config = GuiLoader.getGuiConfiguration(type);
+            gui = GuiLoader.getGuiConfiguration(type);
         } else {
-            config = GuiLoader.getGuiConfiguration(input.rawText());
+            gui = GuiLoader.getGuiConfiguration(input.rawText());
         }
 
-        if (config != null && player != null && clan != null) {
+        if (gui != null && player != null && clan != null) {
             GuiFactory.create(GuiFactoryRequest.builder()
-                            .configuration(config)
+                            .guiData(gui)
                             .plugin(TreexClans.getInstance())
                             .player(player)
                             .clan(clan)

@@ -1,8 +1,8 @@
 package me.jetby.clans.common.gui.core;
 
-import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
-import org.bukkit.configuration.file.FileConfiguration;
+import me.jetby.clans.common.gui.ExtendedGui;
+import me.jetby.clans.common.gui.Gui;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -10,15 +10,11 @@ import org.jetbrains.annotations.NotNull;
 public class ChestGui extends Gui {
 
 
-
-    public ChestGui(@NotNull Player viewer, @NotNull FileConfiguration config, @NotNull JavaPlugin plugin, Clan clan) {
-        super(viewer, config, plugin, clan);
+    public ChestGui(@NotNull Player viewer, @NotNull ExtendedGui guiData, @NotNull JavaPlugin plugin, Clan clan) {
+        super(viewer, guiData, plugin, clan);
 
 
     }
-
-
-
 
 
 }

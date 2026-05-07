@@ -9,7 +9,6 @@ public enum ClanCommandArgs {
     INVITE(new InviteSubcommand()),
     ACCEPT(new AcceptSubcommand()),
     DENY(new DenySubcommand()),
-    GLOW(new GlowSubcommand()),
     KICK(new KickSubcommand()),
     DISBAND(new DisbandSubcommand()),
     DEPOSIT(new DepositSubcommand()),

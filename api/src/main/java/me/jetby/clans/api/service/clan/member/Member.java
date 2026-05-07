@@ -40,13 +40,6 @@ public interface Member {
     void setLastOnline(long lastOnline);
 
     /**
-     * @return whether clan glow (visual aura) is enabled for this member.
-     */
-    boolean isClanGlow();
-
-    void setClanGlow(boolean clanGlow);
-
-    /**
      * @return whether member has clan chat enabled.
      */
     boolean isChat();
@@ -76,13 +69,6 @@ public interface Member {
      * Removes coins from this member’s balance.
      */
     void takeCoin(int amount);
-
-    /**
-     * @return per-player glow color mapping.
-     */
-    @NotNull Map<UUID, Color> getGlowColors();
-
-    void setGlowColors(@NotNull Map<UUID, Color> colors);
 
     /**
      * @return number of kills made by the member.

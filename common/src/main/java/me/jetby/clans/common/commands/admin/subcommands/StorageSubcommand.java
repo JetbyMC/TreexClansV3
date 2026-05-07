@@ -3,6 +3,7 @@ package me.jetby.clans.common.commands.admin.subcommands;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.common.TreexClans;
+import me.jetby.clans.common.storage.Storage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ public class StorageSubcommand implements Subcommand {
     @Override
     public @Nullable List<String> onTabCompleter(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        List<String> completions = new ArrayList<>(plugin.getCfg().getClans().keySet());
+        List<String> completions = new ArrayList<>(Storage.CLANS.keySet());
 
         return completions.stream()
                 .filter(cmd -> cmd.startsWith(args[1].toLowerCase()))

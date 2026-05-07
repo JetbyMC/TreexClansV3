@@ -1,7 +1,10 @@
 package me.jetby.clans.common.gui;
 
 import me.jetby.clans.common.TreexClans;
+import me.jetby.libb.action.record.ActionBlock;
 import me.jetby.libb.command.CommandRegistrar;
+import me.jetby.libb.gui.parser.Item;
+import me.jetby.libb.gui.parser.ParseUtil;
 import me.jetby.libb.util.Logger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiLoader {
-    public static final Map<GuiType, FileConfiguration> REQUIRED_GUIS = new HashMap<>();
-    public static final Map<String, FileConfiguration> CUSTOM_GUIS = new HashMap<>();
+    public static final Map<ListenType, ExtendedGui> REQUIRED_GUIS = new HashMap<>();
+    public static final Map<String, ExtendedGui> CUSTOM_GUIS = new HashMap<>();
 
     private final TreexClans plugin;
 
@@ -25,7 +28,7 @@ public class GuiLoader {
     /**
      * @return Required gui only
      */
-    public static FileConfiguration getGuiConfiguration(GuiType type) {
+    public static ExtendedGui getGuiConfiguration(ListenType type) {
         return REQUIRED_GUIS.get(type);
     }
 
@@ -33,7 +36,7 @@ public class GuiLoader {
      * @param name Required gui type or Custom gui id
      * @return Custom gui if it's not Required
      */
-    public static FileConfiguration getGuiConfiguration(@NotNull String name) {
+    public static ExtendedGui getGuiConfiguration(@NotNull String name) {
         return CUSTOM_GUIS.get(name);
     }
 
@@ -54,14 +57,14 @@ public class GuiLoader {
             String id = config.getString("id", file.getName().replace(".yml", ""));
 
             if (isRequired) {
-                GuiType guiType;
+                ListenType listenType;
                 try {
-                    guiType = GuiType.valueOf(config.getString("listen").toUpperCase());
+                    listenType = ListenType.valueOf(config.getString("listen").toUpperCase());
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
 
-                loadRequiredGui(guiType, file);
+                loadRequiredGui(listenType, file);
             } else {
                 loadCustomGui(id, file);
 
@@ -132,26 +135,83 @@ public class GuiLoader {
         try {
             FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
+            String id = config.getString("id");
+            String title = config.getString("title");
+            int size = config.getInt("size");
+            List<String> command = config.getStringList("command");
+            List<String> preOpenExpressions = config.getStringList("pre_open");
+            ActionBlock onOpen = ParseUtil.getActionBlock(config, "on_open");
+            ActionBlock onClose = ParseUtil.getActionBlock(config, "on_close");
+
+            String listen = config.getString("listen", "default");
+            ListenType listenType;
+            try {
+                listenType = ListenType.valueOf(listen);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            List<String> args = config.getStringList("open_args");
+
+            List<Item> items = ParseUtil.getItems(config);
+
+
+            ExtendedGui gui = new ExtendedGui(
+                    id, title, size, command,
+                    preOpenExpressions, onOpen, onClose,
+                    items,
+                    listenType,
+                    args
+            );
+
             List<String> commands = config.getStringList("command");
             for (String cmd : commands) {
-                CommandRegistrar.registerCommand(plugin, cmd, (sender, command, label, args) -> {
+                CommandRegistrar.registerCommand(plugin, cmd, (sender, command1, label, args1) -> {
                     return true;
                 });
             }
-            CUSTOM_GUIS.put(menuId, config);
+            CUSTOM_GUIS.put(menuId, gui);
         } catch (Exception e) {
             Logger.error(plugin, "Error trying to load menu: " + e.getMessage());
         }
     }
 
-    private void loadRequiredGui(GuiType type, File file) {
+    private void loadRequiredGui(ListenType type, File file) {
         if (REQUIRED_GUIS.containsKey(type)) {
             Logger.error(plugin, "A duplicate of " + type + " was skipped");
             return;
         }
         try {
             FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-            REQUIRED_GUIS.put(type, config);
+
+            String id = config.getString("id");
+            String title = config.getString("title");
+            int size = config.getInt("size");
+            List<String> command = config.getStringList("command");
+            List<String> preOpenExpressions = config.getStringList("pre_open");
+            ActionBlock onOpen = ParseUtil.getActionBlock(config, "on_open");
+            ActionBlock onClose = ParseUtil.getActionBlock(config, "on_close");
+
+            String listen = config.getString("listen", "default");
+            ListenType listenType;
+            try {
+                listenType = ListenType.valueOf(listen);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            List<String> args = config.getStringList("open_args");
+
+            List<Item> items = ParseUtil.getItems(config);
+
+
+            ExtendedGui gui = new ExtendedGui(
+                    id, title, size, command,
+                    preOpenExpressions, onOpen, onClose,
+                    items,
+                    listenType,
+                    args
+            );
+
+            REQUIRED_GUIS.put(type, gui);
         } catch (Exception e) {
             Logger.error(plugin, "Error trying to load menu: " + e.getMessage());
         }

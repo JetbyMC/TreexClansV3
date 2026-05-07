@@ -167,7 +167,7 @@ public class YAML implements Storage {
             }
 
 
-            plugin.getCfg().getClans().put(clanId, new ClanImpl(clanId, prefix, leader, memberImplSet, ranks,
+            Storage.CLANS.put(clanId, new ClanImpl(clanId, prefix, leader, memberImplSet, ranks,
                     plugin.getCfg().getLevels().get(Integer.parseInt(level)),
                     balance, base, clanExp, pvp, questsInProgress, completedQuests, chestItems, slogan, plugin));
         }
@@ -180,11 +180,11 @@ public class YAML implements Storage {
             for (String key : configuration.getKeys(false)) {
                 configuration.set(key, null);
             }
-            for (String clanId : plugin.getCfg().getClans().keySet()) {
-                var clanImpl = plugin.getCfg().getClans().get(clanId);
+            for (String clanId : Storage.CLANS.keySet()) {
+                Clan clan = Storage.CLANS.get(clanId);
 
-                for (String key : clanImpl.getRanks().keySet()) {
-                    Rank rank = clanImpl.getRanks().get(key);
+                for (String key : clan.getRanks().keySet()) {
+                    Rank rank = clan.getRanks().get(key);
                     configuration.set(clanId + ".ranks." + rank.id() + ".display-name", rank.name());
                     Set<RankPerm> perms = rank.perms();
                     configuration.set(clanId + ".ranks." + rank.id() + ".permissions.ALWAYS", true);
@@ -193,14 +193,14 @@ public class YAML implements Storage {
                     }
                 }
 
-                configuration.set(clanId + ".slogan", clanImpl.getSlogan());
-                configuration.set(clanId + ".balance", clanImpl.getBalance());
-                configuration.set(clanId + ".level", clanImpl.getLevel().id());
-                configuration.set(clanId + ".exp", clanImpl.getExp());
-                configuration.set(clanId + ".pvp", clanImpl.isPvp());
+                configuration.set(clanId + ".slogan", clan.getSlogan());
+                configuration.set(clanId + ".balance", clan.getBalance());
+                configuration.set(clanId + ".level", clan.getLevel().id());
+                configuration.set(clanId + ".exp", clan.getExp());
+                configuration.set(clanId + ".pvp", clan.isPvp());
 
-                for (UUID uuid : clanImpl.getQuestsProgress().keySet()) {
-                    Map<String, Integer> map = clanImpl.getQuestsProgress().get(uuid);
+                for (UUID uuid : clan.getQuestsProgress().keySet()) {
+                    Map<String, Integer> map = clan.getQuestsProgress().get(uuid);
                     if (map != null) {
                         for (String key : map.keySet()) {
                             configuration.set(clanId + ".quests-progress." + key + "." + uuid.toString(), map.get(key));
@@ -209,28 +209,28 @@ public class YAML implements Storage {
                     }
                 }
 
-                for (Map.Entry<UUID, List<String>> entry : clanImpl.getCompletedQuest().entrySet()) {
+                for (Map.Entry<UUID, List<String>> entry : clan.getCompletedQuest().entrySet()) {
                     configuration.set(clanId + ".quests-completed." + entry.getKey().toString(), entry.getValue());
                 }
 
 
-                var leader = clanImpl.getLeader();
-                configuration.set(clanImpl.getId() + ".leader.uuid", leader.getUuid().toString());
-                setMember(leader, clanImpl, "leader");
+                var leader = clan.getLeader();
+                configuration.set(clan.getId() + ".leader.uuid", leader.getUuid().toString());
+                setMember(leader, clan, "leader");
 
-                for (var memberImpl : clanImpl.getMembers()) {
-                    setMember(memberImpl, clanImpl, "members." + memberImpl.getUuid());
+                for (var memberImpl : clan.getMembers()) {
+                    setMember(memberImpl, clan, "members." + memberImpl.getUuid());
                 }
 
                 configuration.set(clanId + ".chest",
-                        clanImpl.getChest().stream()
+                        clan.getChest().stream()
                                 .map(ItemSerializer::itemToBase64)
                                 .toList());
 
 
-                Location location = clanImpl.getBase();
+                Location location = clan.getBase();
                 if (location != null) {
-                    configuration.set(clanId + ".base-location", LocationHandler.serialize(clanImpl.getBase()));
+                    configuration.set(clanId + ".base-location", LocationHandler.serialize(clan.getBase()));
                 } else {
                     configuration.set(clanId + ".base-location", null);
                 }
@@ -268,23 +268,14 @@ public class YAML implements Storage {
         );
     }
 
-    private void setMember(Member memberImpl, Clan clanImpl, String path) {
-        configuration.set(clanImpl.getId() + "." + path + ".rank", memberImpl.getRank().id());
-        configuration.set(clanImpl.getId() + "." + path + ".joined-at", memberImpl.getJoinedAt());
-        configuration.set(clanImpl.getId() + "." + path + ".last-online", memberImpl.getLastOnline());
-        configuration.set(clanImpl.getId() + "." + path + ".clan-glow", memberImpl.isClanGlow());
+    private void setMember(Member member, Clan clanImpl, String path) {
+        configuration.set(clanImpl.getId() + "." + path + ".rank", member.getRank().id());
+        configuration.set(clanImpl.getId() + "." + path + ".joined-at", member.getJoinedAt());
+        configuration.set(clanImpl.getId() + "." + path + ".last-online", member.getLastOnline());
 
-        configuration.set(clanImpl.getId() + "." + path + ".coin", memberImpl.getCoin());
-        configuration.set(clanImpl.getId() + "." + path + ".exp", memberImpl.getExp());
-        configuration.set(clanImpl.getId() + "." + path + ".kills", memberImpl.getKills());
-        configuration.set(clanImpl.getId() + "." + path + ".deaths", memberImpl.getDeaths());
-        List<String> colors = new ArrayList<>();
-        for (Map.Entry<UUID, Color> entry : memberImpl.getGlowColors().entrySet()) {
-            UUID id = entry.getKey();
-            Color color = entry.getValue();
-            colors.add(id + ";" + color.getRed() + ";" + color.getGreen() + ";" + color.getBlue());
-        }
-
-        configuration.set(clanImpl.getId() + "." + path + ".glow-colors", colors);
+        configuration.set(clanImpl.getId() + "." + path + ".coin", member.getCoin());
+        configuration.set(clanImpl.getId() + "." + path + ".exp", member.getExp());
+        configuration.set(clanImpl.getId() + "." + path + ".kills", member.getKills());
+        configuration.set(clanImpl.getId() + "." + path + ".deaths", member.getDeaths());
     }
 }

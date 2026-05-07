@@ -30,11 +30,9 @@ public class ReloadSubcommand implements Subcommand {
             long start = System.currentTimeMillis();
 
             plugin.getStorage().save();
-            Map<String, Clan> clans = plugin.getCfg().getClans();
 
             Config cfg = new Config();
             cfg.load();
-            cfg.setClans(clans);
             plugin.setCfg(cfg);
 
             GuiLoader guiLoader = new GuiLoader(plugin);

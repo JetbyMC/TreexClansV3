@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ import java.util.UUID;
  */
 public interface ClanManager {
 
+    @NotNull Map<String, Clan> getClanList();
     /**
      * Provides access to the clan creation and deletion lifecycle.
      *
@@ -52,12 +54,6 @@ public interface ClanManager {
      */
     @NotNull Economy economy();
 
-    /**
-     * Provides access to clan glow color customization utilities.
-     *
-     * @return the color management API.
-     */
-    @NotNull Colors colors();
 
     /**
      * Provides access to clan and member lookup utilities.
@@ -219,43 +215,6 @@ public interface ClanManager {
          * @return the clan’s current balance.
          */
         double getBalance(@NotNull Clan clan);
-    }
-
-    /**
-     * Handles glow color customization between clan members.
-     * <p>
-     * This feature allows visual identification of teammates
-     * or allies through colored glows in supported versions.
-     * </p>
-     */
-    interface Colors {
-
-        /**
-         * Sets the glow color for a specific clan member.
-         *
-         * @param clan   the clan.
-         * @param member the member to apply the color to.
-         * @param color  the desired color.
-         */
-        void setColor(@NotNull Clan clan, @NotNull Member member, @NotNull Color color);
-
-        /**
-         * Sets a glow color for a member visible to multiple others.
-         *
-         * @param member  the target member.
-         * @param members the members who will see the glow.
-         * @param color   the color to apply.
-         */
-        void setColor(@NotNull Member member, @NotNull Set<Member> members, @NotNull Color color);
-
-        /**
-         * Sets a glow color between two individual members.
-         *
-         * @param member the source member.
-         * @param target the target member.
-         * @param color  the glow color.
-         */
-        void setColor(@NotNull Member member, @NotNull Member target, @NotNull Color color);
     }
 
     /**

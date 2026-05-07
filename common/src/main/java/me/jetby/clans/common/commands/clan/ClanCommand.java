@@ -6,10 +6,7 @@ import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.Config;
-import me.jetby.clans.common.gui.GuiFactory;
-import me.jetby.clans.common.gui.GuiFactoryRequest;
-import me.jetby.clans.common.gui.GuiLoader;
-import me.jetby.clans.common.gui.GuiType;
+import me.jetby.clans.common.gui.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,11 +30,12 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
     public ClanCommand(TreexClans plugin) {
         this.plugin = plugin;
         this.commandService = plugin.getCommandService();
-        GuiLoader.CUSTOM_GUIS.forEach((key, configuration) -> {
-            menuArgs.put(key, configuration.getStringList("open_args"));
+
+        GuiLoader.CUSTOM_GUIS.forEach((key, gui) -> {
+            menuArgs.put(key, gui.getArgs());
         });
-        GuiLoader.REQUIRED_GUIS.forEach((key, configuration) -> {
-            menuArgs.put(key.name(), configuration.getStringList("open_args"));
+        GuiLoader.REQUIRED_GUIS.forEach((key, gui) -> {
+            menuArgs.put(key.name(), gui.getArgs());
         });
 
     }
@@ -68,12 +66,10 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
 
             for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
                 if (entry.getValue().contains(args[0])) {
-                    FileConfiguration configuration = GuiLoader.getGuiConfiguration(entry.getKey());
-                    String listen = configuration.getString("listen", "default");
-                    GuiType type = isBuiltInGuiType(listen);
+                    ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
 
                     if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                        if (type != GuiType.DEFAULT && type != GuiType.TOP_CLANS) {
+                        if (gui.getListenType() != ListenType.DEFAULT && gui.getListenType() != ListenType.TOP_CLANS) {
                             return true;
                         }
                     }
@@ -81,7 +77,7 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                     GuiFactory.create(GuiFactoryRequest.builder()
                                     .player(player)
                                     .plugin(plugin)
-                                    .configuration(configuration)
+                                    .guiData(gui)
                                     .clan(clan)
                                     .build())
                             .open(player);
@@ -156,11 +152,9 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                         .collect(Collectors.toList());
 
                 for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
-                    FileConfiguration configuration = GuiLoader.getGuiConfiguration(entry.getKey());
-                    String listen = configuration.getString("listen");
-                    GuiType type = isBuiltInGuiType(listen);
+                    ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
 
-                    if ((type == GuiType.DEFAULT || type == GuiType.TOP_CLANS)
+                    if ((gui.getListenType() == ListenType.DEFAULT || gui.getListenType() == ListenType.TOP_CLANS)
                         // todo OpenRequirements perm
 //                                && player.hasPermission(menu.permission())
                     ) {
@@ -199,7 +193,7 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
 
             // todo sex
             for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
-                FileConfiguration configuration = GuiLoader.getGuiConfiguration(entry.getKey());
+                ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
                 // todo OpenRequirements perm
 //                if (player.hasPermission(menu.permission())) {
                 completions.addAll(entry.getValue().stream()
@@ -221,9 +215,9 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    private GuiType isBuiltInGuiType(String type) {
+    private ListenType isBuiltInGuiType(String type) {
         try {
-            return GuiType.valueOf(type.toUpperCase());
+            return ListenType.valueOf(type.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }

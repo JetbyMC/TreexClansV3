@@ -1,13 +1,13 @@
 package me.jetby.clans.common.gui;
 
-public enum GuiType {
+public enum ListenType {
     DEFAULT,
     MENU,
     QUESTS,
     RANKS,
     RANK_PERMISSIONS,
     CHEST,
-    CHOOSE_COLOR,
+    GLOW_COLOR,
     CHOOSE_PLAYER_COLOR,
     MEMBERS,
     TOP_CLANS

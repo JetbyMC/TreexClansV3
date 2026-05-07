@@ -3,10 +3,7 @@ package me.jetby.clans.common.tools.customactions;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
-import me.jetby.clans.common.gui.GuiFactory;
-import me.jetby.clans.common.gui.GuiFactoryRequest;
-import me.jetby.clans.common.gui.GuiLoader;
-import me.jetby.clans.common.gui.GuiType;
+import me.jetby.clans.common.gui.*;
 import me.jetby.libb.action.Action;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionInput;
@@ -21,17 +18,17 @@ public class OpenRequiredMenuAction implements Action {
         Player player = ctx.getPlayer();
         Clan clan = ctx.get(ClanImpl.class);
 
-        GuiType type;
+        ListenType type;
         try {
-            type = GuiType.valueOf(input.rawText().toUpperCase());
+            type = ListenType.valueOf(input.rawText().toUpperCase());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
 
-        FileConfiguration config = GuiLoader.getGuiConfiguration(type);
-        if (config != null && player != null && clan != null) {
+        ExtendedGui gui = GuiLoader.getGuiConfiguration(type);
+        if (gui != null && player != null && clan != null) {
             GuiFactory.create(GuiFactoryRequest.builder()
-                            .configuration(config)
+                            .guiData(gui)
                             .plugin(TreexClans.getInstance())
                             .player(player)
                             .clan(clan)

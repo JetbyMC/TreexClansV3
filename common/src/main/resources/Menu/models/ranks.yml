@@ -83,5 +83,6 @@ Items:
     slot: 31
     material: DARK_OAK_DOOR
     display_name: "&6Вернуться в меню"
-    click_commands:
-      - '[open] main'
+    on_click:
+      any:
+        - "[open] main"

@@ -10,6 +10,8 @@ import me.jetby.clans.api.addons.AddonManager;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.addons.listener.EventRegistrar;
 import me.jetby.clans.api.service.ClanManager;
+import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import me.jetby.clans.common.addon.AddonManagerImpl;
 import me.jetby.clans.common.clan.service.ClanManagerImpl;
@@ -21,7 +23,6 @@ import me.jetby.clans.common.configurations.Messages;
 import me.jetby.clans.common.configurations.Modules;
 import me.jetby.clans.common.configurations.QuestsLoader;
 import me.jetby.clans.common.configurations.configupdater.UpdateConfig;
-import me.jetby.clans.common.functions.glow.Glow;
 import me.jetby.clans.common.functions.quests.QuestManager;
 import me.jetby.clans.common.functions.tops.LeaderboardServiceImpl;
 import me.jetby.clans.common.gui.GuiLoader;
@@ -66,8 +67,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     @Setter
     private Config cfg;
     private FormatTime formatTime;
-    @Setter
-    private Glow glow;
     private ClanManager clanManager;
     private LeaderboardService leaderboardService;
     private Storage storage;
@@ -88,12 +87,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     private AddonManager addonManager;
     @Getter
     private Messages messages;
-
-    @Override
-    public void onLoad() {
-        PacketEvents.getAPI().getEventManager().registerListener(
-                glow = new Glow(this), PacketListenerPriority.NORMAL);
-    }
 
     @Override
     public void onEnable() {
@@ -184,7 +177,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         clanManager = new ClanManagerImpl(this);
 
         questManager = new QuestManager(this);
-        leaderboardService = new LeaderboardServiceImpl(this);
+        leaderboardService = new LeaderboardServiceImpl();
 
         eventRegistrar = new EventRegistryImpl();
         addonManager = new AddonManagerImpl(this, true);
@@ -216,7 +209,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         }
         getServer().getServicesManager().unregister(TreexClansAPI.class);
         if (storage != null) storage.save();
-        disableGlowForAll();
         if (clanPlaceholder != null) {
             if (clanPlaceholder.isPapi()) {
                 clanPlaceholder.unregister();
@@ -224,21 +216,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.getOpenInventory().close();
-        }
-    }
-
-    private void disableGlowForAll() {
-        for (var clan : cfg.getClans().values()) {
-            var memberImpls = new HashSet<>(clan.getMembers());
-            memberImpls.add(clan.getLeader());
-            for (var memberImpl : memberImpls) {
-                Player player = Bukkit.getPlayer(memberImpl.getUuid());
-                if (player != null) {
-                    if (glow.hasObserver(player)) {
-                        glow.removeObserver(player);
-                    }
-                }
-            }
         }
     }
 }

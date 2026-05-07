@@ -1,5 +1,6 @@
 package me.jetby.clans.common.gui.impl;
 
+import me.jetby.clans.common.gui.ExtendedGui;
 import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.Member;
@@ -27,9 +28,9 @@ public class QuestsGui extends Gui {
 
     private final Clan clan;
 
-    public QuestsGui(@NotNull Player viewer, @NotNull FileConfiguration config,
+    public QuestsGui(@NotNull Player viewer, @NotNull ExtendedGui guiData,
                      @NotNull JavaPlugin plugin, Clan clan) {
-        super(viewer, config, plugin, clan);
+        super(viewer, guiData, plugin, clan);
         this.clan = clan;
 
         setupQuestsPagination();

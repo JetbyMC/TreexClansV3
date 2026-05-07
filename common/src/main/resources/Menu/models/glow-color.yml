@@ -3,7 +3,7 @@ title: "&0&lВыбор цвета"
 size: 36
 open_args: { }
 
-listen: choose_color
+listen: glow_color
 Items:
 
   white:

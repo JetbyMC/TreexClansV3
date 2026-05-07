@@ -1,6 +1,7 @@
 package me.jetby.clans.common.gui.impl;
 
 
+import me.jetby.clans.common.gui.ExtendedGui;
 import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
@@ -30,8 +31,8 @@ public class TopClansGui extends Gui {
     private final LeaderboardService.TopType currentSort;
     private int s;
 
-    public TopClansGui(@NotNull Player viewer, @NotNull FileConfiguration config, @NotNull TreexClans plugin, Clan clan, LeaderboardService.TopType topType) {
-        super(viewer, config, plugin, clan);
+    public TopClansGui(@NotNull Player viewer, @NotNull ExtendedGui guiData, @NotNull TreexClans plugin, Clan clan, LeaderboardService.TopType topType) {
+        super(viewer, guiData, plugin, clan);
         this.plugin = plugin;
         this.s = s;
         this.currentSort = Objects.requireNonNullElse(topType, LeaderboardService.TopType.KILLS);

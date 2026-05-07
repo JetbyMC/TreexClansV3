@@ -1,6 +1,7 @@
 package me.jetby.clans.common.gui.impl;
 
 
+import me.jetby.clans.common.gui.ExtendedGui;
 import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
@@ -20,9 +21,9 @@ public class RankPermissionsGui extends Gui {
     private final TreexClans plugin;
     private final Clan clan;
 
-    public RankPermissionsGui(@NotNull Player viewer, @NotNull FileConfiguration config,
+    public RankPermissionsGui(@NotNull Player viewer, @NotNull ExtendedGui guiData,
                               @NotNull TreexClans plugin, Clan clan, Rank rank) {
-        super(viewer, config, plugin, clan);
+        super(viewer, guiData, plugin, clan);
         this.clan = clan;
         this.rank = rank;
         this.plugin = plugin;

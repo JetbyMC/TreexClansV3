@@ -1,7 +1,13 @@
 package me.jetby.clans.common.storage;
 
-public interface Storage {
-    void load();
+import me.jetby.clans.api.service.clan.Clan;
 
+import java.util.HashMap;
+import java.util.Map;
+
+public interface Storage {
+    Map<String, Clan> CLANS = new HashMap<>();
+
+    void load();
     void save();
 }

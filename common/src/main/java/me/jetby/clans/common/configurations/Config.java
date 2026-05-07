@@ -29,8 +29,6 @@ public class Config {
     private final FileConfiguration level;
 
     private final Map<Integer, Level> levels = new LinkedHashMap<>();
-    @Setter
-    private Map<String, Clan> clans = new HashMap<>();
 
     private final Map<String, Rank> defaultRanks = new HashMap<>();
     private Rank defaultRank;

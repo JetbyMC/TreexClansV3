@@ -1,5 +1,6 @@
 package me.jetby.clans.common.gui.impl;
 
+import me.jetby.clans.common.gui.ExtendedGui;
 import me.jetby.clans.common.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
@@ -35,8 +36,8 @@ public class ChestGui extends Gui {
     private List<Integer> configSlots = new ArrayList<>();
     private ItemStack blockedSlotItem = null;
 
-    public ChestGui(Player player, FileConfiguration config, JavaPlugin plugin, Clan clan) {
-        super(player, config, plugin, clan);
+    public ChestGui(Player player, @NotNull ExtendedGui guiData, JavaPlugin plugin, Clan clan) {
+        super(player, guiData, plugin, clan);
         this.clan = clan;
         lockEmptySlots(false);
 

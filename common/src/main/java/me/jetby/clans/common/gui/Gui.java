@@ -6,7 +6,6 @@ import me.jetby.libb.color.Serializer;
 import me.jetby.libb.gui.parser.Item;
 import me.jetby.libb.gui.parser.ParsedGui;
 import me.jetby.libb.gui.parser.ParserContext;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -16,24 +15,17 @@ import java.util.List;
 @Getter
 public class Gui extends ParsedGui {
 
-    private final String listen;
-    private final GuiType type;
-    private final List<String> args;
-
-    private final FileConfiguration config;
+    private final ExtendedGui guiData;
     private final Clan clan;
     private final JavaPlugin plugin;
 
-    public Gui(@NotNull Player viewer, @NotNull FileConfiguration config, @NotNull JavaPlugin plugin, Clan clan) {
+    public Gui(@NotNull Player viewer, @NotNull ExtendedGui guiData, @NotNull JavaPlugin plugin, Clan clan) {
         // todo get serializer from config
-        super(viewer, config, plugin, ParserContext.of(Serializer.UNIFIED, clan));
+        super(viewer, guiData, plugin, ParserContext.of(Serializer.UNIFIED, clan));
+        this.guiData = guiData;
 
         this.plugin = plugin;
-        this.config = config;
         this.clan = clan;
-        this.type = GuiType.valueOf(config.getString("type", "default").toUpperCase());
-        this.listen = config.getString("listen");
-        this.args = config.getStringList("open_args");
     }
 
     public boolean cancelRegistration(@NotNull Item item) {
