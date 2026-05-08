@@ -15,10 +15,7 @@ import me.jetby.clans.common.clan.service.ClanManagerImpl;
 import me.jetby.clans.common.commands.CommandServiceImpl;
 import me.jetby.clans.common.commands.admin.AdminCommand;
 import me.jetby.clans.common.commands.clan.ClanCommand;
-import me.jetby.clans.common.configurations.Config;
-import me.jetby.clans.common.configurations.MessagesConfiguration;
-import me.jetby.clans.common.configurations.ModulesConfiguration;
-import me.jetby.clans.common.configurations.QuestsConfiguration;
+import me.jetby.clans.common.configurations.*;
 import me.jetby.clans.common.configurations.configupdater.UpdateConfig;
 import me.jetby.clans.common.functions.quests.QuestManager;
 import me.jetby.clans.common.functions.tops.LeaderboardServiceImpl;
@@ -149,23 +146,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         LOGGER.success(" └  ✔  Storage");
         LOGGER.success("Configuration loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        LOGGER.info("&6┏ Loading commands:");
-        Speedometer.start();
-        this.commandService = new CommandServiceImpl();
-        PluginCommand xClanCommand = this.getCommand("xclan");
-        if (xClanCommand != null) {
-            AdminCommand cmd = new AdminCommand(commandService);
-            xClanCommand.setExecutor(cmd);
-            xClanCommand.setTabCompleter(cmd);
-        }
-        PluginCommand clanCommand = this.getCommand("clan");
-        if (clanCommand != null) {
-            ClanCommand cmd = new ClanCommand(this);
-            clanCommand.setExecutor(cmd);
-            clanCommand.setTabCompleter(cmd);
-        }
-        LOGGER.success("┗ Commands created (" + Speedometer.result() + "ms)");
-        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading API:");
         Speedometer.start();
 
@@ -190,6 +170,24 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         ((AddonManagerImpl) addonManager).loadAddons();
         LOGGER.success("┗ API loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        LOGGER.info("&6┏ Loading commands:");
+        Speedometer.start();
+        this.commandService = new CommandServiceImpl();
+        PluginCommand xClanCommand = this.getCommand("xclan");
+        if (xClanCommand != null) {
+            AdminCommand cmd = new AdminCommand(commandService);
+            xClanCommand.setExecutor(cmd);
+            xClanCommand.setTabCompleter(cmd);
+        }
+        PluginCommand clanCommand = this.getCommand("clan");
+        if (clanCommand != null) {
+            CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
+            commandsConfiguration.load();
+            new ClanCommand(commandsConfiguration,this).register();
+        }
+        LOGGER.success("┗ Commands created (" + Speedometer.result() + "ms)");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
         LOGGER.info("&6Last details");
         getServer().getPluginManager().registerEvents(new ClanListeners(this), this);
         getServer().getPluginManager().registerEvents(new QuestsListeners(this), this);

@@ -4,7 +4,7 @@ import lombok.Getter;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.common.commands.clan.subcommands.*;
 
-public enum ClanCommandArgs {
+public enum ClanSubcommand {
     CREATE(new CreateSubcommand()),
     INVITE(new InviteSubcommand()),
     ACCEPT(new AcceptSubcommand()),
@@ -27,7 +27,7 @@ public enum ClanCommandArgs {
     @Getter
     private final Subcommand subcommand;
 
-    ClanCommandArgs(Subcommand subcommand) {
+    ClanSubcommand(Subcommand subcommand) {
         this.subcommand = subcommand;
     }
 }

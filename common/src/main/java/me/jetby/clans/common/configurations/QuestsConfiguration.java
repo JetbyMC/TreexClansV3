@@ -18,9 +18,9 @@ public class QuestsConfiguration {
     private final FileConfiguration configuration = FileLoader.getFileConfiguration("quests.yml");
 
     @Getter
-    private final Map<String, Set<Quest>> categories = new LinkedHashMap<>();
+    private final LinkedHashMap<String, Set<Quest>> categories = new LinkedHashMap<>();
     @Getter
-    private final Map<String, Quest> quests = new HashMap<>();
+    private final LinkedHashMap<String, Quest> quests = new LinkedHashMap<>();
 
     public void load() {
         quests.clear();

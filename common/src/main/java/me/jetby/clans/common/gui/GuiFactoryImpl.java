@@ -5,6 +5,7 @@ import me.jetby.clans.api.gui.Gui;
 import me.jetby.clans.api.gui.GuiFactory;
 import me.jetby.clans.api.gui.GuiContext;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
+import me.jetby.clans.common.gui.core.QuestsGui;
 import me.jetby.clans.common.gui.impl.*;
 
 @Getter
