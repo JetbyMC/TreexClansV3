@@ -2,8 +2,6 @@ package me.jetby.clans.common.clan.service;
 
 import me.jetby.clans.api.events.ClanCreateEvent;
 import me.jetby.clans.api.events.ClanDeleteEvent;
-import me.jetby.clans.api.requirements.Requirements;
-import me.jetby.clans.api.requirements.SimpleRequirement;
 import me.jetby.clans.api.service.ClanManager;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.level.Level;
@@ -12,13 +10,13 @@ import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
 import me.jetby.clans.common.clan.model.MemberImpl;
 import me.jetby.clans.common.configurations.Config;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import me.jetby.clans.common.storage.Storage;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionExecute;
+import me.jetby.libb.action.ActionUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -225,13 +223,13 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
             if (clanName.length() < min) {
                 plugin.getMessages().sendActions(player, null, "clan-tag-too-short",
-                        new Messages.ReplaceString("{min_length}", String.valueOf(min)));
+                        new MessagesConfiguration.ReplaceString("{min_length}", String.valueOf(min)));
                 return false;
             }
 
             if (clanName.length() > max) {
                 plugin.getMessages().sendActions(player, null, "clan-tag-too-long",
-                        new Messages.ReplaceString("{max_length}", String.valueOf(max)));
+                        new MessagesConfiguration.ReplaceString("{max_length}", String.valueOf(max)));
                 return false;
             }
 
@@ -246,18 +244,10 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             }
 
             // Requirements (money, perms, etc.)
-            for (SimpleRequirement requirement : plugin.getCfg().getRequirements()) {
-                if (!Requirements.check(player, requirement)) {
+            return ActionExecute.run(
+                    ActionContext.of(player, plugin)
+                            .replace("{name}", clanName), plugin.getCfg().getRequirements(), ActionUtil.EvaluateMode.ALL);
 
-                    ActionExecute.run(ActionContext.of(player, plugin)
-                            .replace("{name}", clanName), requirement.denyActions());
-                    return false;
-                } else {
-                    ActionExecute.run(ActionContext.of(player, plugin).replace("{name}", clanName), requirement.actions());
-                }
-            }
-
-            return true;
         }
 
         @Override
@@ -268,13 +258,13 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
             if (cleaned.length() < min) {
                 plugin.getMessages().sendActions(player, null, "clan-prefix-too-short",
-                        new Messages.ReplaceString("{min_length}", String.valueOf(min)));
+                        new MessagesConfiguration.ReplaceString("{min_length}", String.valueOf(min)));
                 return false;
             }
 
             if (cleaned.length() > max) {
                 plugin.getMessages().sendActions(player, null, "clan-prefix-too-long",
-                        new Messages.ReplaceString("{max_length}", String.valueOf(max)));
+                        new MessagesConfiguration.ReplaceString("{max_length}", String.valueOf(max)));
                 return false;
             }
 
@@ -375,7 +365,8 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                     );
         }
 
-        @Override @Deprecated(since = "Это так не работает если не ошибаюсь")
+        @Override
+        @Deprecated(since = "Это так не работает если не ошибаюсь")
         public boolean isInClan(@NotNull String uuidString) {
             try {
                 return isInClan(UUID.fromString(uuidString));

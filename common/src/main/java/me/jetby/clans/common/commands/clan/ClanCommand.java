@@ -2,24 +2,25 @@ package me.jetby.clans.common.commands.clan;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.gui.ExtendedGui;
+import me.jetby.clans.api.gui.GuiContext;
+import me.jetby.clans.api.gui.ListenType;
 import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.Config;
-import me.jetby.clans.common.gui.*;
+import me.jetby.clans.common.gui.GuiLoader;
+import me.jetby.libb.action.ActionUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClanCommand implements CommandExecutor, TabCompleter {
@@ -74,12 +75,11 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                         }
                     }
 
-                    GuiFactory.create(GuiFactoryRequest.builder()
-                                    .player(player)
-                                    .plugin(plugin)
-                                    .guiData(gui)
-                                    .clan(clan)
-                                    .build())
+                    plugin.getGuiFactory().create(GuiContext.of(
+                                    plugin,
+                                    gui,
+                                    player,
+                                    clan))
                             .open(player);
 
                     return true;
@@ -88,11 +88,6 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
             }
         }
 
-        if (args[0].equalsIgnoreCase("glow")) {
-            if (!plugin.getModules().isGlow()) {
-                return true;
-            }
-        }
         if (args[0].equalsIgnoreCase("setslogan")) {
             if (!plugin.getModules().isSlogan()) {
                 return true;
@@ -124,27 +119,20 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
 
             completions.removeIf(cmd ->
                     switch (cmd) {
-                        case "glow" -> !plugin.getModules().isGlow();
                         case "setslogan" -> !plugin.getModules().isSlogan();
                         default -> false;
                     });
 
-            // todo sex
-//            for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
-//                Menu menu = plugin.getGuiLoader().getGuis().get(entry.getKey());
-//
-//                if (isBuiltInGuiType(menu.type())) {
-//                    if (GuiType.valueOf(menu.type()) == GuiType.DEFAULT) {
-//                        if (player.hasPermission(menu.permission())) {
-//                            completions.addAll(entry.getValue());
-//                        }
-//                    }
-//                } else {
-//                    if (player.hasPermission(menu.permission())) {
-//                        completions.addAll(entry.getValue());
-//                    }
-//                }
-//            }
+            for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
+                ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
+
+                if (gui == null) continue;
+
+                if (ActionUtil.evaluate(player, gui.getPreOpenExpressions(), ActionUtil.EvaluateMode.ALL)) {
+                    completions.addAll(entry.getValue());
+                }
+
+            }
 
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
                 List<String> extra = completions.stream()
@@ -154,9 +142,10 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                 for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
                     ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
 
+                    if (gui == null) continue;
+
                     if ((gui.getListenType() == ListenType.DEFAULT || gui.getListenType() == ListenType.TOP_CLANS)
-                        // todo OpenRequirements perm
-//                                && player.hasPermission(menu.permission())
+                    && ActionUtil.evaluate(player, gui.getPreOpenExpressions(), ActionUtil.EvaluateMode.ALL)
                     ) {
                         extra.addAll(entry.getValue());
                     }
@@ -168,13 +157,13 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
                         .toList();
             }
 
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            var memberImpl = clanImpl.getMember(player.getUniqueId());
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            Member member = clan.getMember(player.getUniqueId());
 
-            if (memberImpl == null || memberImpl.getRank() == null)
+            if (member == null)
                 return List.of();
 
-            var perms = memberImpl.getRank().perms();
+            Set<RankPerm> perms = member.getRank().perms();
 
             completions.removeIf(cmd -> switch (cmd) {
                 case "setbase" -> !perms.contains(RankPerm.SETBASE);
@@ -191,15 +180,14 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
             completions.remove("create");
             completions.remove("accept");
 
-            // todo sex
             for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
                 ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
-                // todo OpenRequirements perm
-//                if (player.hasPermission(menu.permission())) {
-                completions.addAll(entry.getValue().stream()
-                        .filter(str -> str.toLowerCase().startsWith(args[0].toLowerCase()))
-                        .toList());
-//                }
+                if (gui==null) continue;
+                if (ActionUtil.evaluate(player, gui.getPreOpenExpressions(), ActionUtil.EvaluateMode.ALL)) {
+                    completions.addAll(entry.getValue().stream()
+                            .filter(str -> str.toLowerCase().startsWith(args[0].toLowerCase()))
+                            .toList());
+                }
             }
 
             return completions.stream()
@@ -208,18 +196,10 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
         }
 
         try {
-            var arg = ClanCommandArgs.valueOf(args[0].toUpperCase());
+            ClanCommandArgs arg = ClanCommandArgs.valueOf(args[0].toUpperCase());
             return arg.getSubcommand().onTabCompleter(sender, command, s, args);
         } catch (IllegalArgumentException e) {
             return List.of();
-        }
-    }
-
-    private ListenType isBuiltInGuiType(String type) {
-        try {
-            return ListenType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
         }
     }
 }

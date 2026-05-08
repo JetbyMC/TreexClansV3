@@ -13,14 +13,14 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 
-public class Messages {
+public class MessagesConfiguration {
 
     @Getter
     private final FileConfiguration config = FileLoader.getFileConfiguration("messages.yml");
 
     private final TreexClans plugin;
 
-    public Messages(TreexClans plugin) {
+    public MessagesConfiguration(TreexClans plugin) {
         this.plugin = plugin;
     }
 
@@ -28,10 +28,16 @@ public class Messages {
 
         String prefix = config.getString("prefix", "");
 
-        ActionExecute.run(ActionContext.of(player, plugin)
-                        .replace("{prefix}", prefix)
-                        .with(clan),
-                getMessageList(path));
+        if (clan==null) {
+            ActionExecute.run(ActionContext.of(player, plugin)
+                            .replace("{prefix}", prefix),
+                    getMessageList(path));
+        } else {
+            ActionExecute.run(ActionContext.of(player, plugin)
+                            .replace("{prefix}", prefix)
+                            .with(clan),
+                    getMessageList(path));
+        }
     }
 
     public void sendActions(Player player, Clan clan, String path, ReplaceString... replaceStrings) {

@@ -1,5 +1,8 @@
 package me.jetby.clans.common.tools.customactions;
 
+import me.jetby.clans.api.gui.ExtendedGui;
+import me.jetby.clans.api.gui.GuiContext;
+import me.jetby.clans.api.gui.ListenType;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
@@ -7,7 +10,6 @@ import me.jetby.clans.common.gui.*;
 import me.jetby.libb.action.Action;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionInput;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,12 +35,11 @@ public class OpenMenuAction implements Action {
         }
 
         if (gui != null && player != null && clan != null) {
-            GuiFactory.create(GuiFactoryRequest.builder()
-                            .guiData(gui)
-                            .plugin(TreexClans.getInstance())
-                            .player(player)
-                            .clan(clan)
-                            .build())
+            TreexClans.getInstance().getGuiFactory().create(GuiContext.of(
+                            TreexClans.getInstance(),
+                            gui,
+                            player,
+                            clan))
                     .open(player);
         }
     }

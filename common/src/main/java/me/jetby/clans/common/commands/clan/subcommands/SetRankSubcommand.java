@@ -5,7 +5,7 @@ import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -71,9 +71,9 @@ public class SetRankSubcommand implements Subcommand {
                 }
 
                 plugin.getMessages().sendActions(player, clanImpl, "clan-setrank",
-                        new Messages.ReplaceString("{target}", targetName),
-                        new Messages.ReplaceString("{player}", player.getName()),
-                        new Messages.ReplaceString("{rank_prefix}", rank.name())
+                        new MessagesConfiguration.ReplaceString("{target}", targetName),
+                        new MessagesConfiguration.ReplaceString("{player}", player.getName()),
+                        new MessagesConfiguration.ReplaceString("{rank_prefix}", rank.name())
                 );
                 targetMemberImpl.setRank(rank);
             }

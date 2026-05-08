@@ -13,7 +13,7 @@ import java.util.*;
 import static me.jetby.clans.common.TreexClans.LOGGER;
 
 
-public class QuestsLoader {
+public class QuestsConfiguration {
 
     private final FileConfiguration configuration = FileLoader.getFileConfiguration("quests.yml");
 

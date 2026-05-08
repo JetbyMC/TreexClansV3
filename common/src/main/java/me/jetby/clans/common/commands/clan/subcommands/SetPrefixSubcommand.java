@@ -4,7 +4,7 @@ import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ public class SetPrefixSubcommand implements Subcommand {
 
             if (plugin.getClanManager().validation().isAllowedPrefix(player, message)) {
                 clanImpl.setPrefix(message);
-                plugin.getMessages().sendActions(player, clanImpl, "clan-setprefix", new Messages.ReplaceString("{clan_prefix}", message.toString()));
+                plugin.getMessages().sendActions(player, clanImpl, "clan-setprefix", new MessagesConfiguration.ReplaceString("{clan_prefix}", message.toString()));
             }
         }
 

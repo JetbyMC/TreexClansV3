@@ -4,7 +4,7 @@ import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class WithdrawSubcommand implements Subcommand {
             if (plugin.getClanManager().economy().getBalance(clanImpl) >= balance) {
                 plugin.getEconomy().depositPlayer(player, balance);
                 plugin.getClanManager().economy().takeBalance(balance, clanImpl);
-                plugin.getMessages().sendActions(player, clanImpl, "clan-balance-withdraw", new Messages.ReplaceString("{sum}", String.valueOf(balance)));
+                plugin.getMessages().sendActions(player, clanImpl, "clan-balance-withdraw", new MessagesConfiguration.ReplaceString("{sum}", String.valueOf(balance)));
             } else {
                 player.sendMessage("Your clan balance haven't enough money");
             }

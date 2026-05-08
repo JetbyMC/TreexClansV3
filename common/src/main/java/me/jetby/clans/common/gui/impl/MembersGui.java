@@ -1,19 +1,16 @@
 package me.jetby.clans.common.gui.impl;
 
 
-import me.jetby.clans.common.gui.ExtendedGui;
-import me.jetby.clans.common.gui.Gui;
-import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.gui.Gui;
 import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.common.TreexClans;
+import me.jetby.clans.api.gui.GuiContext;
 import me.jetby.clans.common.tools.NumberUtils;
 import me.jetby.libb.gui.item.ItemWrapper;
 import me.jetby.libb.gui.parser.Item;
 import me.jetby.libb.gui.parser.SkullCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -27,12 +24,10 @@ import static me.jetby.clans.common.TreexClans.NAMESPACED_KEY;
 public class MembersGui extends Gui {
 
     private final TreexClans plugin;
-    private final Clan clan;
 
-    public MembersGui(@NotNull Player viewer, @NotNull ExtendedGui guiData, @NotNull TreexClans plugin, Clan clan) {
-        super(viewer, guiData, plugin, clan);
-        this.plugin = plugin;
-        this.clan = clan;
+    public MembersGui(@NotNull GuiContext ctx) {
+        super(ctx);
+        this.plugin = (TreexClans) ctx.getPlugin();
         setupMembersPagination();
 
         addClickHandler("type", event -> {
@@ -43,7 +38,7 @@ public class MembersGui extends Gui {
                     break;
                 }
                 case "leader": {
-                    Member leader = clan.getLeader();
+                    Member leader = ctx.getClan().getLeader();
                     replaceMemberPlaceholders(leader);
 
                     OfflinePlayer target = Bukkit.getOfflinePlayer(leader.getUuid());
@@ -93,8 +88,8 @@ public class MembersGui extends Gui {
         if (items.isEmpty()) return;
 
 
-        List<Member> members = clan.getMembers().stream()
-                .filter(m -> !m.equals(clan.getLeader()))
+        List<Member> members = getClan().getMembers().stream()
+                .filter(m -> !m.equals(getClan().getLeader()))
                 .toList();
 
         contentSlots(slots.toArray(new Integer[0]));

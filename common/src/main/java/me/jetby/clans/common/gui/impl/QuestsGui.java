@@ -1,20 +1,16 @@
 package me.jetby.clans.common.gui.impl;
 
-import me.jetby.clans.common.gui.ExtendedGui;
-import me.jetby.clans.common.gui.Gui;
-import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.gui.Gui;
 import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.functions.quests.Quest;
 import me.jetby.clans.common.functions.quests.QuestProgressType;
+import me.jetby.clans.api.gui.GuiContext;
 import me.jetby.libb.gui.item.ItemWrapper;
 import me.jetby.libb.gui.parser.Item;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -26,12 +22,9 @@ import static me.jetby.clans.common.TreexClans.NAMESPACED_KEY;
 
 public class QuestsGui extends Gui {
 
-    private final Clan clan;
 
-    public QuestsGui(@NotNull Player viewer, @NotNull ExtendedGui guiData,
-                     @NotNull JavaPlugin plugin, Clan clan) {
-        super(viewer, guiData, plugin, clan);
-        this.clan = clan;
+    public QuestsGui(@NotNull GuiContext ctx) {
+        super(ctx);
 
         setupQuestsPagination();
 
@@ -75,7 +68,7 @@ public class QuestsGui extends Gui {
         List<Quest> questsList = buildQuestList(templateType);
         if (questsList.isEmpty()) return;
 
-        var memberImpl = clan.getMember(getViewer().getUniqueId());
+        var memberImpl = getClan().getMember(getViewer().getUniqueId());
 
         for (Quest quest : questsList) {
             int progress = getPlugin().getQuestManager().getProgress(memberImpl, quest);

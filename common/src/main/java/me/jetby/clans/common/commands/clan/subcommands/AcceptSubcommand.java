@@ -4,7 +4,7 @@ import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.MemberImpl;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import me.jetby.clans.common.tools.Cooldown;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -52,8 +52,8 @@ public class AcceptSubcommand implements Subcommand {
                         0, 0
                 );
                 plugin.getMessages().sendActions(player, clanImpl, "clan-join",
-                        new Messages.ReplaceString("{player}", player.getName()),
-                        new Messages.ReplaceString("{clan}", clanImpl.getId())
+                        new MessagesConfiguration.ReplaceString("{player}", player.getName()),
+                        new MessagesConfiguration.ReplaceString("{clan}", clanImpl.getId())
                 );
                 clanImpl.addMember(memberImpl);
             }

@@ -1,13 +1,13 @@
 package me.jetby.clans.common.gui.core;
 
-import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.gui.Gui;
+import me.jetby.clans.api.gui.GuiContext;
+import me.jetby.clans.api.gui.ListenType;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.gui.*;
+import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.libb.gui.parser.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,12 +18,8 @@ import java.util.Map;
 public class RanksGui extends Gui {
 
 
-    public RanksGui(@NotNull Player viewer,
-                    @NotNull ExtendedGui guiData,
-                    @NotNull JavaPlugin plugin,
-                    @NotNull Clan clan
-    ) {
-        super(viewer, guiData, plugin, clan);
+    public RanksGui(@NotNull GuiContext ctx) {
+        super(ctx);
 
         addClickHandler("type", event -> {
             if (!event.getSection().getString("type").equalsIgnoreCase("all_ranks")) return;
@@ -34,15 +30,15 @@ public class RanksGui extends Gui {
             Rank rank = getClan().getRanks().get(rankName);
             if (rank == null) return;
 
-            GuiFactory.create(GuiFactoryRequest
-                            .builder()
-                            .player(getViewer())
-                            .clan(getClan())
-                            .rank(rank)
-                            .guiData(GuiLoader.getGuiConfiguration(ListenType.RANK_PERMISSIONS))
-                            .plugin((TreexClans) plugin)
-                            .build())
-                    .open(player);
+
+
+            ((TreexClans) getPlugin()).getGuiFactory().create(GuiContext.of(
+                                    getPlugin(),
+                                    GuiLoader.getGuiConfiguration(ListenType.RANK_PERMISSIONS),
+                                    getViewer(),
+                                    getClan())
+                            .with(rank))
+                    .open(getViewer());
         });
     }
 

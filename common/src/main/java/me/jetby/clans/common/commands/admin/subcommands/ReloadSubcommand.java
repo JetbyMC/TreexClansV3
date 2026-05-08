@@ -2,11 +2,10 @@ package me.jetby.clans.common.commands.admin.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
-import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.addon.AddonManagerImpl;
 import me.jetby.clans.common.configurations.Config;
-import me.jetby.clans.common.configurations.QuestsLoader;
+import me.jetby.clans.common.configurations.QuestsConfiguration;
 import me.jetby.clans.common.gui.GuiLoader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -14,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 
 public class ReloadSubcommand implements Subcommand {
     private final TreexClans plugin;
@@ -46,7 +44,7 @@ public class ReloadSubcommand implements Subcommand {
 //                plugin.getClanCommand().setTabCompleter(cmd);
 //            }
 
-            QuestsLoader questsLoader = new QuestsLoader();
+            QuestsConfiguration questsLoader = new QuestsConfiguration();
             questsLoader.load();
             plugin.setQuestsLoader(questsLoader);
             plugin.getAddonManager().disableAddons();

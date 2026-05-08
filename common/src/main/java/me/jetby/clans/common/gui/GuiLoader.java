@@ -1,7 +1,10 @@
 package me.jetby.clans.common.gui;
 
+import me.jetby.clans.api.gui.ExtendedGui;
+import me.jetby.clans.api.gui.ListenType;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.libb.action.record.ActionBlock;
+import me.jetby.libb.action.record.Expression;
 import me.jetby.libb.command.CommandRegistrar;
 import me.jetby.libb.gui.parser.Item;
 import me.jetby.libb.gui.parser.ParseUtil;
@@ -139,14 +142,14 @@ public class GuiLoader {
             String title = config.getString("title");
             int size = config.getInt("size");
             List<String> command = config.getStringList("command");
-            List<String> preOpenExpressions = config.getStringList("pre_open");
+            List<Expression> preOpenExpressions = ParseUtil.getExpressions(config.getStringList("pre_open"));
             ActionBlock onOpen = ParseUtil.getActionBlock(config, "on_open");
             ActionBlock onClose = ParseUtil.getActionBlock(config, "on_close");
 
             String listen = config.getString("listen", "default");
             ListenType listenType;
             try {
-                listenType = ListenType.valueOf(listen);
+                listenType = ListenType.valueOf(listen.toUpperCase());
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -187,14 +190,14 @@ public class GuiLoader {
             String title = config.getString("title");
             int size = config.getInt("size");
             List<String> command = config.getStringList("command");
-            List<String> preOpenExpressions = config.getStringList("pre_open");
+            List<Expression> preOpenExpressions = ParseUtil.getExpressions(config.getStringList("pre_open"));
             ActionBlock onOpen = ParseUtil.getActionBlock(config, "on_open");
             ActionBlock onClose = ParseUtil.getActionBlock(config, "on_close");
 
             String listen = config.getString("listen", "default");
             ListenType listenType;
             try {
-                listenType = ListenType.valueOf(listen);
+                listenType = ListenType.valueOf(listen.toUpperCase());
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

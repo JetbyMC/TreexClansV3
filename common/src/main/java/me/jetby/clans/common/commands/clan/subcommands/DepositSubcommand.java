@@ -5,7 +5,7 @@ import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -42,16 +42,16 @@ public class DepositSubcommand implements Subcommand {
             if (plugin.getEconomy().has(player, balance)) {
                 if (clanImpl.getLevel().maxBalance() < balance || clanImpl.getBalance() > balance) {
                     plugin.getMessages().sendActions(player, clanImpl, "clan-balance-limit",
-                            new Messages.ReplaceString("{sum}", String.valueOf(balance)),
-                            new Messages.ReplaceString("{max-balance}", String.valueOf(clanImpl.getLevel().maxBalance()))
+                            new MessagesConfiguration.ReplaceString("{sum}", String.valueOf(balance)),
+                            new MessagesConfiguration.ReplaceString("{max-balance}", String.valueOf(clanImpl.getLevel().maxBalance()))
                     );
                     return true;
                 }
                 plugin.getEconomy().withdrawPlayer(player, balance);
                 plugin.getClanManager().economy().addBalance(balance, clanImpl);
-                plugin.getMessages().sendActions(player, clanImpl, "clan-balance-deposit", new Messages.ReplaceString("{sum}", String.valueOf(balance)));
+                plugin.getMessages().sendActions(player, clanImpl, "clan-balance-deposit", new MessagesConfiguration.ReplaceString("{sum}", String.valueOf(balance)));
             } else {
-                plugin.getMessages().sendActions(player, clanImpl, "clan-deposit-no-money", new Messages.ReplaceString("{sum}", String.valueOf(balance)));
+                plugin.getMessages().sendActions(player, clanImpl, "clan-deposit-no-money", new MessagesConfiguration.ReplaceString("{sum}", String.valueOf(balance)));
             }
 
         }

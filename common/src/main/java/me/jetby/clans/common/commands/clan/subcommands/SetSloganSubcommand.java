@@ -4,7 +4,7 @@ import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ public class SetSloganSubcommand implements Subcommand {
             for (String str : args) message.append(str).append(" ");
 
             clanImpl.setSlogan(message.toString());
-            plugin.getMessages().sendActions(player, clanImpl, "clan-setslogan", new Messages.ReplaceString("{slogan}", message.toString()));
+            plugin.getMessages().sendActions(player, clanImpl, "clan-setslogan", new MessagesConfiguration.ReplaceString("{slogan}", message.toString()));
         }
 
         return true;

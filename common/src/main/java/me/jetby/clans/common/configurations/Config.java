@@ -3,15 +3,14 @@ package me.jetby.clans.common.configurations;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
-import me.jetby.clans.api.requirements.SimpleRequirement;
-import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.level.Level;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.tools.FileLoader;
+import me.jetby.libb.action.record.Expression;
 import me.jetby.libb.color.HashedSerializer;
 import me.jetby.libb.color.SerializerType;
+import me.jetby.libb.gui.parser.ParseUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,10 +20,13 @@ import java.util.*;
 
 @Getter
 public class Config {
+
     @Getter(AccessLevel.NONE)
     private final FileConfiguration configuration;
+
     @Getter(AccessLevel.NONE)
     private final File file;
+
     @Getter(AccessLevel.NONE)
     private final FileConfiguration level;
 
@@ -55,7 +57,7 @@ public class Config {
     private int maxTagLength;
     private String regex;
     private List<String> blockedTags;
-    private final List<SimpleRequirement> requirements = new ArrayList<>();
+    private List<Expression> requirements = new ArrayList<>();
     private boolean gradualQuest;
 
     public static HashedSerializer CONFIG_COLORIZER;
@@ -181,20 +183,8 @@ public class Config {
 
         ConfigurationSection clanCreate = configuration.getConfigurationSection("clan-create");
         if (clanCreate != null) {
-            ConfigurationSection requirements = clanCreate.getConfigurationSection("requirements");
-            if (requirements != null) {
-                for (String key : requirements.getKeys(false)) {
-                    ConfigurationSection req = requirements.getConfigurationSection(key);
-                    if (req == null) continue;
-                    String type = req.getString("type");
-                    String input = req.getString("input");
-                    String output = req.getString("output");
-                    String permission = req.getString("permission");
-                    List<String> actions = req.getStringList("actions");
-                    List<String> deny_actions = req.getStringList("deny_actions");
-                    this.requirements.add(new SimpleRequirement(type, input, output, permission, actions, deny_actions));
-                }
-            }
+
+            requirements = ParseUtil.getExpressions(clanCreate.getList("requirements"));
 
 
             defaultRank = defaultRanks.get(clanCreate.getString("member-rank", "member").toLowerCase());

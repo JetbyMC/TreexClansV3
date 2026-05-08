@@ -1,7 +1,5 @@
 package me.jetby.clans.common;
 
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import lombok.Getter;
 import lombok.Setter;
 import me.jetby.clans.api.InstanceFactory;
@@ -9,9 +7,8 @@ import me.jetby.clans.api.TreexClansAPI;
 import me.jetby.clans.api.addons.AddonManager;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.addons.listener.EventRegistrar;
+import me.jetby.clans.api.gui.GuiFactory;
 import me.jetby.clans.api.service.ClanManager;
-import me.jetby.clans.api.service.clan.Clan;
-import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import me.jetby.clans.common.addon.AddonManagerImpl;
 import me.jetby.clans.common.clan.service.ClanManagerImpl;
@@ -19,12 +16,13 @@ import me.jetby.clans.common.commands.CommandServiceImpl;
 import me.jetby.clans.common.commands.admin.AdminCommand;
 import me.jetby.clans.common.commands.clan.ClanCommand;
 import me.jetby.clans.common.configurations.Config;
-import me.jetby.clans.common.configurations.Messages;
-import me.jetby.clans.common.configurations.Modules;
-import me.jetby.clans.common.configurations.QuestsLoader;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
+import me.jetby.clans.common.configurations.ModulesConfiguration;
+import me.jetby.clans.common.configurations.QuestsConfiguration;
 import me.jetby.clans.common.configurations.configupdater.UpdateConfig;
 import me.jetby.clans.common.functions.quests.QuestManager;
 import me.jetby.clans.common.functions.tops.LeaderboardServiceImpl;
+import me.jetby.clans.common.gui.GuiFactoryImpl;
 import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.clans.common.hooks.ClanPlaceholder;
 import me.jetby.clans.common.hooks.Vault;
@@ -48,8 +46,6 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-
 @Getter
 public final class TreexClans extends JavaPlugin implements TreexClansAPI {
 
@@ -68,6 +64,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     private Config cfg;
     private FormatTime formatTime;
     private ClanManager clanManager;
+    private GuiFactory guiFactory;
     private LeaderboardService leaderboardService;
     private Storage storage;
 
@@ -77,16 +74,16 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     private GuiLoader guiLoader;
 
     @Setter
-    private QuestsLoader questsLoader;
+    private QuestsConfiguration questsLoader;
     private QuestManager questManager;
     private ClanPlaceholder clanPlaceholder;
 
-    private Modules modules;
+    private ModulesConfiguration modules;
 
     private EventRegistrar eventRegistrar;
     private AddonManager addonManager;
     @Getter
-    private Messages messages;
+    private MessagesConfiguration messages;
 
     @Override
     public void onEnable() {
@@ -94,8 +91,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         INSTANCE = this;
         LOGGER = new Logger(this);
 
-//        this.guiFactory = new GuiFactoryImpl();
-//        InstanceFactory.GUI_FACTORY = guiFactory;
         InstanceFactory.ITEM_KEY = new NamespacedKey("treexclans", "item");
         NAMESPACED_KEY = InstanceFactory.ITEM_KEY;
 
@@ -114,7 +109,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         }
 
         Economy economy = new Vault().load();
-        if (economy==null) {
+        if (economy == null) {
             LOGGER.error(" └  ✘  Vault");
             LOGGER.error("&4&lThis plugin cannot work without Vault plugin!");
             LOGGER.error("&4&lYou can download it here https://www.spigotmc.org/resources/vault.34315/");
@@ -122,7 +117,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
             this.economy = economy;
             LOGGER.success(" └  ✔  Vault");
         }
-        LOGGER.success("┗ Hooks loaded ("+Speedometer.result()+"ms)");
+        LOGGER.success("┗ Hooks loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading configurations:");
         Speedometer.start();
@@ -131,28 +126,28 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         cfg.load();
         LOGGER.success(" └  ✔  config.yml");
 
-        messages = new Messages(this);
+        messages = new MessagesConfiguration(this);
         LOGGER.success(" └  ✔  messages.yml");
 
 
         formatTime = new FormatTime(this);
 
-        modules = new Modules();
+        modules = new ModulesConfiguration();
         modules.load();
         LOGGER.success(" └  ✔  modules.yml");
 
         guiLoader = new GuiLoader(this);
         guiLoader.load();
-        LOGGER.success(" └  ✔  Menu");
+        LOGGER.success(" └  ✔  Menus");
 
-        questsLoader = new QuestsLoader();
+        questsLoader = new QuestsConfiguration();
         questsLoader.load();
         LOGGER.success(" └  ✔  quests.yml");
 
         storage = new YAML(this);
         storage.load();
         LOGGER.success(" └  ✔  Storage");
-        LOGGER.success("Configuration loaded ("+Speedometer.result()+"ms)");
+        LOGGER.success("Configuration loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading commands:");
         Speedometer.start();
@@ -169,10 +164,13 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
             clanCommand.setExecutor(cmd);
             clanCommand.setTabCompleter(cmd);
         }
-        LOGGER.success("┗ Commands created ("+Speedometer.result()+"ms)");
+        LOGGER.success("┗ Commands created (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading API:");
         Speedometer.start();
+
+
+        guiFactory = new GuiFactoryImpl();
 
         clanManager = new ClanManagerImpl(this);
 
@@ -190,7 +188,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         );
 
         ((AddonManagerImpl) addonManager).loadAddons();
-        LOGGER.success("┗ API loaded ("+Speedometer.result()+"ms)");
+        LOGGER.success("┗ API loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6Last details");
         getServer().getPluginManager().registerEvents(new ClanListeners(this), this);

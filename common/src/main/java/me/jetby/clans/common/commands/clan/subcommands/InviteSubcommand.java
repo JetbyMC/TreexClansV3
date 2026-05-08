@@ -5,7 +5,7 @@ import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import me.jetby.clans.common.tools.Cooldown;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -56,7 +56,7 @@ public class InviteSubcommand implements Subcommand {
                 return true;
             }
             if (Cooldown.isOnCooldown("denied_" + target.getUniqueId() + "_" + clan.getId())) {
-                plugin.getMessages().sendActions(player, clan, "clan-invite-denied", new Messages.ReplaceString("{target}", target.getName()));
+                plugin.getMessages().sendActions(player, clan, "clan-invite-denied", new MessagesConfiguration.ReplaceString("{target}", target.getName()));
                 return true;
             }
 
@@ -64,11 +64,11 @@ public class InviteSubcommand implements Subcommand {
                 plugin.getMessages().sendActions(player, clan, "clan-already-invited");
             } else {
                 Cooldown.setCooldown("invite_" + target.getUniqueId() + "_" + clan.getId(), 60);
-                plugin.getMessages().sendActions(player, clan, "clan-invite", new Messages.ReplaceString("{target}", target.getName()));
+                plugin.getMessages().sendActions(player, clan, "clan-invite", new MessagesConfiguration.ReplaceString("{target}", target.getName()));
 
                 plugin.getMessages().sendActions(target, null, "clan-join-request",
-                        new Messages.ReplaceString("{clan}", clan.getId()),
-                        new Messages.ReplaceString("{player}", player.getName())
+                        new MessagesConfiguration.ReplaceString("{clan}", clan.getId()),
+                        new MessagesConfiguration.ReplaceString("{player}", player.getName())
                 );
 
             }

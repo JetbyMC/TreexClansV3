@@ -6,7 +6,7 @@ import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.ClanManager;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -42,7 +42,7 @@ public class CreateSubcommand implements Subcommand {
 
                 if (clanManagerImpl.lifecycle().createClan(clanName, player)) {
                     Clan clan = plugin.getClanManager().lookup().getClan(clanName);
-                    plugin.getMessages().sendActions(player, clan, "clan-create", new Messages.ReplaceString("{clan}", clanName));
+                    plugin.getMessages().sendActions(player, clan, "clan-create", new MessagesConfiguration.ReplaceString("{clan}", clanName));
                 }
             }
 

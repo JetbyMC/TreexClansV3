@@ -1,13 +1,12 @@
 package me.jetby.clans.common.gui.impl;
 
-import me.jetby.clans.common.gui.ExtendedGui;
-import me.jetby.clans.common.gui.Gui;
+import me.jetby.clans.api.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
+import me.jetby.clans.api.gui.GuiContext;
 import me.jetby.libb.gui.parser.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -15,7 +14,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,9 +34,9 @@ public class ChestGui extends Gui {
     private List<Integer> configSlots = new ArrayList<>();
     private ItemStack blockedSlotItem = null;
 
-    public ChestGui(Player player, @NotNull ExtendedGui guiData, JavaPlugin plugin, Clan clan) {
-        super(player, guiData, plugin, clan);
-        this.clan = clan;
+    public ChestGui(@NotNull GuiContext ctx) {
+        super(ctx);
+        this.clan = ctx.getClan();
         lockEmptySlots(false);
 
         resolveConfigSlots();
@@ -70,9 +68,9 @@ public class ChestGui extends Gui {
 
         registerToActiveChests();
 
-        autoSaveTask = Bukkit.getScheduler().runTaskTimer(plugin, this::saveToCloudData, 100L, 100L);
+        autoSaveTask = Bukkit.getScheduler().runTaskTimer(ctx.getPlugin(), this::saveToCloudData, 100L, 100L);
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(ctx.getPlugin(), () -> {
             loadPageFromCloudData();
             isInitialized = true;
         }, 1L);

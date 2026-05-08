@@ -4,7 +4,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,8 +33,8 @@ public class LeaveSubcommand implements Subcommand {
 
             clanImpl.removeMember(clanImpl.getMember(player.getUniqueId()));
             plugin.getMessages().sendActions(player, clanImpl, "clan-leave",
-                    new Messages.ReplaceString("{player}", player.getName()),
-                    new Messages.ReplaceString("{clan}", clanImpl.getId())
+                    new MessagesConfiguration.ReplaceString("{player}", player.getName()),
+                    new MessagesConfiguration.ReplaceString("{clan}", clanImpl.getId())
             );
         }
         return true;

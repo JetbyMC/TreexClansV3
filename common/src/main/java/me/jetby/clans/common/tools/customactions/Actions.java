@@ -1,7 +1,9 @@
 package me.jetby.clans.common.tools.customactions;
 
 
+import me.jetby.clans.api.gui.Gui;
 import me.jetby.libb.action.ActionRegistry;
+import org.bukkit.entity.Player;
 
 public class Actions {
 
@@ -26,6 +28,16 @@ public class Actions {
 
         ActionRegistry.register("treexclans", "COIN_GIVE", new CoinAddAction());
         ActionRegistry.register("treexclans", "COIN_TAKE", new CoinTakeAction());
+
+        ActionRegistry.override("treexclans", "refresh", (ctx, s) -> {
+            Gui gui = ctx.get(Gui.class);
+
+            Player player = ctx.getPlayer();
+            if (player == null) return;
+
+            if (gui == null) return;
+            gui.refresh();
+        });
 
         // why if we have mini message in new versions? so its unusable anymore cuz we move from 1.16 to 1.20
 //        ActionRegistry.register("treexclans", "BUTTON", new ButtonAction());

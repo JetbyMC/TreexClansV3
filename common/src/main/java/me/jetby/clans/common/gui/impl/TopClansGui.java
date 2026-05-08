@@ -1,19 +1,17 @@
 package me.jetby.clans.common.gui.impl;
 
 
-import me.jetby.clans.common.gui.ExtendedGui;
-import me.jetby.clans.common.gui.Gui;
+import me.jetby.clans.api.gui.Gui;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import me.jetby.clans.common.TreexClans;
+import me.jetby.clans.api.gui.GuiContext;
 import me.jetby.clans.common.tools.NumberUtils;
 import me.jetby.libb.gui.item.ItemWrapper;
 import me.jetby.libb.gui.parser.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -29,12 +27,11 @@ public class TopClansGui extends Gui {
 
     private final TreexClans plugin;
     private final LeaderboardService.TopType currentSort;
-    private int s;
 
-    public TopClansGui(@NotNull Player viewer, @NotNull ExtendedGui guiData, @NotNull TreexClans plugin, Clan clan, LeaderboardService.TopType topType) {
-        super(viewer, guiData, plugin, clan);
-        this.plugin = plugin;
-        this.s = s;
+    public TopClansGui(@NotNull GuiContext ctx) {
+        super(ctx);
+        this.plugin = (TreexClans) ctx.getPlugin();
+        LeaderboardService.TopType topType = ctx.get(LeaderboardService.TopType.class);
         this.currentSort = Objects.requireNonNullElse(topType, LeaderboardService.TopType.KILLS);
 
         setupMembersPagination();

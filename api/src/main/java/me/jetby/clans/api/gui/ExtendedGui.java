@@ -1,8 +1,9 @@
-package me.jetby.clans.common.gui;
+package me.jetby.clans.api.gui;
 
 import lombok.Getter;
 import lombok.Setter;
 import me.jetby.libb.action.record.ActionBlock;
+import me.jetby.libb.action.record.Expression;
 import me.jetby.libb.gui.parser.Gui;
 import me.jetby.libb.gui.parser.Item;
 
@@ -17,7 +18,7 @@ public class ExtendedGui extends Gui {
     private final String title;
     private final int size;
     private final List<String> command;
-    private final List<String> preOpenExpressions;
+    private final List<Expression> preOpenExpressions;
     private final ActionBlock onOpen;
     private final ActionBlock onClose;
     private final List<Item> items;
@@ -29,7 +30,7 @@ public class ExtendedGui extends Gui {
                        String title,
                        int size,
                        List<String> command,
-                       List<String> preOpenExpressions,
+                       List<Expression> preOpenExpressions,
                        ActionBlock onOpen,
                        ActionBlock onClose,
                        List<Item> items,

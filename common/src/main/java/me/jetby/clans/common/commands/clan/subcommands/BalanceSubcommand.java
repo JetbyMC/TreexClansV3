@@ -3,7 +3,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public class BalanceSubcommand implements Subcommand {
                 return true;
             }
             var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            plugin.getMessages().sendActions(player, clanImpl, "clan-balance", new Messages.ReplaceString("{balance}", String.valueOf(clanImpl.getBalance())));
+            plugin.getMessages().sendActions(player, clanImpl, "clan-balance", new MessagesConfiguration.ReplaceString("{balance}", String.valueOf(clanImpl.getBalance())));
         }
 
         return true;

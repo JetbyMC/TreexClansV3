@@ -5,6 +5,7 @@ import me.jetby.clans.api.addons.AddonManager;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.addons.configuration.ServiceConfiguration;
 import me.jetby.clans.api.addons.listener.EventRegistrar;
+import me.jetby.clans.api.gui.GuiFactory;
 import me.jetby.clans.api.service.ClanManager;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import net.milkbowl.vault.economy.Economy;
@@ -127,4 +128,16 @@ public interface ServiceManager {
      * @return The {@link ServiceConfiguration} instance.
      */
     ServiceConfiguration getServiceConfiguration();
+
+    /**
+     * Provides access to the GUI factory.
+     * <p>
+     * Used to create interactive menus and graphical
+     * interfaces for players.
+     * </p>
+     *
+     * @return The {@link GuiFactory} instance.
+     */
+    GuiFactory getGuiFactory();
+
 }

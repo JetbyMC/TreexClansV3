@@ -5,7 +5,7 @@ import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.Messages;
+import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -68,9 +68,9 @@ public class KickSubcommand implements Subcommand {
             }
 
             clanImpl.removeMember(memberImpl);
-            plugin.getMessages().sendActions(player, clanImpl, "clan-player-kick", new Messages.ReplaceString("{target}", targetName));
+            plugin.getMessages().sendActions(player, clanImpl, "clan-player-kick", new MessagesConfiguration.ReplaceString("{target}", targetName));
             if (target != null && target.isOnline()) {
-                plugin.getMessages().sendActions(target, clanImpl, "clan-you-was-kicked", new Messages.ReplaceString("{player}", player.getName()));
+                plugin.getMessages().sendActions(target, clanImpl, "clan-you-was-kicked", new MessagesConfiguration.ReplaceString("{player}", player.getName()));
             }
         }
         return true;

@@ -4,6 +4,8 @@ size: 54
 open_args:
   - 'shop'
 
+listen: clan_only
+
 Items:
 
 

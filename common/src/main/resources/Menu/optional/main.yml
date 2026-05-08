@@ -4,6 +4,7 @@ size: 54
 open_args:
   - 'menu'
 
+listen: clan_only
 
 Items:
 

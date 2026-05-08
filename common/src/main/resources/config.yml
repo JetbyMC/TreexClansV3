@@ -31,16 +31,12 @@ clan-create:
   ## Можно добавлять сколько угодно проверок
   ##
   requirements:
-    money-check:
-      type: math
-      # Если у вас не отображает сумму вместо %vault_eco_balance_fixed% тогда выполните следующее
-      # /papi ecloud download vault
-      # /papi reload
-      input: "%vault_eco_balance_fixed% >= 5000"
-      actions:
-        - "[money_take] 5000"
-      deny_actions:
-        - "[message] <#FFE259>&lTreexClans</#FFA751> &7> &cНедостаточно монет! Ваш баланс: &f%vault_eco_balance_fixed%"
+    - money-check:
+        if: "%vault_eco_balance_fixed% >= 5000"
+        then:
+          - "[money_take] 5000"
+        else:
+          - "[message] <#FFE259>&lTreexClans</#FFA751> &7> &cНедостаточно монет! Ваш баланс: &f%vault_eco_balance_fixed%"
   min-clan-tag-length: 3
   max-clan-tag-length: 6
   blocked-tags:

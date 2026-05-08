@@ -1,4 +1,4 @@
-package me.jetby.clans.common.gui;
+package me.jetby.clans.api.gui;
 
 public enum ListenType {
     DEFAULT,
@@ -7,8 +7,6 @@ public enum ListenType {
     RANKS,
     RANK_PERMISSIONS,
     CHEST,
-    GLOW_COLOR,
-    CHOOSE_PLAYER_COLOR,
     MEMBERS,
     TOP_CLANS
 }
