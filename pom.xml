@@ -3,9 +3,12 @@
 
     <groupId>me.jetby.treexclans</groupId>
     <artifactId>Parent</artifactId>
-    <version>1.0</version>
+    <version>${pluginVersion}</version>
     <packaging>pom</packaging>
 
+    <properties>
+        <pluginVersion>1.0</pluginVersion>
+    </properties>
     <modules>
         <module>api</module>
         <module>common</module>

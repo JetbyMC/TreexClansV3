@@ -20,7 +20,6 @@ import java.util.logging.Logger;
  * </p>
  */
 public record AddonContext(
-        ServiceManager serviceManager,
-        Logger logger
+        ServiceManager serviceManager
 ) {
 }

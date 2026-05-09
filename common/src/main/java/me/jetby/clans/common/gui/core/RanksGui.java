@@ -55,6 +55,10 @@ public class RanksGui extends Gui {
 
         for (Item item : items) {
             if (!("all_ranks").equalsIgnoreCase(item.type())) {
+                if ("leader_rank".equalsIgnoreCase(item.type())) {
+                    result.add(cloneItemForRank(item, item.slots(), getClan().getLeader().getRank()));
+                    continue;
+                }
                 result.add(item);
                 continue;
             }
@@ -64,7 +68,7 @@ public class RanksGui extends Gui {
                 Rank rank = ranks.get(i);
                 int slot = slots.get(i);
 
-                result.add(cloneItemForRank(item, slot, rank));
+                result.add(cloneItemForRank(item, List.of(slot), rank));
             }
         }
         super.buildItems(result);
@@ -75,10 +79,10 @@ public class RanksGui extends Gui {
 
     }
 
-    private Item cloneItemForRank(Item item, int slot, Rank rank) {
+    private Item cloneItemForRank(Item item, List<Integer> slots, Rank rank) {
         Item copy = new Item(item.itemStack().clone());
         copy.type("rank-" + rank.id());
-        copy.slots(new ArrayList<>(List.of(slot)));
+        copy.slots(slots);
         copy.flags(item.flags());
         copy.enchantments(item.enchantments());
         copy.enchanted(item.enchanted());

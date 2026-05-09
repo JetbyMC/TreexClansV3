@@ -32,6 +32,7 @@ public class RankPermissionGui extends Gui {
             } else {
                 rank.perms().add(perm);
             }
+            refresh();
         });
     }
 

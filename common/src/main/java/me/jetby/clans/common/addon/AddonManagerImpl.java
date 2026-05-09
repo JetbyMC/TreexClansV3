@@ -18,8 +18,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarFile;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static me.jetby.clans.common.TreexClans.LOGGER;
 
 /**
  * Handles dynamic loading, enabling, disabling and unloading of TreexClans addons.
@@ -38,8 +39,6 @@ public final class AddonManagerImpl implements AddonManager {
 
     private final JavaPlugin plugin;
     private final File addonsFolder;
-    private final Logger logger;
-
     private final Map<String, JavaAddon> loadedAddons = new LinkedHashMap<>();
     private final Map<String, URLClassLoader> classLoaders = new HashMap<>();
     private final Map<String, File> jarFiles = new HashMap<>();
@@ -53,7 +52,6 @@ public final class AddonManagerImpl implements AddonManager {
     public AddonManagerImpl(@NotNull JavaPlugin plugin, boolean debugMode) {
         this.plugin = plugin;
         this.debugMode = debugMode;
-        this.logger = plugin.getLogger();
         this.addonsFolder = new File(plugin.getDataFolder(), "addons");
 
         if (!addonsFolder.exists() && addonsFolder.mkdirs()) {
@@ -74,9 +72,7 @@ public final class AddonManagerImpl implements AddonManager {
         for (File jarFile : jars) {
             try {
                 JavaAddon addon = loadAddon(jarFile);
-                if (addon != null) {
-                    success++;
-                }
+                success++;
             } catch (AddonException e) {
                 logWarn("Failed to load addon " + jarFile.getName() + ": " + e.getMessage());
                 logDebug("Cause: " + e.getClass().getSimpleName());
@@ -127,8 +123,7 @@ public final class AddonManagerImpl implements AddonManager {
             try {
                 addon = (JavaAddon) clazz.getDeclaredConstructor().newInstance();
                 addon.initialize(new AddonContext(
-                        new ServiceManagerImpl(this, addonsFolder,  (TreexClans) plugin, meta),
-                        logger
+                        new ServiceManagerImpl(this, addonsFolder, (TreexClans) plugin, meta)
                 ));
                 loadedAddons.put(meta.id(), addon);
                 jarFiles.put(meta.id(), jarFile);
@@ -202,7 +197,10 @@ public final class AddonManagerImpl implements AddonManager {
         File jarFile = jarFiles.remove(id);
         if (jarFile != null) {
             URLClassLoader loader = classLoaders.remove(jarFile.getName());
-            if (loader != null) try { loader.close(); } catch (IOException ignored) {}
+            if (loader != null) try {
+                loader.close();
+            } catch (IOException ignored) {
+            }
         }
         return true;
     }
@@ -222,7 +220,8 @@ public final class AddonManagerImpl implements AddonManager {
         classLoaders.values().forEach(loader -> {
             try {
                 loader.close();
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         });
         classLoaders.clear();
     }
@@ -266,7 +265,9 @@ public final class AddonManagerImpl implements AddonManager {
         graph.values().forEach(deps -> deps.forEach(dep -> indegree.merge(dep, 1, Integer::sum)));
 
         Deque<String> queue = new ArrayDeque<>();
-        indegree.forEach((id, deg) -> { if (deg == 0) queue.add(id); });
+        indegree.forEach((id, deg) -> {
+            if (deg == 0) queue.add(id);
+        });
 
         List<JavaAddon> order = new ArrayList<>();
         while (!queue.isEmpty()) {
@@ -319,9 +320,23 @@ public final class AddonManagerImpl implements AddonManager {
         return List.copyOf(loadedAddons.values());
     }
 
-    private void logInfo(String msg) { logger.info("[TreexAddon] " + msg); }
-    private void logWarn(String msg) { logger.warning("[TreexAddon] " + msg); }
-    private void logError(String msg, Throwable e) { logger.log(Level.SEVERE, "[TreexAddon] " + msg, e); }
-    private void logError(String msg) { logger.log(Level.SEVERE, "[TreexAddon] " + msg); }
-    private void logDebug(String msg) { if (debugMode) logger.info("[TreexAddon:DEBUG] " + msg); }
+    private void logInfo(String msg) {
+        LOGGER.info("(Addon) " + msg);
+    }
+
+    private void logWarn(String msg) {
+        LOGGER.warn("(Addon) " + msg);
+    }
+
+    private void logError(String msg, Throwable e) {
+        LOGGER.error("(Addon) " + msg, e);
+    }
+
+    private void logError(String msg) {
+        LOGGER.error("(Addon) " + msg);
+    }
+
+    private void logDebug(String msg) {
+        if (debugMode) LOGGER.info("(Addon:DEBUG) " + msg);
+    }
 }

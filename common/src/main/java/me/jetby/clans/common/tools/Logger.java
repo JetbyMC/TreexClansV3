@@ -27,4 +27,7 @@ public final class Logger {
     public void error(String message) {
         plugin.getComponentLogger().error(Serializer.UNIFIED.deserialize(message));
     }
+    public void error(String message, Object... objects) {
+        plugin.getComponentLogger().error(Serializer.UNIFIED.deserialize(message), objects);
+    }
 }
