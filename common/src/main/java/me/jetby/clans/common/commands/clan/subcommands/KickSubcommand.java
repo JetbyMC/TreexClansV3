@@ -3,6 +3,8 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.MessagesConfiguration;
@@ -24,22 +26,32 @@ public class KickSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender,  @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
 
         if (sender instanceof Player player) {
             if (args.length == 0) {
-                plugin.getMessages().sendActions(player, null, "commands.kick");
+                plugin.getMessages().of(player, "commands.kick")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player,  "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
 
-            if (!clanImpl.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.KICK)) {
-                plugin.getMessages().sendActions(player, clanImpl, "your-rank-is-not-allowed-to-do-that");
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.KICK)) {
+                plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
 
@@ -52,25 +64,47 @@ public class KickSubcommand implements Subcommand {
             } else {
                 uuid = target.getUniqueId();
             }
-            var memberImpl = clanImpl.getMember(uuid);
+            Member member = clan.getMember(uuid);
 
-            if (memberImpl == null) {
-                plugin.getMessages().sendActions(player, clanImpl, "player-not-found");
+            if (member == null) {
+                plugin.getMessages().of(player, "player-not-found")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
-            if (target != null && clanImpl.getMember(player.getUniqueId()).equals(memberImpl)) {
-                plugin.getMessages().sendActions(player, clanImpl, "clan-you-cant-kick-yourself");
+            if (target != null && clan.getMember(player.getUniqueId()).equals(member)) {
+                plugin.getMessages().of(player, "clan-you-cant-kick-yourself")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
-            if (clanImpl.getLeader().equals(memberImpl)) {
-                plugin.getMessages().sendActions(player, clanImpl, "you-cant-do-that-with-leader");
+            if (clan.getLeader().equals(member)) {
+                plugin.getMessages().of(player, "you-cant-do-that-with-leader")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
 
-            clanImpl.removeMember(memberImpl);
-            plugin.getMessages().sendActions(player, clanImpl, "clan-player-kick", new MessagesConfiguration.ReplaceString("{target}", targetName));
+            clan.removeMember(member);
+            plugin.getMessages().of(player, "clan-player-kick")
+                    .replace("{target}", targetName)
+                    .replace("{cmd}", command.getName())
+                    .replace("{arg}", sub)
+                    .with(clan)
+                    .run();
             if (target != null && target.isOnline()) {
-                plugin.getMessages().sendActions(target, clanImpl, "clan-you-was-kicked", new MessagesConfiguration.ReplaceString("{player}", player.getName()));
+                plugin.getMessages().of(target, "clan-you-was-kicked")
+                        .replace("{target}", targetName)
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
             }
         }
         return true;

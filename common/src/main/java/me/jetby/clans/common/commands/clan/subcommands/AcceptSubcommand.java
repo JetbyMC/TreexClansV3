@@ -2,9 +2,10 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.MemberImpl;
-import me.jetby.clans.common.configurations.MessagesConfiguration;
 import me.jetby.clans.common.tools.Cooldown;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -19,30 +20,43 @@ public class AcceptSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
 
         if (sender instanceof Player player) {
             if (args.length == 0) {
-                plugin.getMessages().sendActions(player, null, "commands.accept");
+                plugin.getMessages().of(player, "commands.accept")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
             if (plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-already-in-clan");
+                plugin.getMessages().of(player, "your-already-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
             if (!plugin.getClanManager().lifecycle().clanExists(args[0])) {
-                plugin.getMessages().sendActions(player, null, "clan-does-not-exist");
+                plugin.getMessages().of(player, "clan-does-not-exist")
+                        .replace("{clan}", args[0])
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
 
                 return true;
             }
             if (!Cooldown.isOnCooldown("invite_" + player.getUniqueId() + "_" + args[0])) {
-                plugin.getMessages().sendActions(player, null, "no-invite");
+                plugin.getMessages().of(player, "no-invite")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             } else {
                 Cooldown.removeCooldown("invite_" + player.getUniqueId() + "_" + args[0]);
-                var clanImpl = plugin.getClanManager().lookup().getClan(args[0]);
-                MemberImpl memberImpl = new MemberImpl(
+                Clan clan = plugin.getClanManager().lookup().getClan(args[0]);
+                Member member = new MemberImpl(
                         player.getUniqueId(),
                         plugin.getCfg().getDefaultRank(),
                         System.currentTimeMillis(),
@@ -51,11 +65,14 @@ public class AcceptSubcommand implements Subcommand {
                         0, 0, new HashMap<>(),
                         0, 0
                 );
-                plugin.getMessages().sendActions(player, clanImpl, "clan-join",
-                        new MessagesConfiguration.ReplaceString("{player}", player.getName()),
-                        new MessagesConfiguration.ReplaceString("{clan}", clanImpl.getId())
-                );
-                clanImpl.addMember(memberImpl);
+                plugin.getMessages().of(player, "clan-join")
+                        .with(clan)
+                        .replace("{player}", player.getName())
+                        .replace("{clan}", clan.getId())
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
+                clan.addMember(member);
             }
             return true;
         }

@@ -20,11 +20,14 @@ public class CreateSubcommand implements Subcommand {
     private final ClanManager clanManagerImpl = plugin.getClanManager();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
         if (sender instanceof Player player) {
 
             if (clanManagerImpl.lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "commands.create");
+                plugin.getMessages().of(player, "commands.create")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             } else {
                 if (args.length < 1) {
@@ -33,7 +36,10 @@ public class CreateSubcommand implements Subcommand {
                 }
                 String clanName = args[0].toLowerCase();
                 if (clanManagerImpl.lifecycle().clanExists(clanName)) {
-                    plugin.getMessages().sendActions(player, null, "clan-is-already-exists");
+                    plugin.getMessages().of(player,  "clan-is-already-exists")
+                            .replace("{cmd}", command.getName())
+                            .replace("{arg}", sub)
+                            .run();
                     return true;
                 }
                 if (!clanManagerImpl.validation().isAllowedName(player, clanName)) {
@@ -42,7 +48,12 @@ public class CreateSubcommand implements Subcommand {
 
                 if (clanManagerImpl.lifecycle().createClan(clanName, player)) {
                     Clan clan = plugin.getClanManager().lookup().getClan(clanName);
-                    plugin.getMessages().sendActions(player, clan, "clan-create", new MessagesConfiguration.ReplaceString("{clan}", clanName));
+                    plugin.getMessages().of(player, "clan-create")
+                            .replace("{clan}", clanName)
+                            .replace("{cmd}", command.getName())
+                            .replace("{arg}", sub)
+                            .with(clan)
+                            .run();
                 }
             }
 

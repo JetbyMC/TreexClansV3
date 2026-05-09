@@ -2,6 +2,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.MessagesConfiguration;
@@ -18,28 +19,43 @@ import java.util.List;
 public class SetPrefixSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
 
         if (sender instanceof Player player) {
             if (args.length == 0) {
-                plugin.getMessages().sendActions(player, null, "commands.setprefix");
+                plugin.getMessages().of(player, "commands.setprefix")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player, "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            if (!clanImpl.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.SETPREFIX)) {
-                plugin.getMessages().sendActions(player, clanImpl, "your-rank-is-not-allowed-to-do-that");
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.SETPREFIX)) {
+                plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
 
             String message = String.join(" ", args).trim();
 
             if (plugin.getClanManager().validation().isAllowedPrefix(player, message)) {
-                clanImpl.setPrefix(message);
-                plugin.getMessages().sendActions(player, clanImpl, "clan-setprefix", new MessagesConfiguration.ReplaceString("{clan_prefix}", message.toString()));
+                clan.setPrefix(message);
+                plugin.getMessages().of(player,"clan-setprefix")
+                        .replace("{clan_prefix}", message.toString())
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
             }
         }
 

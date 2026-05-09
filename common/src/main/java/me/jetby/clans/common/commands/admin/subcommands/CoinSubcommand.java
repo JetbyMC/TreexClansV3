@@ -22,7 +22,7 @@ public class CoinSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
 
         if (args.length == 0) {
             sender.sendMessage("/xclan coin give/set/take <player> <amount>");

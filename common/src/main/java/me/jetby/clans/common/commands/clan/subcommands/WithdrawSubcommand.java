@@ -2,9 +2,9 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,29 +19,44 @@ public class WithdrawSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
 
 
         if (sender instanceof Player player) {
             if (args.length == 0) {
-                plugin.getMessages().sendActions(player, null, "commands.withdraw");
+                plugin.getMessages().of(player, "commands.withdraw")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player, "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
 
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            if (!clanImpl.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.DEPOSIT)) {
-                plugin.getMessages().sendActions(player, clanImpl, "your-rank-is-not-allowed-to-do-that");
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.DEPOSIT)) {
+                plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
             double balance = Double.parseDouble(args[0]);
-            if (plugin.getClanManager().economy().getBalance(clanImpl) >= balance) {
+            if (plugin.getClanManager().economy().getBalance(clan) >= balance) {
                 plugin.getEconomy().depositPlayer(player, balance);
-                plugin.getClanManager().economy().takeBalance(balance, clanImpl);
-                plugin.getMessages().sendActions(player, clanImpl, "clan-balance-withdraw", new MessagesConfiguration.ReplaceString("{sum}", String.valueOf(balance)));
+                plugin.getClanManager().economy().takeBalance(balance, clan);
+                plugin.getMessages().of(player, "clan-balance-withdraw")
+                        .replace("{sum}", String.valueOf(balance))
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
             } else {
                 player.sendMessage("Your clan balance haven't enough money");
             }

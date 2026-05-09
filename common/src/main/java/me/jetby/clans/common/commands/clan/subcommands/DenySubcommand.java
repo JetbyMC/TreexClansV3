@@ -17,30 +17,42 @@ public class DenySubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
 
 
         if (sender instanceof Player player) {
             if (args.length == 0) {
-                plugin.getMessages().sendActions(player, null, "commands.deny");
+                plugin.getMessages().of(player,  "commands.deny")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
 
             var clanId = args[0];
             if (!plugin.getClanManager().lifecycle().clanExists(clanId)) {
-                plugin.getMessages().sendActions(player, null, "clan-does-not-exist");
+                plugin.getMessages().of(player,  "clan-does-not-exist")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
 
             if (!Cooldown.isOnCooldown("invite_" + player.getUniqueId() + "_" + clanId)) {
-                plugin.getMessages().sendActions(player, null, "no-invite");
+                plugin.getMessages().of(player, "no-invite")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
 
             Cooldown.setCooldown("denied_" + player.getUniqueId() + "_" + clanId, 120);
             Cooldown.removeCooldown("invite_" + player.getUniqueId() + "_" + clanId);
 
-            plugin.getMessages().sendActions(player, null, "clan-deny");
+            plugin.getMessages().of(player, "clan-deny")
+                    .replace("{cmd}", command.getName())
+                    .replace("{arg}", sub)
+                    .run();
         }
         return true;
     }

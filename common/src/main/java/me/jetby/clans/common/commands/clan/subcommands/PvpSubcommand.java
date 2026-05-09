@@ -2,6 +2,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import org.bukkit.command.Command;
@@ -18,25 +19,40 @@ public class PvpSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender,  @NotNull Command command,@NotNull String sub,  @NotNull String[] args) {
         if (sender instanceof Player player) {
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player, "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
 
-            if (!clanImpl.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.PVP)) {
-                plugin.getMessages().sendActions(player, clanImpl, "your-rank-is-not-allowed-to-do-that");
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.PVP)) {
+                plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
 
-            if (clanImpl.isPvp()) {
-                plugin.getMessages().sendActions(player, clanImpl, "clan-pvp-off");
-                clanImpl.setPvp(false);
+            if (clan.isPvp()) {
+                plugin.getMessages().of(player, "clan-pvp-off")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
+                clan.setPvp(false);
             } else {
-                plugin.getMessages().sendActions(player, clanImpl, "clan-pvp-on");
-                clanImpl.setPvp(true);
+                plugin.getMessages().of(player, "clan-pvp-on")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
+                clan.setPvp(true);
             }
         }
         return true;

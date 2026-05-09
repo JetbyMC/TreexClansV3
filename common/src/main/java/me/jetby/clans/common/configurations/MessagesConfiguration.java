@@ -24,45 +24,31 @@ public class MessagesConfiguration {
         this.plugin = plugin;
     }
 
-    public void sendActions(Player player, Clan clan, String path) {
-
-        String prefix = config.getString("prefix", "");
-
-        if (clan==null) {
-            ActionExecute.run(ActionContext.of(player, plugin)
-                            .replace("{prefix}", prefix),
-                    getMessageList(path));
-        } else {
-            ActionExecute.run(ActionContext.of(player, plugin)
-                            .replace("{prefix}", prefix)
-                            .with(clan),
-                    getMessageList(path));
-        }
+    public Action of(Player player, String path) {
+        return new Action(ActionContext.of(player, plugin)
+                .replace("{prefix}", config.getString("prefix", "")), path);
     }
 
-    public void sendActions(Player player, Clan clan, String path, ReplaceString... replaceStrings) {
+    public class Action {
+        private ActionContext ctx;
+        private final String path;
 
-        String prefix = config.getString("prefix", "");
-        List<String> actions = getMessageList(path).stream()
-                .map(str -> {
-                    for (ReplaceString replace : replaceStrings) {
-                        str = str.replace(replace.target(), replace.replacement());
-                    }
-                    return str;
-                })
-                .toList();
-
-
-        if (clan == null) {
-            ActionExecute.run(ActionContext.of(player, plugin).replace("{prefix}", prefix), actions);
-        } else {
-            ActionExecute.run(ActionContext.of(player, plugin).replace("{prefix}", prefix).with(clan), actions);
-
+        public Action(ActionContext ctx, String path) {
+            this.ctx = ctx;
+            this.path = path;
         }
-    }
+        public Action replace(String target, String replacement) {
+            ctx = ctx.replace(target, replacement);
+            return this;
+        }
 
-    public Component getMessage(String path) {
-        return Config.CONFIG_COLORIZER.deserialize(config.getString(path));
+        public Action with(Clan clan) {
+            ctx = ctx.with(clan);
+            return this;
+        }
+        public void run() {
+            ActionExecute.run(ctx, getMessageList(path));
+        }
     }
 
     public String getCleanMessage(String path) {
@@ -73,6 +59,4 @@ public class MessagesConfiguration {
         return config.getStringList(path);
     }
 
-    public record ReplaceString(String target, String replacement) {
-    }
 }

@@ -55,7 +55,7 @@ public class ClanCommand extends AdvancedCommand {
 
         Subcommand registeredSub = commandService.getCommands().get(sub);
         if (registeredSub != null && registeredSub.type() == CommandService.CommandType.CLAN) {
-            registeredSub.onCommand(sender, subArgs);
+            registeredSub.onCommand(sender, command, sub, subArgs);
             return true;
         }
 
@@ -67,9 +67,11 @@ public class ClanCommand extends AdvancedCommand {
         if (resolved == ClanSubcommand.SETPREFIX && !plugin.getModules().isSetprefix()) return true;
 
         if (resolved != null) {
-            resolved.getSubcommand().onCommand(sender, subArgs);
+            resolved.getSubcommand().onCommand(sender, command, sub, subArgs);
         } else {
-            sender.sendMessage("§cUnknown command. Use /" + command.getName() + " for help.");
+            plugin.getMessages().of(player, "commands.help")
+                    .replace("{cmd}", command.getName())
+                    .run();
         }
 
         return true;

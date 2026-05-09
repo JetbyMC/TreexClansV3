@@ -22,7 +22,7 @@ public class ReloadSubcommand implements Subcommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
 
         try {
             long start = System.currentTimeMillis();

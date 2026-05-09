@@ -57,7 +57,7 @@ public interface Subcommand {
      * @param args   The command arguments.
      * @return {@code true} if handled successfully, {@code false} otherwise.
      */
-    boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args);
+    boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args);
 
     /**
      * Provides tab-completion suggestions for this subcommand.

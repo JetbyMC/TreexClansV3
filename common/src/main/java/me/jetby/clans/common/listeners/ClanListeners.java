@@ -59,7 +59,9 @@ public class ClanListeners implements Listener {
         Clan targetClan = lookup.getClanByMember(target.getUniqueId());
         if (clan.equals(targetClan)) {
             e.setCancelled(true);
-            plugin.getMessages().sendActions(damager, clan, "pvp-disabled");
+            plugin.getMessages().of(damager, "pvp-disabled")
+                    .with(clan)
+                    .run();
         }
     }
 

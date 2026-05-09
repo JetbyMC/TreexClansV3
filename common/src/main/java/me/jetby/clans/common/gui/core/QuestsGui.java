@@ -86,6 +86,9 @@ public class QuestsGui extends Gui {
             itemStack.setItemMeta(itemMeta);
 
             ItemWrapper wrapper = new ItemWrapper(itemStack);
+            wrapper.onClick(event -> {
+                event.setCancelled(true);
+            });
             wrapper.serializer(defaultSerializer);
             wrapper.displayName(applyPlaceholders(template.section().getString("display_name", "")));
 

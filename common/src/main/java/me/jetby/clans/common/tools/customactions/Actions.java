@@ -38,6 +38,24 @@ public class Actions {
             if (gui == null) return;
             gui.refresh();
         });
+        ActionRegistry.override("treexclans", "next_page", (ctx, s) -> {
+            Gui gui = ctx.get(Gui.class);
+
+            Player player = ctx.getPlayer();
+            if (player == null) return;
+
+            if (gui == null) return;
+            gui.nextPage();
+        });
+        ActionRegistry.override("treexclans", "prev_page", (ctx, s) -> {
+            Gui gui = ctx.get(Gui.class);
+
+            Player player = ctx.getPlayer();
+            if (player == null) return;
+
+            if (gui == null) return;
+            gui.prevPage();
+        });
 
         // why if we have mini message in new versions? so its unusable anymore cuz we move from 1.16 to 1.20
 //        ActionRegistry.register("treexclans", "BUTTON", new ButtonAction());

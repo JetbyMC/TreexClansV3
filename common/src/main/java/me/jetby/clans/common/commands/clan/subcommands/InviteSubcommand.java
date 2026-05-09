@@ -3,9 +3,9 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.MessagesConfiguration;
 import me.jetby.clans.common.tools.Cooldown;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,52 +24,91 @@ public class InviteSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
         if (sender instanceof Player player) {
             if (args.length == 0) {
-                plugin.getMessages().sendActions(player, null, "commands.invite");
+                plugin.getMessages().of(player, "commands.invite")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player, "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
-            var clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
             if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.INVITE)) {
-                plugin.getMessages().sendActions(player, clan, "your-rank-is-not-allowed-to-do-that");
+                plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
             if (clan.getMembers().size() >= clan.getLevel().maxMembers()) {
-                plugin.getMessages().sendActions(player, clan, "clan-invite-limit");
+                plugin.getMessages().of(player, "clan-invite-limit")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
 
             Player target = player.getServer().getPlayer(args[0]);
             if (target == null) {
-                plugin.getMessages().sendActions(player, clan, "player-not-found");
+                plugin.getMessages().of(player, "player-not-found")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
 
             if (plugin.getClanManager().lookup().isInClan(target.getUniqueId())) {
-                plugin.getMessages().sendActions(player, clan, "clan-player-already-in-clan");
+                plugin.getMessages().of(player, "clan-player-already-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
             if (Cooldown.isOnCooldown("denied_" + target.getUniqueId() + "_" + clan.getId())) {
-                plugin.getMessages().sendActions(player, clan, "clan-invite-denied", new MessagesConfiguration.ReplaceString("{target}", target.getName()));
+                plugin.getMessages().of(player, "clan-invite-denied")
+                        .replace("{target}", target.getName())
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
 
             if (Cooldown.isOnCooldown("invite_" + target.getUniqueId() + "_" + clan.getId())) {
-                plugin.getMessages().sendActions(player, clan, "clan-already-invited");
+                plugin.getMessages().of(player, "clan-already-invited")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
             } else {
                 Cooldown.setCooldown("invite_" + target.getUniqueId() + "_" + clan.getId(), 60);
-                plugin.getMessages().sendActions(player, clan, "clan-invite", new MessagesConfiguration.ReplaceString("{target}", target.getName()));
+                plugin.getMessages().of(player, "clan-invite")
+                        .replace("{target}", target.getName())
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
 
-                plugin.getMessages().sendActions(target, null, "clan-join-request",
-                        new MessagesConfiguration.ReplaceString("{clan}", clan.getId()),
-                        new MessagesConfiguration.ReplaceString("{player}", player.getName())
-                );
+                plugin.getMessages().of(target, "clan-join-request")
+                        .replace("{cmd}", command.getName())
+                        .replace("{clan}", clan.getId())
+                        .replace("{player}", player.getName())
+                        .with(clan)
+                        .run();
+
 
             }
             return true;

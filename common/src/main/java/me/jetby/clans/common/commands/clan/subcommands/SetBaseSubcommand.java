@@ -2,6 +2,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import org.bukkit.command.Command;
@@ -18,21 +19,32 @@ public class SetBaseSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender,  @NotNull Command command,@NotNull String sub,  @NotNull String[] args) {
 
         if (sender instanceof Player player) {
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player, "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
 
-            if (!clanImpl.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.SETBASE)) {
-                plugin.getMessages().sendActions(player, clanImpl, "your-rank-is-not-allowed-to-do-that");
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.SETBASE)) {
+                plugin.getMessages().of(player,"your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
-            clanImpl.setBase(player.getLocation());
-            plugin.getMessages().sendActions(player, clanImpl, "clan-setbase");
+            clan.setBase(player.getLocation());
+            plugin.getMessages().of(player, "clan-setbase")
+                    .replace("{cmd}", command.getName())
+                    .replace("{arg}", sub)
+                    .with(clan)
+                    .run();
         }
 
         return true;

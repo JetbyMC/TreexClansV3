@@ -3,8 +3,8 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,23 +19,31 @@ public class LeaveSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
         if (sender instanceof Player player) {
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player, "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            if (clanImpl.getLeader().equals(clanImpl.getMember(player.getUniqueId()))) {
-                player.sendMessage(plugin.getMessages().getMessage("you-cant-leave-leader"));
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            if (clan.getLeader().equals(clan.getMember(player.getUniqueId()))) {
+                plugin.getMessages().of(player, "you-cant-leave-leader")
+                        .with(clan)
+                        .run();
                 return true;
             }
 
-            clanImpl.removeMember(clanImpl.getMember(player.getUniqueId()));
-            plugin.getMessages().sendActions(player, clanImpl, "clan-leave",
-                    new MessagesConfiguration.ReplaceString("{player}", player.getName()),
-                    new MessagesConfiguration.ReplaceString("{clan}", clanImpl.getId())
-            );
+            clan.removeMember(clan.getMember(player.getUniqueId()));
+            plugin.getMessages().of(player, "clan-leave")
+                    .replace("{clan}", clan.getId())
+                    .replace("{player}", player.getName())
+                    .replace("{cmd}", command.getName())
+                    .replace("{arg}", sub)
+                    .with(clan)
+                    .run();
         }
         return true;
     }

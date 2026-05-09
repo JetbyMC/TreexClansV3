@@ -17,24 +17,39 @@ public class BaseSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender,  @NotNull Command command,@NotNull String sub,  @NotNull String[] args) {
 
         if (sender instanceof Player player) {
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player, "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
             Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
             if (clan.getBase() == null) {
-                plugin.getMessages().sendActions(player, clan, "clan-base-unset");
+                plugin.getMessages().of(player, "clan-base-unset")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
             if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.BASE)) {
-                plugin.getMessages().sendActions(player, clan, "your-rank-is-not-allowed-to-do-that");
+                plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
             player.teleport(clan.getBase());
-            plugin.getMessages().sendActions(player, clan, "clan-base");
+            plugin.getMessages().of(player, "clan-base")
+                    .replace("{arg}", sub)
+                    .replace("{cmd}", command.getName())
+                    .with(clan)
+                    .run();
         }
 
         return true;

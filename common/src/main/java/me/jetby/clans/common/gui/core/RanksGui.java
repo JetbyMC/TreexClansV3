@@ -30,8 +30,6 @@ public class RanksGui extends Gui {
             Rank rank = getClan().getRanks().get(rankName);
             if (rank == null) return;
 
-
-
             ((TreexClans) getPlugin()).getGuiFactory().create(GuiContext.of(
                                     getPlugin(),
                                     GuiLoader.getGuiConfiguration(ListenType.RANK_PERMISSIONS),
@@ -72,11 +70,6 @@ public class RanksGui extends Gui {
             }
         }
         super.buildItems(result);
-    }
-
-    @Override
-    public void everyPageLogic() {
-
     }
 
     private Item cloneItemForRank(Item item, List<Integer> slots, Rank rank) {

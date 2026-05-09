@@ -2,6 +2,7 @@ package me.jetby.clans.common.commands.clan.subcommands;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
+import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.MessagesConfiguration;
@@ -18,28 +19,43 @@ import java.util.List;
 public class SetSloganSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
         if (sender instanceof Player player) {
             if (args.length == 0) {
-                plugin.getMessages().sendActions(player, null, "commands.setslogan");
+                plugin.getMessages().of(player, "commands.setslogan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().sendActions(player, null, "your-not-in-clan");
+                plugin.getMessages().of(player, "your-not-in-clan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .run();
                 return true;
             }
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            if (!clanImpl.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.SETSLOGAN)) {
-                plugin.getMessages().sendActions(player, clanImpl, "your-rank-is-not-allowed-to-do-that");
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.SETSLOGAN)) {
+                plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
                 return true;
             }
 
             StringBuilder message = new StringBuilder();
             for (String str : args) message.append(str).append(" ");
 
-            clanImpl.setSlogan(message.toString());
-            plugin.getMessages().sendActions(player, clanImpl, "clan-setslogan", new MessagesConfiguration.ReplaceString("{slogan}", message.toString()));
+            clan.setSlogan(message.toString());
+            plugin.getMessages().of(player, "clan-setslogan")
+                    .replace("{cmd}", command.getName())
+                    .replace("{arg}", sub)
+                    .replace("{slogan}", message.toString())
+                    .with(clan)
+                    .run();
         }
 
         return true;

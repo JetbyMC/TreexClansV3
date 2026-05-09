@@ -222,24 +222,28 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             int max = plugin.getCfg().getMaxTagLength();
 
             if (clanName.length() < min) {
-                plugin.getMessages().sendActions(player, null, "clan-tag-too-short",
-                        new MessagesConfiguration.ReplaceString("{min_length}", String.valueOf(min)));
+                plugin.getMessages().of(player, "clan-tag-too-short")
+                        .replace("{min_length}", String.valueOf(min))
+                        .run();
                 return false;
             }
 
             if (clanName.length() > max) {
-                plugin.getMessages().sendActions(player, null, "clan-tag-too-long",
-                        new MessagesConfiguration.ReplaceString("{max_length}", String.valueOf(max)));
+                plugin.getMessages().of(player, "clan-tag-too-long")
+                        .replace("{max_length}", String.valueOf(max))
+                        .run();
                 return false;
             }
 
             if (plugin.getCfg().getBlockedTags().contains(clanName.toLowerCase())) {
-                plugin.getMessages().sendActions(player, null, "clan-tag-blocked");
+                plugin.getMessages().of(player, "clan-tag-blocked")
+                        .run();
                 return false;
             }
 
             if (!isAllowedRegex(clanName, plugin.getCfg().getRegex())) {
-                plugin.getMessages().sendActions(player, null, "disallowed-tag-regex");
+                plugin.getMessages().of(player, "disallowed-tag-regex")
+                        .run();
                 return false;
             }
 
@@ -257,24 +261,28 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             int max = plugin.getCfg().getPrefixMaxLength();
 
             if (cleaned.length() < min) {
-                plugin.getMessages().sendActions(player, null, "clan-prefix-too-short",
-                        new MessagesConfiguration.ReplaceString("{min_length}", String.valueOf(min)));
+                plugin.getMessages().of(player, "clan-prefix-too-short")
+                        .replace("{min_length}", String.valueOf(min))
+                        .run();
                 return false;
             }
 
             if (cleaned.length() > max) {
-                plugin.getMessages().sendActions(player, null, "clan-prefix-too-long",
-                        new MessagesConfiguration.ReplaceString("{max_length}", String.valueOf(max)));
+                plugin.getMessages().of(player, "clan-prefix-too-long")
+                        .replace("{max_length}", String.valueOf(max))
+                        .run();
                 return false;
             }
 
             if (plugin.getCfg().getBlockedTags().contains(prefix.toLowerCase())) {
-                plugin.getMessages().sendActions(player, null, "clan-tag-blocked");
+                plugin.getMessages().of(player, "clan-tag-blocked")
+                        .run();
                 return false;
             }
 
             if (!isAllowedRegex(prefix, plugin.getCfg().getPrefixRegex())) {
-                plugin.getMessages().sendActions(player, null, "disallowed-prefix-regex");
+                plugin.getMessages().of(player, "disallowed-prefix-regex")
+                        .run();
                 return false;
             }
 

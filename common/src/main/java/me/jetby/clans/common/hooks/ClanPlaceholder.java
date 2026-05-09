@@ -2,9 +2,12 @@ package me.jetby.clans.common.hooks;
 
 import lombok.Getter;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import me.jetby.clans.common.TreexClans;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +40,8 @@ public class ClanPlaceholder extends PlaceholderExpansion {
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String identifier) {
         String[] args = identifier.split("_");
-        var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+        Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+        Member member = clan.getMember(player.getUniqueId());
 
         return switch (args[0].toLowerCase()) {
 
@@ -45,84 +49,84 @@ public class ClanPlaceholder extends PlaceholderExpansion {
                 if (args[1].equalsIgnoreCase("kills")) {
                     if (args.length==4)  {
                         int num = Integer.parseInt(args[2]);
-                        var clan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.KILLS, num);
-                        if (clan==null) yield "none";
+                        Clan targetClan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.KILLS, num);
+                        if (targetClan==null) yield "none";
                         String type = args[3];
 
                         if (type.equalsIgnoreCase("name")) {
-                            yield clan.getId();
+                            yield targetClan.getId();
                         } else if (type.equalsIgnoreCase("progress")) {
-                            yield String.valueOf((int) plugin.getLeaderboardService().getTopProgress(clan, LeaderboardService.TopType.KILLS));
+                            yield String.valueOf((int) plugin.getLeaderboardService().getTopProgress(targetClan, LeaderboardService.TopType.KILLS));
                         }
                     }
                 }
                 if (args[1].equalsIgnoreCase("deaths")) {
                     if (args.length==4)  {
                         int num = Integer.parseInt(args[2]);
-                        var clan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.DEATHS, num);
-                        if (clan==null) yield "none";
+                        Clan targetClan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.DEATHS, num);
+                        if (targetClan==null) yield "none";
                         String type = args[3];
 
                         if (type.equalsIgnoreCase("name")) {
-                            yield clan.getId();
+                            yield targetClan.getId();
                         } else if (type.equalsIgnoreCase("progress")) {
-                            yield String.valueOf((int) plugin.getLeaderboardService().getTopProgress(clan, LeaderboardService.TopType.DEATHS));
+                            yield String.valueOf((int) plugin.getLeaderboardService().getTopProgress(targetClan, LeaderboardService.TopType.DEATHS));
                         }
                     }
                 }
                 if (args[1].equalsIgnoreCase("kd")) {
                     if (args.length==4)  {
                         int num = Integer.parseInt(args[2]);
-                        var clan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.KD, num);
-                        if (clan==null) yield "none";
+                        Clan targetClan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.KD, num);
+                        if (targetClan==null) yield "none";
                         String type = args[3];
 
                         if (type.equalsIgnoreCase("name")) {
-                            yield clan.getId();
+                            yield targetClan.getId();
                         } else if (type.equalsIgnoreCase("progress")) {
-                            yield String.valueOf((double) plugin.getLeaderboardService().getTopProgress(clan, LeaderboardService.TopType.KD));
+                            yield String.valueOf((double) plugin.getLeaderboardService().getTopProgress(targetClan, LeaderboardService.TopType.KD));
                         }
                     }
                 }
                 if (args[1].equalsIgnoreCase("balance")) {
                     if (args.length==4)  {
                         int num = Integer.parseInt(args[2]);
-                        var clan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.BALANCE, num);
-                        if (clan==null) yield "none";
+                        Clan targetClan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.BALANCE, num);
+                        if (targetClan==null) yield "none";
                         String type = args[3];
 
                         if (type.equalsIgnoreCase("name")) {
-                            yield clan.getId();
+                            yield targetClan.getId();
                         } else if (type.equalsIgnoreCase("progress")) {
-                            yield String.valueOf((double) plugin.getLeaderboardService().getTopProgress(clan, LeaderboardService.TopType.BALANCE));
+                            yield String.valueOf((double) plugin.getLeaderboardService().getTopProgress(targetClan, LeaderboardService.TopType.BALANCE));
                         }
                     }
                 }
                 if (args[1].equalsIgnoreCase("level")) {
                     if (args.length==4)  {
                         int num = Integer.parseInt(args[2]);
-                        var clan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.LEVEL, num);
-                        if (clan==null) yield "none";
+                        Clan targetClan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.LEVEL, num);
+                        if (targetClan==null) yield "none";
                         String type = args[3];
 
                         if (type.equalsIgnoreCase("name")) {
-                            yield clan.getId();
+                            yield targetClan.getId();
                         } else if (type.equalsIgnoreCase("progress")) {
-                            yield String.valueOf(plugin.getLeaderboardService().getTopProgress(clan, LeaderboardService.TopType.LEVEL));
+                            yield String.valueOf(plugin.getLeaderboardService().getTopProgress(targetClan, LeaderboardService.TopType.LEVEL));
                         }
                     }
                 }
                 if (args[1].equalsIgnoreCase("members")) {
                     if (args.length==4)  {
                         int num = Integer.parseInt(args[2]);
-                        var clan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.MEMBERS, num);
-                        if (clan==null) yield "none";
+                        Clan targetClan = plugin.getLeaderboardService().getTopClan(LeaderboardService.TopType.MEMBERS, num);
+                        if (targetClan==null) yield "none";
                         String type = args[3];
 
                         if (type.equalsIgnoreCase("name")) {
-                            yield clan.getId();
+                            yield targetClan.getId();
                         } else if (type.equalsIgnoreCase("progress")) {
-                            yield String.valueOf((int) plugin.getLeaderboardService().getTopProgress(clan, LeaderboardService.TopType.MEMBERS));
+                            yield String.valueOf((int) plugin.getLeaderboardService().getTopProgress(targetClan, LeaderboardService.TopType.MEMBERS));
                         }
                     }
                 }
@@ -134,45 +138,54 @@ public class ClanPlaceholder extends PlaceholderExpansion {
                     yield plugin.getCfg().getTagPlaceholder_noClan();
 
                 yield plugin.getCfg().getTagPlaceholder_hasClan()
-                        .replace("{tag}", clanImpl.getId())
-                        .replace("{prefix}", clanImpl.getPrefix() == null ? "" : clanImpl.getPrefix());
+                        .replace("{tag}", clan.getId())
+                        .replace("{prefix}", clan.getPrefix() == null ? "" : clan.getPrefix());
             }
             case "prefix" -> {
                 if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId()))
                     yield plugin.getCfg().getPrefixPlaceholder_noClan();
-                if (clanImpl.getPrefix() == null) yield plugin.getCfg().getPrefixPlaceholder_noPrefix()
-                        .replace("{tag}", clanImpl.getId());
+                if (clan.getPrefix() == null) yield plugin.getCfg().getPrefixPlaceholder_noPrefix()
+                        .replace("{tag}", clan.getId());
 
                 yield plugin.getCfg().getPrefixPlaceholder_hasPrefix()
-                        .replace("{tag}", clanImpl.getId())
-                        .replace("{prefix}", clanImpl.getPrefix());
+                        .replace("{tag}", clan.getId())
+                        .replace("{prefix}", clan.getPrefix());
             }
             case "coin" -> {
                 if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
-                yield String.valueOf(clanImpl.getMember(player.getUniqueId()).getCoin());
+                yield String.valueOf(clan.getMember(player.getUniqueId()).getCoin());
             }
             case "slogan" -> {
                 if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "";
-                yield clanImpl.getSlogan();
+                yield clan.getSlogan();
             }
             case "balance" -> {
                 if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
-                yield String.valueOf(clanImpl.getBalance());
+                yield String.valueOf(clan.getBalance());
             }
             case "level" -> {
                 if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
-                yield clanImpl.getLevel().id();
-            }
-            case "clan" -> {
-                if (args[1].equalsIgnoreCase("exp")) {
-                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
-                    yield String.valueOf(clanImpl.getExp());
-                }
-                yield "";
+                yield clan.getLevel().id();
             }
             case "exp" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
-                yield String.valueOf(clanImpl.getMember(player.getUniqueId()).getExp());
+                if (args.length==1) {
+                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                    yield String.valueOf(clan.getExp());
+                } else if (args.length==2 && args[1].equalsIgnoreCase("max")) {
+                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                    yield String.valueOf(clan.getLevel().minExp());
+                } else yield null;
+            }
+            case "leader" -> {
+                if (args[1].equalsIgnoreCase("name")) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(clan.getLeader().getUuid());
+                    yield offlinePlayer.getName();
+                }
+                yield null;
+            }
+            case "rank" -> {
+                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "";
+                yield member.getRank().name();
             }
             default -> null;
         };
