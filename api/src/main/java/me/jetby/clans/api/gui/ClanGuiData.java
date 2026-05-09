@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ExtendedGui extends Gui {
+public class ClanGuiData extends Gui {
 
     private final String id;
     private final String title;
@@ -26,7 +26,7 @@ public class ExtendedGui extends Gui {
     private final ListenType listenType;
     private final List<String> args;
 
-    public ExtendedGui(String id,
+    public ClanGuiData(String id,
                        String title,
                        int size,
                        List<String> command,

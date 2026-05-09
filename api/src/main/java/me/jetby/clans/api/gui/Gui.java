@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 public class Gui extends ParsedGui {
 
-    private final ExtendedGui guiData;
+    private final ClanGuiData guiData;
     private final Clan clan;
     private final JavaPlugin plugin;
 

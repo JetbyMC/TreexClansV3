@@ -17,7 +17,7 @@ public class GuiContext {
     @NotNull
     private final JavaPlugin plugin;
     @NotNull
-    private final ExtendedGui gui;
+    private final ClanGuiData gui;
     @NotNull
     private final Player player;
     @Nullable
@@ -53,7 +53,7 @@ public class GuiContext {
         return type.cast(objects.get(type));
     }
 
-    public static GuiContext of(@NotNull JavaPlugin plugin, @NotNull ExtendedGui gui, @NotNull Player player, @Nullable Clan clan) {
+    public static GuiContext of(@NotNull JavaPlugin plugin, @NotNull ClanGuiData gui, @NotNull Player player, @Nullable Clan clan) {
         return new GuiContext(plugin, gui, player, clan);
     }
 }

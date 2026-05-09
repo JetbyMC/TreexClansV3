@@ -1,6 +1,6 @@
 package me.jetby.clans.common.gui;
 
-import me.jetby.clans.api.gui.ExtendedGui;
+import me.jetby.clans.api.gui.ClanGuiData;
 import me.jetby.clans.api.gui.ListenType;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.libb.action.record.ActionBlock;
@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiLoader {
-    public static final Map<ListenType, ExtendedGui> REQUIRED_GUIS = new HashMap<>();
-    public static final Map<String, ExtendedGui> CUSTOM_GUIS = new HashMap<>();
+    public static final Map<ListenType, ClanGuiData> REQUIRED_GUIS = new HashMap<>();
+    public static final Map<String, ClanGuiData> CUSTOM_GUIS = new HashMap<>();
 
     private final TreexClans plugin;
 
@@ -31,7 +31,7 @@ public class GuiLoader {
     /**
      * @return Required gui only
      */
-    public static ExtendedGui getGuiConfiguration(ListenType type) {
+    public static ClanGuiData getGuiConfiguration(ListenType type) {
         return REQUIRED_GUIS.get(type);
     }
 
@@ -39,7 +39,7 @@ public class GuiLoader {
      * @param name Required gui type or Custom gui id
      * @return Custom gui if it's not Required
      */
-    public static ExtendedGui getGuiConfiguration(@NotNull String name) {
+    public static ClanGuiData getGuiConfiguration(@NotNull String name) {
         return CUSTOM_GUIS.get(name);
     }
 
@@ -158,7 +158,7 @@ public class GuiLoader {
             List<Item> items = ParseUtil.getItems(config);
 
 
-            ExtendedGui gui = new ExtendedGui(
+            ClanGuiData gui = new ClanGuiData(
                     id, title, size, command,
                     preOpenExpressions, onOpen, onClose,
                     items,
@@ -206,7 +206,7 @@ public class GuiLoader {
             List<Item> items = ParseUtil.getItems(config);
 
 
-            ExtendedGui gui = new ExtendedGui(
+            ClanGuiData gui = new ClanGuiData(
                     id, title, size, command,
                     preOpenExpressions, onOpen, onClose,
                     items,

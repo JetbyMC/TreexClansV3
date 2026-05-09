@@ -2,7 +2,7 @@ package me.jetby.clans.api.gui;
 
 public enum ListenType {
     DEFAULT,
-    MENU,
+    CLAN_ONLY,
     QUESTS,
     RANKS,
     RANK_PERMISSIONS,

@@ -1,6 +1,6 @@
 package me.jetby.clans.common.tools.customactions;
 
-import me.jetby.clans.api.gui.ExtendedGui;
+import me.jetby.clans.api.gui.ClanGuiData;
 import me.jetby.clans.api.gui.GuiContext;
 import me.jetby.clans.api.gui.ListenType;
 import me.jetby.clans.api.service.clan.Clan;
@@ -19,7 +19,7 @@ public class OpenMenuAction implements Action {
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
         Player player = ctx.getPlayer();
         Clan clan = ctx.get(ClanImpl.class);
-        ExtendedGui gui;
+        ClanGuiData gui;
 
         String raw = input.rawText();
         if (raw.startsWith("model:")) {

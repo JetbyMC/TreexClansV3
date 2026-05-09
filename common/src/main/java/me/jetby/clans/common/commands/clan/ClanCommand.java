@@ -2,7 +2,7 @@ package me.jetby.clans.common.commands.clan;
 
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
-import me.jetby.clans.api.gui.ExtendedGui;
+import me.jetby.clans.api.gui.ClanGuiData;
 import me.jetby.clans.api.gui.GuiContext;
 import me.jetby.clans.api.gui.ListenType;
 import me.jetby.clans.api.service.clan.Clan;
@@ -112,10 +112,13 @@ public class ClanCommand extends AdvancedCommand {
         for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
             if (!entry.getValue().contains(arg)) continue;
 
-            ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
+            ClanGuiData gui = GuiLoader.getGuiConfiguration(entry.getKey());
             if (gui == null) return false;
 
             boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
+
+            if (gui.getListenType()==ListenType.CLAN_ONLY && !inClan) return false;
+
             if (!inClan && gui.getListenType() != ListenType.DEFAULT && gui.getListenType() != ListenType.TOP_CLANS) {
                 return true;
             }
@@ -141,8 +144,14 @@ public class ClanCommand extends AdvancedCommand {
         }
 
         for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
-            ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
+            ClanGuiData gui = GuiLoader.getGuiConfiguration(entry.getKey());
             if (gui == null) continue;
+
+            boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
+            if (gui.getListenType()==ListenType.CLAN_ONLY && !inClan) {
+                continue;
+            }
+
             if (gui.getListenType() == ListenType.DEFAULT || gui.getListenType() == ListenType.TOP_CLANS) {
                 completions.addAll(entry.getValue());
             }
@@ -171,7 +180,7 @@ public class ClanCommand extends AdvancedCommand {
         }
 
         for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
-            ExtendedGui gui = GuiLoader.getGuiConfiguration(entry.getKey());
+            ClanGuiData gui = GuiLoader.getGuiConfiguration(entry.getKey());
             if (gui == null) continue;
             if (ActionUtil.evaluate(player, gui.getPreOpenExpressions(), ActionUtil.EvaluateMode.ALL)) {
                 entry.getValue().stream()

@@ -48,7 +48,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
 
     private static TreexClans INSTANCE;
     private CommandService commandService;
-//    private GuiFactory guiFactory;
+    private GuiFactory guiFactory;
 
     public static TreexClans getInstance() {
         return INSTANCE;
@@ -61,7 +61,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     private Config cfg;
     private FormatTime formatTime;
     private ClanManager clanManager;
-    private GuiFactory guiFactory;
     private LeaderboardService leaderboardService;
     private Storage storage;
 
