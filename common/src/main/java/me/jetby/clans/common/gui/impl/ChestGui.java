@@ -98,7 +98,7 @@ public class ChestGui extends Gui {
                         if (meta != null) {
                             meta.getPersistentDataContainer().set(NAMESPACED_KEY, PersistentDataType.STRING, "blocked_slot");
                             blockedSlotItem.setItemMeta(meta);
-                        
+
                     }
                 });
 

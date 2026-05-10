@@ -187,6 +187,9 @@ quest-progress-type-global: "&e&lГлобальный"
 rank-perm-yes: "&a✔"
 rank-perm-no: "&c✘"
 
+status:
+  online: "В сети"
+
 
 gui:
   tops:

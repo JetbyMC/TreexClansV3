@@ -10,7 +10,6 @@ import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
 import me.jetby.clans.common.clan.model.MemberImpl;
 import me.jetby.clans.common.configurations.Config;
-import me.jetby.clans.common.configurations.MessagesConfiguration;
 import me.jetby.clans.common.storage.Storage;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionExecute;
@@ -306,18 +305,19 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
         @Override
         public void sendMessage(@NotNull Clan clan, @NotNull String message) {
+            Component colored = Config.CONFIG_COLORIZER.deserialize(message);
 
-            for (var member : clan.getMembers()) {
+            for (Member member : clan.getMembers()) {
                 Player player = Bukkit.getPlayer(member.getUuid());
                 if (player != null) {
-                    player.sendMessage(message);
+                    player.sendMessage(colored);
                 }
             }
 
-            var leader = clan.getLeader();
+            Member leader = clan.getLeader();
             Player leaderPlayer = Bukkit.getPlayer(leader.getUuid());
             if (leaderPlayer != null) {
-                leaderPlayer.sendMessage(message);
+                leaderPlayer.sendMessage(colored);
             }
         }
 
@@ -426,19 +426,19 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             }
 
             OfflinePlayer offline = Bukkit.getOfflinePlayer(uuid);
-            ClanImpl clan = (ClanImpl) getClanByMember(uuid);
+            Clan clan = getClanByMember(uuid);
             if (clan == null) {
                 return "-1";
             }
 
-            var member = clan.getMember(uuid);
+            Member member = clan.getMember(uuid);
             if (member == null) {
                 return "-1";
             }
 
             if (offline.isOnline()) {
                 member.setLastOnline(System.currentTimeMillis());
-                return "В сети";
+                return plugin.getMessages().getCleanMessage("status.online");
             }
 
             long diff = System.currentTimeMillis() - member.getLastOnline();
@@ -451,7 +451,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
             if (offline.isOnline()) {
                 member.setLastOnline(System.currentTimeMillis());
-                return "В сети";
+                return plugin.getMessages().getCleanMessage("status.online");
             }
 
             long diff = System.currentTimeMillis() - member.getLastOnline();

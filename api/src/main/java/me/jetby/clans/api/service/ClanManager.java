@@ -117,6 +117,7 @@ public interface ClanManager {
          * @return true if a clan with that name exists.
          */
         boolean clanExists(@NotNull String name);
+
     }
 
     /**

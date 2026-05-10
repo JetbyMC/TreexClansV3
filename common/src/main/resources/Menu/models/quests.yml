@@ -66,20 +66,19 @@ Items:
         - "[open] main"
 
 
-
-
-
-
-
-
   next_page:
     material: SPECTRAL_ARROW
-    type: next_page
     slot: 52
     display_name: "&aСледующая страница ▶"
+    on_click:
+      any:
+        - "[next_page]"
+
 
   prev_page:
     material: ARROW
     slot: 46
-    type: prev_page
     display_name: "&c◀ Предыдущая страница"
+    on_click:
+      any:
+        - "[prev_page]"

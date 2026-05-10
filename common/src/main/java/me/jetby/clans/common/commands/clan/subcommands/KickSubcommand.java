@@ -7,7 +7,6 @@ import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -26,7 +25,7 @@ public class KickSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender,  @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
 
         if (sender instanceof Player player) {
@@ -38,7 +37,7 @@ public class KickSubcommand implements Subcommand {
                 return true;
             }
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
-                plugin.getMessages().of(player,  "your-not-in-clan")
+                plugin.getMessages().of(player, "your-not-in-clan")
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .run();
@@ -116,13 +115,15 @@ public class KickSubcommand implements Subcommand {
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
                 return List.of();
             }
-            var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
             if (args.length > 0) {
-                return clanImpl.getMembers().stream()
+                return clan.getMembers()
+                        .stream()
                         .map(member -> {
-                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(member.getUuid());
-                    return offlinePlayer.getName();
-                }).toList();
+                            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(member.getUuid());
+                            return offlinePlayer.getName();
+                        })
+                        .toList();
             }
         }
         return List.of();

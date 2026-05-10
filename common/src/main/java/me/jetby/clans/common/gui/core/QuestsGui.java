@@ -27,21 +27,6 @@ public class QuestsGui extends Gui {
         super(ctx);
 
         setupQuestsPagination();
-
-        addClickHandler("type", event -> {
-            String type = event.getSection().getString("type");
-            if (type == null) return;
-            switch (type.toLowerCase()) {
-                case "next_page" -> {
-                    event.setCancelled(true);
-                    nextPage();
-                }
-                case "prev_page" -> {
-                    event.setCancelled(true);
-                    prevPage();
-                }
-            }
-        });
     }
 
     private void setupQuestsPagination() {
@@ -109,7 +94,7 @@ public class QuestsGui extends Gui {
 
     private List<Quest> buildQuestList(String templateType) {
         List<Quest> list = new ArrayList<>();
-        if ("all_quests".equals(templateType)) {
+        if ("all_quests".equalsIgnoreCase(templateType)) {
             list.addAll(getPlugin().getQuestsLoader().getQuests().values());
         } else if (templateType.startsWith("category-")) {
             String catId = templateType.substring(9);
@@ -123,7 +108,7 @@ public class QuestsGui extends Gui {
     public boolean cancelRegistration(@NotNull Item item) {
         if (item.type()!=null && item.section() != null) {
             String type = item.section().getString("type", "");
-            return type.equals("all_quests") || type.startsWith("category-");
+            return type.equalsIgnoreCase("all_quests") || type.startsWith("category-");
         }
         return false;
     }

@@ -41,6 +41,16 @@ public class Gui extends ParsedGui {
     }
 
     @Override
+    public void nextPage() {
+        super.nextPage();
+    }
+
+    @Override
+    public void prevPage() {
+        super.prevPage();
+    }
+
+    @Override
     public void buildItems(List<Item> items) {
         if (items == null) return;
         super.buildItems(items.stream()
