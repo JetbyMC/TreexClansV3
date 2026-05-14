@@ -4,6 +4,7 @@ import java.util.List;
 
 public record Level(
         String id,
+        String name,
         int minExp,
         int maxMembers,
         int maxBalance,

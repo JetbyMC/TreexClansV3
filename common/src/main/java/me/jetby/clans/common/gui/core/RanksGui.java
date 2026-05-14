@@ -2,7 +2,7 @@ package me.jetby.clans.common.gui.core;
 
 import me.jetby.clans.api.gui.Gui;
 import me.jetby.clans.api.gui.GuiContext;
-import me.jetby.clans.api.gui.ListenType;
+import me.jetby.clans.api.gui.GuiModel;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
@@ -32,7 +32,7 @@ public class RanksGui extends Gui {
 
             ((TreexClans) getPlugin()).getGuiFactory().create(GuiContext.of(
                                     getPlugin(),
-                                    GuiLoader.getGuiConfiguration(ListenType.RANK_PERMISSIONS),
+                                    GuiLoader.getGuiConfiguration(GuiModel.RANK_PERMISSIONS),
                                     getViewer(),
                                     getClan())
                             .with(rank))

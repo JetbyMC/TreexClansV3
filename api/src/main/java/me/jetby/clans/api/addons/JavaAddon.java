@@ -123,6 +123,9 @@ public abstract class JavaAddon {
     public void saveConfig() {
         serviceManager.getServiceConfiguration().saveConfig();
     }
+    public void saveDefaultConfig() {
+        serviceManager.getServiceConfiguration().saveDefaultConfig();
+    }
 
     /**
      * Gets a reference to a file within the addon's folder.

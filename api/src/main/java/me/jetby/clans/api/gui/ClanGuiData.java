@@ -9,7 +9,6 @@ import me.jetby.libb.gui.parser.Item;
 
 import java.util.List;
 
-
 @Getter
 @Setter
 public class ClanGuiData extends Gui {
@@ -22,8 +21,7 @@ public class ClanGuiData extends Gui {
     private final ActionBlock onOpen;
     private final ActionBlock onClose;
     private final List<Item> items;
-
-    private final ListenType listenType;
+    private final String renderer;
     private final List<String> args;
 
     public ClanGuiData(String id,
@@ -34,7 +32,7 @@ public class ClanGuiData extends Gui {
                        ActionBlock onOpen,
                        ActionBlock onClose,
                        List<Item> items,
-                       ListenType listenType,
+                       String renderer,
                        List<String> args
     ) {
         super(id, title, size, command, preOpenExpressions, onOpen, onClose, items);
@@ -46,8 +44,11 @@ public class ClanGuiData extends Gui {
         this.onOpen = onOpen;
         this.onClose = onClose;
         this.items = items;
-        this.listenType = listenType;
+        this.renderer = renderer;
         this.args = args;
+    }
 
+    public boolean isNamespaced() {
+        return renderer != null && renderer.contains(":");
     }
 }

@@ -1,7 +1,7 @@
 package me.jetby.clans.common.gui;
 
 import me.jetby.clans.api.gui.ClanGuiData;
-import me.jetby.clans.api.gui.ListenType;
+import me.jetby.clans.api.gui.GuiModel;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.libb.action.record.ActionBlock;
 import me.jetby.libb.action.record.Expression;
@@ -12,6 +12,7 @@ import me.jetby.libb.util.Logger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -19,8 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiLoader {
-    public static final Map<ListenType, ClanGuiData> REQUIRED_GUIS = new HashMap<>();
+    public static final Map<GuiModel, ClanGuiData> REQUIRED_GUIS = new HashMap<>();
     public static final Map<String, ClanGuiData> CUSTOM_GUIS = new HashMap<>();
+    public static final Map<String, ClanGuiData> API_GUIS = new HashMap<>();
 
     private final TreexClans plugin;
 
@@ -31,48 +33,21 @@ public class GuiLoader {
     /**
      * @return Required gui only
      */
-    public static ClanGuiData getGuiConfiguration(ListenType type) {
+    public static ClanGuiData getGuiConfiguration(GuiModel type) {
         return REQUIRED_GUIS.get(type);
     }
 
     /**
-     * @param name Required gui type or Custom gui id
-     * @return Custom gui if it's not Required
+     * @param id Gui id — ищет во всех картах: custom, api, required
      */
-    public static ClanGuiData getGuiConfiguration(@NotNull String name) {
-        return CUSTOM_GUIS.get(name);
-    }
-
-    private void loadFilesRecursive(File folder, boolean isRequired) {
-        File[] files = folder.listFiles();
-        if (files == null) return;
-
-        for (File file : files) {
-            if (file.isDirectory()) {
-                loadFilesRecursive(file, isRequired);
-
-                continue;
-            }
-
-            if (!file.getName().endsWith(".yml")) continue;
-
-            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-            String id = config.getString("id", file.getName().replace(".yml", ""));
-
-            if (isRequired) {
-                ListenType listenType;
-                try {
-                    listenType = ListenType.valueOf(config.getString("listen").toUpperCase());
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                loadRequiredGui(listenType, file);
-            } else {
-                loadCustomGui(id, file);
-
-            }
-        }
+    public static ClanGuiData getGuiConfiguration(@NotNull String id) {
+        ClanGuiData gui = CUSTOM_GUIS.get(id);
+        if (gui != null) return gui;
+        gui = API_GUIS.get(id);
+        if (gui != null) return gui;
+        return REQUIRED_GUIS.values().stream()
+                .filter(g -> id.equals(g.getId()))
+                .findFirst().orElse(null);
     }
 
     public void load() {
@@ -84,24 +59,9 @@ public class GuiLoader {
         REQUIRED_GUIS.clear();
         File folder = new File(plugin.getDataFolder(), "Menu/models");
         if (!folder.exists() && folder.mkdirs()) {
-            String[] defaults = {
-                    "quests.yml",
-                    "members.yml",
-                    "choose-player-color.yml",
-                    "glow-color.yml",
-                    "rank-perms.yml",
-                    "ranks.yml",
-                    "storage.yml",
-                    "top-clans.yml"
-            };
-
-            for (String name : defaults) {
-                File target = new File(folder, name);
-                target.getParentFile().mkdirs();
-
-                if (!target.exists()) {
-                    plugin.saveResource("Menu/models/" + name, false);
-                }
+            for (String name : new String[]{"quests.yml", "members.yml", "choose-player-color.yml",
+                    "glow-color.yml", "rank-perms.yml", "ranks.yml", "storage.yml", "top-clans.yml"}) {
+                saveDefault("Menu/models/" + name, folder, name);
             }
         }
         loadFilesRecursive(folder, true);
@@ -109,35 +69,82 @@ public class GuiLoader {
 
     public void createCustomGuis() {
         CUSTOM_GUIS.clear();
-        File folder = new File(plugin.getDataFolder(), "Menu/optional");
-
-
+        File folder = new File(plugin.getDataFolder(), "Menu/custom");
         if (!folder.exists() && folder.mkdirs()) {
-            String[] defaults = {
-                    "main.yml", "shop.yml"
-            };
-
-            for (String name : defaults) {
-                File target = new File(folder, name);
-                target.getParentFile().mkdirs();
-
-                if (!target.exists()) {
-                    plugin.saveResource("Menu/optional/" + name, false);
-                }
+            for (String name : new String[]{"main.yml", "shop.yml"}) {
+                saveDefault("Menu/custom/" + name, folder, name);
             }
         }
-
         loadFilesRecursive(folder, false);
     }
 
-    private void loadCustomGui(String menuId, File file) {
-        if (CUSTOM_GUIS.containsKey(menuId)) {
-            Logger.error(plugin, "A duplicate of " + menuId + " was skipped");
-            return;
-        }
-        try {
-            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+    private void saveDefault(String resourcePath, File folder, String name) {
+        File target = new File(folder, name);
+        target.getParentFile().mkdirs();
+        if (!target.exists()) plugin.saveResource(resourcePath, false);
+    }
 
+    private void loadFilesRecursive(File folder, boolean isRequired) {
+        File[] files = folder.listFiles();
+        if (files == null) return;
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                loadFilesRecursive(file, isRequired);
+                continue;
+            }
+            if (!file.getName().endsWith(".yml")) continue;
+
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            String id = config.getString("id", file.getName().replace(".yml", ""));
+            String model = config.getString("model", "default");
+
+            if (isRequired) {
+                GuiModel guiModel = parseBuiltinModel(model);
+                if (guiModel == null || guiModel == GuiModel.DEFAULT) continue;
+                if (REQUIRED_GUIS.containsKey(guiModel)) {
+                    Logger.error(plugin, "A duplicate of " + guiModel + " was skipped");
+                    continue;
+                }
+                ClanGuiData gui = parseGui(config, model);
+                if (gui != null) REQUIRED_GUIS.put(guiModel, gui);
+            } else if (model.contains(":")) {
+                if (API_GUIS.containsKey(id)) {
+                    Logger.error(plugin, "A duplicate of " + id + " was skipped");
+                    continue;
+                }
+                GuiFactoryImpl factory = (GuiFactoryImpl) plugin.getGuiFactory();
+                if (!factory.getCustomTypes().containsKey(model.toUpperCase())) {
+                    Logger.error(plugin, "Unknown renderer '" + model + "' for gui '" + id + "', is the addon loaded?");
+                    continue;
+                }
+                ClanGuiData gui = parseGui(config, model);
+                if (gui != null) API_GUIS.put(id, gui);
+            } else {
+                if (CUSTOM_GUIS.containsKey(id)) {
+                    Logger.error(plugin, "A duplicate of " + id + " was skipped");
+                    continue;
+                }
+                ClanGuiData gui = parseGui(config, model);
+                if (gui == null) continue;
+                registerCommands(config);
+                CUSTOM_GUIS.put(id, gui);
+            }
+        }
+    }
+
+    @Nullable
+    private GuiModel parseBuiltinModel(String model) {
+        try {
+            return GuiModel.valueOf(model.toUpperCase());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    private ClanGuiData parseGui(FileConfiguration config, String renderer) {
+        try {
             String id = config.getString("id");
             String title = config.getString("title");
             int size = config.getInt("size");
@@ -145,79 +152,18 @@ public class GuiLoader {
             List<Expression> preOpenExpressions = ParseUtil.getExpressions(config.getStringList("pre_open"));
             ActionBlock onOpen = ParseUtil.getActionBlock(config, "on_open");
             ActionBlock onClose = ParseUtil.getActionBlock(config, "on_close");
-
-            String listen = config.getString("listen", "default");
-            ListenType listenType;
-            try {
-                listenType = ListenType.valueOf(listen.toUpperCase());
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             List<String> args = config.getStringList("open_args");
-
             List<Item> items = ParseUtil.getItems(config);
-
-
-            ClanGuiData gui = new ClanGuiData(
-                    id, title, size, command,
-                    preOpenExpressions, onOpen, onClose,
-                    items,
-                    listenType,
-                    args
-            );
-
-            List<String> commands = config.getStringList("command");
-            for (String cmd : commands) {
-                CommandRegistrar.registerCommand(plugin, cmd, (sender, command1, label, args1) -> {
-                    return true;
-                });
-            }
-            CUSTOM_GUIS.put(menuId, gui);
+            return new ClanGuiData(id, title, size, command, preOpenExpressions, onOpen, onClose, items, renderer, args);
         } catch (Exception e) {
             Logger.error(plugin, "Error trying to load menu: " + e.getMessage());
+            return null;
         }
     }
 
-    private void loadRequiredGui(ListenType type, File file) {
-        if (REQUIRED_GUIS.containsKey(type)) {
-            Logger.error(plugin, "A duplicate of " + type + " was skipped");
-            return;
-        }
-        try {
-            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
-            String id = config.getString("id");
-            String title = config.getString("title");
-            int size = config.getInt("size");
-            List<String> command = config.getStringList("command");
-            List<Expression> preOpenExpressions = ParseUtil.getExpressions(config.getStringList("pre_open"));
-            ActionBlock onOpen = ParseUtil.getActionBlock(config, "on_open");
-            ActionBlock onClose = ParseUtil.getActionBlock(config, "on_close");
-
-            String listen = config.getString("listen", "default");
-            ListenType listenType;
-            try {
-                listenType = ListenType.valueOf(listen.toUpperCase());
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            List<String> args = config.getStringList("open_args");
-
-            List<Item> items = ParseUtil.getItems(config);
-
-
-            ClanGuiData gui = new ClanGuiData(
-                    id, title, size, command,
-                    preOpenExpressions, onOpen, onClose,
-                    items,
-                    listenType,
-                    args
-            );
-
-            REQUIRED_GUIS.put(type, gui);
-        } catch (Exception e) {
-            Logger.error(plugin, "Error trying to load menu: " + e.getMessage());
+    private void registerCommands(FileConfiguration config) {
+        for (String cmd : config.getStringList("command")) {
+            CommandRegistrar.registerCommand(plugin, cmd, (sender, command, label, args) -> true);
         }
     }
-
 }

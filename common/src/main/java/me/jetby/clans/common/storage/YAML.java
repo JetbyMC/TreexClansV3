@@ -169,7 +169,10 @@ public class YAML implements Storage {
 
             Storage.CLANS.put(clanId, new ClanImpl(clanId, prefix, leader, memberImplSet, ranks,
                     plugin.getCfg().getLevels().get(Integer.parseInt(level)),
-                    balance, base, clanExp, pvp, questsInProgress, completedQuests, chestItems, slogan, plugin));
+                    balance, base, clanExp, pvp, questsInProgress, completedQuests,
+                    //todo items, its always empty right now
+                    new HashMap<>(),
+                    slogan, plugin));
         }
     }
 
@@ -223,7 +226,7 @@ public class YAML implements Storage {
                 }
 
                 configuration.set(clanId + ".chest",
-                        clan.getChest().stream()
+                        clan.getChest().values().stream()
                                 .map(ItemSerializer::itemToBase64)
                                 .toList());
 

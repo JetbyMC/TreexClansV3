@@ -57,8 +57,6 @@ public class Actions {
             gui.prevPage();
         });
 
-        // why if we have mini message in new versions? so its unusable anymore cuz we move from 1.16 to 1.20
-//        ActionRegistry.register("treexclans", "BUTTON", new ButtonAction());
 
     }
 }

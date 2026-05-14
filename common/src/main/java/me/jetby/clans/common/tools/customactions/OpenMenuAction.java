@@ -2,11 +2,11 @@ package me.jetby.clans.common.tools.customactions;
 
 import me.jetby.clans.api.gui.ClanGuiData;
 import me.jetby.clans.api.gui.GuiContext;
-import me.jetby.clans.api.gui.ListenType;
+import me.jetby.clans.api.gui.GuiModel;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
-import me.jetby.clans.common.gui.*;
+import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.libb.action.Action;
 import me.jetby.libb.action.ActionContext;
 import me.jetby.libb.action.ActionInput;
@@ -23,9 +23,9 @@ public class OpenMenuAction implements Action {
 
         String raw = input.rawText();
         if (raw.startsWith("model:")) {
-            ListenType type;
+            GuiModel type;
             try {
-                type = ListenType.valueOf(raw.replace("model:", "").toUpperCase());
+                type = GuiModel.valueOf(raw.replace("model:", "").toUpperCase());
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

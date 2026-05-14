@@ -10,7 +10,6 @@ debug: true
 # PLAIN             - "Example Text"
 # MINIMAL           - &l#RGBExample <#RGB>Text</#RGB>
 # UNIFIED - Include all, except GSON
-
 serializer:
   type: UNIFIED
   cache: true
@@ -24,8 +23,15 @@ clan-storage:
       - BARRIER
 
 
-clan-create:
+cooldowns:
+  # Задержка на приглашение игроку в клан
+  invite-expiration: 60
+  # Время для подтверждения удаления клана
+  disband-expiration: 15
+  # Если игрок отклонит запрос клана, то в течении этого срока клан не сможет повторно пригласить
+  deny: 120
 
+clan-create:
   ##
   ## Проверки перед созданием клана
   ## Можно добавлять сколько угодно проверок
@@ -48,7 +54,7 @@ clan-create:
   leader-rank: LEADER # ВАЖНО: Укажите здесь ранг, который будет присвоен создателю клана при создании клана
 
 
-chat-format: "<#FFE259>&l[TreexClans]</#FFA751> &e&l{player} &7▶ &f{message}"
+chat-format: "<#FFE259>[Клановый чат]</#FFA751> &6{player} &7▶ &f{message}"
 
 prefix:
   placeholder:

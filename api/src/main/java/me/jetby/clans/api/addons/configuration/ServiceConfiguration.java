@@ -18,6 +18,7 @@ import java.io.File;
  * </p>
  */
 public interface ServiceConfiguration {
+    void saveDefaultConfig();
 
     /**
      * Gets the main configuration file of the addon.

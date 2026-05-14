@@ -1,5 +1,5 @@
 name: TreexClans
-version: '1.0'
+version: '${project.version}'
 main: me.jetby.clans.common.TreexClans
 api-version: '1.20'
 load: POSTWORLD

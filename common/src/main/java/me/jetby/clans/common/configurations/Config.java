@@ -60,6 +60,10 @@ public class Config {
     private List<Expression> requirements = new ArrayList<>();
     private boolean gradualQuest;
 
+    private int inviteCooldown = 60;
+    private int disbandCooldown = 15;
+    private int denyCooldown = 120;
+
     public static HashedSerializer CONFIG_COLORIZER;
 
     public Config() {
@@ -104,6 +108,10 @@ public class Config {
         levels.clear();
 
         debug = configuration.getBoolean("debug", false);
+
+        inviteCooldown = configuration.getInt("cooldowns.invite-expiration", 60);
+        disbandCooldown = configuration.getInt("cooldowns.disband-expiration", 15);
+        denyCooldown = configuration.getInt("cooldowns.deny", 120);
 
         getStorageFilterType = configuration.getString("clan-storage.filter.type", "BLACKLIST");
         getStorageFilterMaterials = configuration.getStringList("clan-storage.filter.materials");
@@ -198,13 +206,14 @@ public class Config {
         for (String id : level.getKeys(false)) {
             ConfigurationSection lSection = level.getConfigurationSection(id);
             if (lSection == null) continue;
+            String name = lSection.getString("name");
             int exp = lSection.getInt("exp", 0);
             int chest = lSection.getInt("chest", 10);
             int maxMembers = lSection.getInt("max-members", 1);
             int maxBalance = lSection.getInt("max-balance", 0);
             List<String> quests = lSection.getStringList("quests");
             List<String> levelUpActions = lSection.getStringList("level-up-actions");
-            levels.put(Integer.parseInt(id), new Level(id, exp, maxMembers, maxBalance, chest, quests, levelUpActions));
+            levels.put(Integer.parseInt(id), new Level(id, name, exp, maxMembers, maxBalance, chest, quests, levelUpActions));
         }
 
         gradualQuest = configuration.getBoolean("gradual-quest", false);

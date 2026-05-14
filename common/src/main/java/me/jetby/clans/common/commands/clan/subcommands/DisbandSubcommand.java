@@ -46,7 +46,7 @@ public class DisbandSubcommand implements Subcommand {
                             .replace("{arg}", sub)
                             .with(clan)
                             .run();
-                    Cooldown.setCooldown("delete_" + player.getUniqueId(), 10);
+                    Cooldown.setCooldown("delete_" + player.getUniqueId(), plugin.getCfg().getDisbandCooldown());
                 }
             }
             return true;

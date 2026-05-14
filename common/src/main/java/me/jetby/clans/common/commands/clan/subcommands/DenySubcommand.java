@@ -32,6 +32,7 @@ public class DenySubcommand implements Subcommand {
             var clanId = args[0];
             if (!plugin.getClanManager().lifecycle().clanExists(clanId)) {
                 plugin.getMessages().of(player,  "clan-does-not-exist")
+                        .replace("{clan}", clanId)
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .run();
@@ -40,16 +41,18 @@ public class DenySubcommand implements Subcommand {
 
             if (!Cooldown.isOnCooldown("invite_" + player.getUniqueId() + "_" + clanId)) {
                 plugin.getMessages().of(player, "no-invite")
+                        .replace("{clan}",clanId)
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .run();
                 return true;
             }
 
-            Cooldown.setCooldown("denied_" + player.getUniqueId() + "_" + clanId, 120);
+            Cooldown.setCooldown("denied_" + player.getUniqueId() + "_" + clanId, plugin.getCfg().getDenyCooldown());
             Cooldown.removeCooldown("invite_" + player.getUniqueId() + "_" + clanId);
 
             plugin.getMessages().of(player, "clan-deny")
+                    .replace("{clan}", clanId)
                     .replace("{cmd}", command.getName())
                     .replace("{arg}", sub)
                     .run();

@@ -38,24 +38,26 @@ public class AcceptSubcommand implements Subcommand {
                         .run();
                 return true;
             }
-            if (!plugin.getClanManager().lifecycle().clanExists(args[0])) {
+            var clanId = args[0];
+            if (!plugin.getClanManager().lifecycle().clanExists(clanId)) {
                 plugin.getMessages().of(player, "clan-does-not-exist")
-                        .replace("{clan}", args[0])
+                        .replace("{clan}", clanId)
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .run();
 
                 return true;
             }
-            if (!Cooldown.isOnCooldown("invite_" + player.getUniqueId() + "_" + args[0])) {
+            if (!Cooldown.isOnCooldown("invite_" + player.getUniqueId() + "_" + clanId)) {
                 plugin.getMessages().of(player, "no-invite")
+                        .replace("{clan}", clanId)
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .run();
                 return true;
             } else {
-                Cooldown.removeCooldown("invite_" + player.getUniqueId() + "_" + args[0]);
-                Clan clan = plugin.getClanManager().lookup().getClan(args[0]);
+                Cooldown.removeCooldown("invite_" + player.getUniqueId() + "_" + clanId);
+                Clan clan = plugin.getClanManager().lookup().getClan(clanId);
                 Member member = new MemberImpl(
                         player.getUniqueId(),
                         plugin.getCfg().getDefaultRank(),

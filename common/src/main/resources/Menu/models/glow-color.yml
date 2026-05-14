@@ -3,7 +3,8 @@ title: "&0&lВыбор цвета"
 size: 36
 open_args: { }
 
-listen: glow_color
+model: ClanGlow:glow_color
+
 Items:
 
   white:

@@ -1,5 +1,6 @@
 package me.jetby.clans.common.clan.model;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +22,10 @@ import java.util.*;
 @Getter
 @Setter
 public class ClanImpl implements Clan {
+    @Setter(AccessLevel.NONE)
     private final String id;
     private String prefix;
+    @Setter(AccessLevel.NONE)
     private final Member leader;
     private final Set<Member> members;
     private final Map<String, Rank> ranks;
@@ -33,7 +36,7 @@ public class ClanImpl implements Clan {
     private boolean pvp;
     private Map<UUID, Map<String, Integer>> questsProgress;
     private Map<UUID, List<String>> completedQuest;
-    private List<ItemStack> chest;
+    private Map<Integer, ItemStack> chest;
     private String slogan;
 
     private final TreexClans plugin;
@@ -63,7 +66,7 @@ public class ClanImpl implements Clan {
     }
 
 
-    public void addExp(int amount, @NotNull Member memberImpl, @NotNull Map<Integer, Level> levels) {
+    public synchronized void addExp(int amount, @NotNull Member memberImpl, @NotNull Map<Integer, Level> levels) {
         int remaining = amount;
 
         while (remaining > 0) {
@@ -93,7 +96,7 @@ public class ClanImpl implements Clan {
         memberImpl.setExp(memberImpl.getExp() + amount);
     }
 
-    public void addExp(int amount, @NotNull Map<Integer, Level> levels) {
+    public synchronized void addExp(int amount, @NotNull Map<Integer, Level> levels) {
         int remaining = amount;
 
         while (remaining > 0) {
@@ -126,12 +129,12 @@ public class ClanImpl implements Clan {
         return level.minExp() - exp;
     }
 
-    public void takeExp(int a, @NotNull Member memberImpl) {
+    public synchronized void takeExp(int a, @NotNull Member memberImpl) {
         setExp(getExp() - a);
         memberImpl.setExp(memberImpl.getExp() - a);
     }
 
-    public void takeExp(int a) {
+    public synchronized void takeExp(int a) {
         setExp(getExp() - a);
     }
 

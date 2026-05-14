@@ -2,7 +2,7 @@ id: CHOOSE_PLAYER_COLOR
 title: "&0&lВыберите участника"
 size: 54
 
-listen: choose_player_color
+model: choose_player_color
 
 Items:
 

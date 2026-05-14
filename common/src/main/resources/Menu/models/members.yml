@@ -3,7 +3,7 @@ title: "&0&lУчастники клана"
 size: 54
 open_args: { }
 
-listen: members
+model: members
 
 # Available types
 # leader

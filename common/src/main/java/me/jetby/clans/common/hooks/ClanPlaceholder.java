@@ -164,8 +164,13 @@ public class ClanPlaceholder extends PlaceholderExpansion {
                 yield String.valueOf(clan.getBalance());
             }
             case "level" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
-                yield clan.getLevel().id();
+                if (args.length==1) {
+                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                    yield clan.getLevel().id();
+                } else if (args.length==2 && args[1].equalsIgnoreCase("name")) {
+                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                    yield clan.getLevel().name();
+                } else yield null;
             }
             case "exp" -> {
                 if (args.length==1) {

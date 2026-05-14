@@ -4,7 +4,7 @@ size: 54
 open_args:
   - 'menu'
 
-listen: clan_only
+model: clan_only
 
 Items:
 
@@ -70,7 +70,7 @@ Items:
 
   orange:
     material: ORANGE_STAINED_GLASS_PANE
-    slot:
+    slots:
       - 0-2
       - 6-8
       - 45-47
@@ -79,7 +79,7 @@ Items:
 
   black:
     material: BLACK_STAINED_GLASS_PANE
-    slot:
+    slots:
       - 3
       - 5
       - 48

@@ -133,7 +133,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
             Level baseLevel = plugin.getCfg().getLevels().getOrDefault(
                     1,
-                    new Level("1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>())
+                    new Level("1", "1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>())
             );
 
             Clan clan = new ClanImpl(
@@ -149,7 +149,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                     false,
                     new HashMap<>(),
                     new HashMap<>(),
-                    new ArrayList<>(),
+                    new HashMap<>(),
                     "",
                     plugin
             );

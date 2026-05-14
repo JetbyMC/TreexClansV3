@@ -13,6 +13,7 @@ public class ServiceConfigurationImpl implements ServiceConfiguration {
 
     private final File dataFolder;
     private final JavaPlugin javaPlugin;
+    private FileConfiguration config;
 
     public ServiceConfigurationImpl(ServiceManagerImpl serviceManager) {
         this.dataFolder = serviceManager.getDataFolder();
@@ -48,25 +49,17 @@ public class ServiceConfigurationImpl implements ServiceConfiguration {
     }
 
     public FileConfiguration getConfig() {
-        File configFile = new File(dataFolder, "config.yml");
-
-        if (!configFile.exists()) {
-            try {
-                configFile.createNewFile();
-            } catch (IOException e) {
-                javaPlugin.getLogger().severe("Failed to create config file: config.yml");
-                e.printStackTrace();
-            }
-        }
-
-        return YamlConfiguration.loadConfiguration(configFile);
+        return config!=null ? config : getFileConfiguration("config.yml");
     }
 
+    public void saveDefaultConfig() {
+        this.config = getConfig();
+    }
     public void saveConfig() {
         File configFile = new File(dataFolder, "config.yml");
 
         try {
-            getConfig().save(configFile);
+            config.save(configFile);
         } catch (IOException e) {
             javaPlugin.getLogger().severe("Failed to save config file: config.yml");
             e.printStackTrace();

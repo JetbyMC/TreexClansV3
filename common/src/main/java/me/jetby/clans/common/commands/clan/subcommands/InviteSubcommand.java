@@ -94,7 +94,7 @@ public class InviteSubcommand implements Subcommand {
                         .with(clan)
                         .run();
             } else {
-                Cooldown.setCooldown("invite_" + target.getUniqueId() + "_" + clan.getId(), 60);
+                Cooldown.setCooldown("invite_" + target.getUniqueId() + "_" + clan.getId(), plugin.getCfg().getInviteCooldown());
                 plugin.getMessages().of(player, "clan-invite")
                         .replace("{target}", target.getName())
                         .replace("{cmd}", command.getName())

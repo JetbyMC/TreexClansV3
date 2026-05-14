@@ -2,7 +2,7 @@ id: ranks
 title: "&0&lРанги"
 size: 36
 
-listen: ranks
+model: ranks
 
 Items:
 

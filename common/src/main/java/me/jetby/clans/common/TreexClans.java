@@ -115,6 +115,31 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         }
         LOGGER.success("┗ Hooks loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        LOGGER.info("&6┏ Loading API:");
+        Speedometer.start();
+
+
+        guiFactory = new GuiFactoryImpl();
+
+        clanManager = new ClanManagerImpl(this);
+
+        questManager = new QuestManager(this);
+        leaderboardService = new LeaderboardServiceImpl();
+
+        eventRegistrar = new EventRegistryImpl();
+        this.commandService = new CommandServiceImpl();
+        addonManager = new AddonManagerImpl(this, true);
+
+        getServer().getServicesManager().register(
+                TreexClansAPI.class,
+                this,
+                this,
+                ServicePriority.Normal
+        );
+
+        ((AddonManagerImpl) addonManager).loadAddons();
+        LOGGER.success("┗ API loaded (" + Speedometer.result() + "ms)");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading configurations:");
         Speedometer.start();
         new UpdateConfig(getConfig().getInt("config-version", 1));
@@ -124,8 +149,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
 
         messages = new MessagesConfiguration(this);
         LOGGER.success(" └  ✔  messages.yml");
-
-
         formatTime = new FormatTime(this);
 
         modules = new ModulesConfiguration();
@@ -145,33 +168,8 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         LOGGER.success(" └  ✔  Storage");
         LOGGER.success("Configuration loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        LOGGER.info("&6┏ Loading API:");
-        Speedometer.start();
-
-
-        guiFactory = new GuiFactoryImpl();
-
-        clanManager = new ClanManagerImpl(this);
-
-        questManager = new QuestManager(this);
-        leaderboardService = new LeaderboardServiceImpl();
-
-        eventRegistrar = new EventRegistryImpl();
-        addonManager = new AddonManagerImpl(this, true);
-
-        getServer().getServicesManager().register(
-                TreexClansAPI.class,
-                this,
-                this,
-                ServicePriority.Normal
-        );
-
-        ((AddonManagerImpl) addonManager).loadAddons();
-        LOGGER.success("┗ API loaded (" + Speedometer.result() + "ms)");
-        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading commands:");
         Speedometer.start();
-        this.commandService = new CommandServiceImpl();
         PluginCommand xClanCommand = this.getCommand("xclan");
         if (xClanCommand != null) {
             AdminCommand cmd = new AdminCommand(commandService);

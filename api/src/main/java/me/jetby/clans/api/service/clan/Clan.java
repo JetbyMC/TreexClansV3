@@ -127,9 +127,9 @@ public interface Clan {
     /**
      * @return the shared clan chest inventory.
      */
-    @NotNull List<ItemStack> getChest();
+    @NotNull Map<Integer, ItemStack> getChest(); // slot, item
 
-    void setChest(@NotNull List<ItemStack> items);
+    void setChest(@NotNull Map<Integer, ItemStack> items);
 
     /**
      * Adds experience to clan and handles level-ups.

@@ -1,6 +1,6 @@
 package me.jetby.clans.api.gui;
 
-public enum ListenType {
+public enum GuiModel {
     DEFAULT,
     CLAN_ONLY,
     QUESTS,

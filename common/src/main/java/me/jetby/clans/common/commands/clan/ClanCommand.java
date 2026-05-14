@@ -4,13 +4,11 @@ import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.gui.ClanGuiData;
 import me.jetby.clans.api.gui.GuiContext;
-import me.jetby.clans.api.gui.ListenType;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.CommandsConfiguration;
-import me.jetby.clans.common.configurations.Config;
 import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.libb.action.ActionUtil;
 import me.jetby.libb.command.AdvancedCommand;
@@ -37,8 +35,11 @@ public class ClanCommand extends AdvancedCommand {
         aliases.remove(0);
         getAliases().addAll(aliases);
 
-        GuiLoader.CUSTOM_GUIS.forEach((key, gui) -> menuArgs.put(key, gui.getArgs()));
-        GuiLoader.REQUIRED_GUIS.forEach((key, gui) -> menuArgs.put(key.name(), gui.getArgs()));
+        GuiLoader.CUSTOM_GUIS.forEach((id, gui) -> menuArgs.put(id, gui.getArgs()));
+        GuiLoader.API_GUIS.forEach((id, gui) -> menuArgs.put(id, gui.getArgs()));
+        GuiLoader.REQUIRED_GUIS.forEach((model, gui) -> {
+            if (gui.getId() != null) menuArgs.put(gui.getId(), gui.getArgs());
+        });
     }
 
     @Override
@@ -46,7 +47,9 @@ public class ClanCommand extends AdvancedCommand {
         if (!(sender instanceof Player player)) return true;
 
         if (args.length == 0) {
-            sendHelp(player);
+            plugin.getMessages().of(player, "commands.help")
+                    .replace("{cmd}", command.getName())
+                    .run();
             return true;
         }
 
@@ -77,21 +80,6 @@ public class ClanCommand extends AdvancedCommand {
         return true;
     }
 
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (!(sender instanceof Player player)) return List.of();
-
-        if (args.length == 1) {
-            return getFirstArgCompletions(player, args[0]);
-        }
-
-        ClanSubcommand sub = resolveSubcommand(args[0]);
-        if (sub != null) {
-            return sub.getSubcommand().onTabCompleter(sender, command, s, args);
-        }
-        return List.of();
-    }
-
     private ClanSubcommand resolveSubcommand(String input) {
         String lower = input.toLowerCase();
         for (Map.Entry<ClanSubcommand, List<String>> entry : CommandsConfiguration.SUBCOMMAND_ALIASES.entrySet()) {
@@ -102,14 +90,6 @@ public class ClanCommand extends AdvancedCommand {
         return null;
     }
 
-    private void sendHelp(Player player) {
-        String path = plugin.getClanManager().lookup().isInClan(player.getUniqueId())
-                ? "commands.help"
-                : "commands.help-no-clan";
-        plugin.getMessages().getConfig().getStringList(path)
-                .forEach(str -> player.sendMessage(Config.CONFIG_COLORIZER.deserialize(str)));
-    }
-
     private boolean tryOpenGui(Player player, String arg) {
         for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
             if (!entry.getValue().contains(arg)) continue;
@@ -118,10 +98,11 @@ public class ClanCommand extends AdvancedCommand {
             if (gui == null) return false;
 
             boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
+            String renderer = gui.getRenderer();
 
-            if (gui.getListenType()==ListenType.CLAN_ONLY && !inClan) return false;
+            if (renderer.equalsIgnoreCase("clan_only") && !inClan) return false;
 
-            if (!inClan && gui.getListenType() != ListenType.DEFAULT && gui.getListenType() != ListenType.TOP_CLANS) {
+            if (!inClan && !renderer.equalsIgnoreCase("default") && !renderer.equalsIgnoreCase("top_clans")) {
                 return true;
             }
 
@@ -137,6 +118,27 @@ public class ClanCommand extends AdvancedCommand {
         return inClan ? getCompletionsForMember(player, input) : getCompletionsForNonMember(player, input);
     }
 
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) return List.of();
+
+        if (args.length == 1) {
+            return getFirstArgCompletions(player, args[0]);
+        }
+
+        ClanSubcommand sub = resolveSubcommand(args[0]);
+        if (sub != null) {
+            return sub.getSubcommand().onTabCompleter(sender, command, s, args);
+        }
+
+        Subcommand registeredSub = commandService.getCommands().get(args[0].toLowerCase());
+        if (registeredSub != null) {
+            return registeredSub.onTabCompleter(sender, command, s, Arrays.copyOfRange(args, 1, args.length));
+        }
+
+        return List.of();
+    }
+
     private List<String> getCompletionsForNonMember(Player player, String input) {
         List<String> completions = new ArrayList<>();
 
@@ -145,17 +147,22 @@ public class ClanCommand extends AdvancedCommand {
             if (subAliases != null) completions.addAll(subAliases);
         }
 
+        boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
         for (Map.Entry<String, List<String>> entry : menuArgs.entrySet()) {
             ClanGuiData gui = GuiLoader.getGuiConfiguration(entry.getKey());
             if (gui == null) continue;
 
-            boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
-            if (gui.getListenType()==ListenType.CLAN_ONLY && !inClan) {
-                continue;
-            }
+            String renderer = gui.getRenderer();
+            if (renderer.equalsIgnoreCase("clan_only") && !inClan) continue;
 
-            if (gui.getListenType() == ListenType.DEFAULT || gui.getListenType() == ListenType.TOP_CLANS) {
+            if (renderer.equalsIgnoreCase("default") || renderer.equalsIgnoreCase("top_clans")) {
                 completions.addAll(entry.getValue());
+            }
+        }
+
+        for (Map.Entry<String, Subcommand> entry : commandService.getCommands().entrySet()) {
+            if (entry.getValue().type() == CommandService.CommandType.CLAN) {
+                completions.add(entry.getKey());
             }
         }
 
@@ -174,9 +181,7 @@ public class ClanCommand extends AdvancedCommand {
         List<String> completions = new ArrayList<>();
 
         for (Map.Entry<ClanSubcommand, List<String>> entry : CommandsConfiguration.SUBCOMMAND_ALIASES.entrySet()) {
-            boolean excluded = isExcluded(entry, perms);
-
-            if (!excluded) {
+            if (!isExcluded(entry, perms)) {
                 completions.addAll(entry.getValue());
             }
         }
@@ -191,6 +196,12 @@ public class ClanCommand extends AdvancedCommand {
             }
         }
 
+        for (Map.Entry<String, Subcommand> entry : commandService.getCommands().entrySet()) {
+            if (entry.getValue().type() == CommandService.CommandType.CLAN) {
+                completions.add(entry.getKey());
+            }
+        }
+
         return completions.stream()
                 .filter(cmd -> cmd.startsWith(input.toLowerCase()))
                 .toList();
@@ -200,17 +211,17 @@ public class ClanCommand extends AdvancedCommand {
         ClanSubcommand sub = entry.getKey();
 
         return switch (sub) {
-            case SETBASE   -> !perms.contains(RankPerm.SETBASE);
-            case BASE      -> !perms.contains(RankPerm.BASE);
-            case INVITE    -> !perms.contains(RankPerm.INVITE);
-            case WITHDRAW  -> !perms.contains(RankPerm.WITHDRAW);
-            case DEPOSIT   -> !perms.contains(RankPerm.DEPOSIT);
-            case KICK      -> !perms.contains(RankPerm.KICK);
-            case PVP       -> !perms.contains(RankPerm.PVP);
+            case SETBASE -> !perms.contains(RankPerm.SETBASE);
+            case BASE -> !perms.contains(RankPerm.BASE);
+            case INVITE -> !perms.contains(RankPerm.INVITE);
+            case WITHDRAW -> !perms.contains(RankPerm.WITHDRAW);
+            case DEPOSIT -> !perms.contains(RankPerm.DEPOSIT);
+            case KICK -> !perms.contains(RankPerm.KICK);
+            case PVP -> !perms.contains(RankPerm.PVP);
             case SETSLOGAN -> !plugin.getModules().isSlogan() || !perms.contains(RankPerm.SETSLOGAN);
             case SETPREFIX -> !plugin.getModules().isSetprefix() || !perms.contains(RankPerm.SETPREFIX);
             case CREATE, ACCEPT -> true;
-            default        -> false;
+            default -> false;
         };
     }
 }

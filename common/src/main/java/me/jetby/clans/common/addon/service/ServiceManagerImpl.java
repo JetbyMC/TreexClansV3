@@ -38,7 +38,7 @@ public class ServiceManagerImpl implements ServiceManager {
     public ServiceManagerImpl(AddonManager addonManager, File dataFolder, TreexClans plugin, ClanAddon addon) {
         this.plugin = plugin;
         this.dataFolder = new File(dataFolder, addon.id());
-        if (!dataFolder.exists()) dataFolder.mkdirs();
+        if (!this.dataFolder.exists()) this.dataFolder.mkdirs();
 
         this.economy = plugin.getEconomy();
         this.clanManager = plugin.getClanManager();

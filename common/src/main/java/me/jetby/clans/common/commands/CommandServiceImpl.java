@@ -14,7 +14,7 @@ public class CommandServiceImpl implements CommandService {
 
     @Override
     public void registerCommand(@NotNull String name, @NotNull Subcommand subcommand) {
-        if (name.isBlank() || subcommand == null)
+        if (name.isBlank())
             throw new IllegalArgumentException("Command name and instance cannot be null or empty.");
 
         commands.put(name.toLowerCase(), subcommand);

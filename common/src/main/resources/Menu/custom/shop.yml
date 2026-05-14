@@ -4,7 +4,7 @@ size: 54
 open_args:
   - 'shop'
 
-listen: clan_only
+model: clan_only
 
 Items:
 
@@ -18,18 +18,16 @@ Items:
       - "&6• Ваш баланс &6%clan_coin% коинов"
       - ""
       - "&7▶ Нажмите чтобы купить"
-    click_requirements:
-      money-check:
-        type: math
-        input: "%clan_coin% >= 10"
-        deny_commands:
-          - "[message] &cУ вас недостаточно коинов."
     on_click:
       any:
-        - "[console] minecraft:give %player_name% diamond 1"
-        - "[coin_take] 10"
-        - "[open] shop"
-
+        - check1:
+            if: "%clan_coin% >= 10"
+            then:
+              - "[console] minecraft:give %player_name% diamond 1"
+              - "[coin_take] 10"
+              - "[open] shop"
+            else:
+              - "[message] &cУ вас недостаточно коинов."
 
 
   orange:

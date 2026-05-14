@@ -27,11 +27,11 @@ public class MemberImpl implements Member {
     private int kills;
     private int deaths;
 
-    public void addCoin(int a) {
+    public synchronized void addCoin(int a) {
         coin = coin + a;
     }
 
-    public void takeCoin(int a) {
+    public synchronized void takeCoin(int a) {
         coin = coin - a;
     }
 }

@@ -2,7 +2,7 @@ id: rank-perms
 title: "&0&lПрава"
 size: 36
 
-listen: rank_permissions
+model: rank_permissions
 
 Items:
 
