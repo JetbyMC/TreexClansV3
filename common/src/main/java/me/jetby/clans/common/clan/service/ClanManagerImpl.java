@@ -194,12 +194,12 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             }
 
             // notify members
-            for (var member : clan.getMembers()) {
-                Player player = Bukkit.getPlayer(member.getUuid());
-                if (player != null) {
-                    player.sendMessage("Your clan was disbanded by clan leader");
-                }
-            }
+//            for (Member member : clan.getMembers()) {
+//                Player player = Bukkit.getPlayer(member.getUuid());
+//                if (player != null) {
+//                    player.sendMessage("Your clan was disbanded by clan leader");
+//                }
+//            }
 
             getClanList().remove(clan.getId());
             return true;

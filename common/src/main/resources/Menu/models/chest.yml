@@ -6,11 +6,13 @@ open_args:
   - 'chest'
 
 model: chest
-# Available types
-# all_quests
-# category-<id>
 
 Items:
+
+  items:
+    type: items
+    slots:
+      - 9-44
 
   bs:
     slot: -1
@@ -23,27 +25,22 @@ Items:
       - "&7чтобы разблокировать больше слотов."
 
 
-  items:
-    slot:
-      - 9-44
-    type: items
-
-
   next_page:
     material: SPECTRAL_ARROW
     slot: 52
     display_name: "&aСледующая страница ▶"
     on_click:
       any:
-        - '[next_page]'
+        - "[next_page]"
+
+
   prev_page:
     material: ARROW
     slot: 46
     display_name: "&c◀ Предыдущая страница"
     on_click:
       any:
-        - '[prev_page]'
-
+        - "[prev_page]"
 
   orange:
     material: ORANGE_STAINED_GLASS_PANE
@@ -79,7 +76,7 @@ Items:
     display_name: "&6Вернуться в меню"
     on_click:
       any:
-      - "[open] main"
+        - "[open] main"
 
 
 

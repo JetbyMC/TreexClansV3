@@ -48,7 +48,8 @@ public class ClanCommand extends AdvancedCommand {
         if (!(sender instanceof Player player)) return true;
 
         if (args.length == 0) {
-            plugin.getMessages().of(player, "commands.help")
+            Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+            plugin.getMessages().of(player, clan==null ? "commands.help-no-clan" : "commands.help")
                     .replace("{cmd}", command.getName())
                     .run();
             return true;

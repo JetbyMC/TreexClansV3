@@ -32,29 +32,29 @@ commands:
   deny:
     - "[message] &#FC835C• /{cmd} {arg} [тэг] &7- &fОтклонить приглашение в клан"
   help-no-clan:
-    - "&#FFE259◀&m          &r <#FFE259>&lTreexClans</#FFA751> &#FFE259&m          &#FFE259▶ "
-    - ""
-    - "&#FC835C• /{cmd} create [тэг] &7- &fСоздать клан"
-    - ""
-    - "&#FFE259◀&m                                       &#FFE259▶ "
+    - "[message] &#FFE259◀&m          &r <#FFE259>&lTreexClans</#FFA751> &#FFE259&m          &#FFE259▶ "
+    - "[message] "
+    - "[message] &#FC835C• /{cmd} create [тэг] &7- &fСоздать клан"
+    - "[message] "
+    - "[message] &#FFE259◀&m                                       &#FFE259▶ "
   help:
-    - "&#FFE259◀&m          &r <#FFE259>&lTreexClans</#FFA751> &#FFE259&m          &#FFE259▶ "
-    - ""
-    - "&#FC835C• /{cmd} menu &7- &fМеню клана"
-    - "&#FC835C• /{cmd} chat &7- &fПереключить клановый чат"
-    - "&#FC835C• /{cmd} chat [текст] &7- &fНаписать в клановый чат"
-    - "&#FC835C• /{cmd} pvp &7- &fПереключить чат"
-    - "&#FC835C• /{cmd} balance &7- &fПроверить баланс клана"
-    - "&#FC835C• /{cmd} invest [сумма] &7- &fПополнить баланс клана"
-    - "&#FC835C• /{cmd} withdraw [сумма] &7- &fСнять с баланса клана"
-    - "&#FC835C• /{cmd} invite [ник] &7- &fПригласить игрока в свой клан"
-    - "&#FC835C• /{cmd} kick [ник] &7- &fИзгнать игрока из своего клана"
-    - "&#FC835C• /{cmd} base &7- &fТелепортироваться на точку базы"
-    - "&#FC835C• /{cmd} setbase &7- &fПоставить точку базы"
-    - "&#FC835C• /{cmd} setrank [ник] [ранг] &7- &fУстановить ранг игроку"
-    - "&#FC835C• /{cmd} disband &7- &fРасформировать клан (удаление клана)"
-    - ""
-    - "&#FFE259◀&m                                       &#FFE259▶ "
+    - "[message] &#FFE259◀&m          &r <#FFE259>&lTreexClans</#FFA751> &#FFE259&m          &#FFE259▶ "
+    - "[message] "
+    - "[message] &#FC835C• /{cmd} menu &7- &fМеню клана"
+    - "[message] &#FC835C• /{cmd} chat &7- &fПереключить клановый чат"
+    - "[message] &#FC835C• /{cmd} chat [текст] &7- &fНаписать в клановый чат"
+    - "[message] &#FC835C• /{cmd} pvp &7- &fПереключить чат"
+    - "[message] &#FC835C• /{cmd} balance &7- &fПроверить баланс клана"
+    - "[message] &#FC835C• /{cmd} invest [сумма] &7- &fПополнить баланс клана"
+    - "[message] &#FC835C• /{cmd} withdraw [сумма] &7- &fСнять с баланса клана"
+    - "[message] &#FC835C• /{cmd} invite [ник] &7- &fПригласить игрока в свой клан"
+    - "[message] &#FC835C• /{cmd} kick [ник] &7- &fИзгнать игрока из своего клана"
+    - "[message] &#FC835C• /{cmd} base &7- &fТелепортироваться на точку базы"
+    - "[message] &#FC835C• /{cmd} setbase &7- &fПоставить точку базы"
+    - "[message] &#FC835C• /{cmd} setrank [ник] [ранг] &7- &fУстановить ранг игроку"
+    - "[message] &#FC835C• /{cmd} disband &7- &fРасформировать клан (удаление клана)"
+    - "[message] "
+    - "[message] &#FFE259◀&m                                       &#FFE259▶ "
 you-cant-leave-leader:
   - "[message] {prefix} &cYou can't leave this clan because you are the leader. If you want disband this clan you can use /{cmd} disband"
 player-not-found:
@@ -101,7 +101,7 @@ you-cant-do-that-with-leader:
   - "[message] {prefix} &cВы не можете выполнить данное действие против лидера клана"
 
 your-rank-is-not-allowed-to-do-that:
-  - "[message] {prefix} &cYou are not allowed to do that! Please ask your clan leader to give you permission"
+  - "[message] {prefix} &cВам запрещено это делать! Пожалуйста, попросите лидера вашего клана дать вам разрешение."
 
 
 clan-create:
@@ -137,8 +137,7 @@ clan-join-request:
   - "[message] &r"
   - "[message] {prefix} &#17FF35Вам поступил запрос на вступление в клан &l{clan} &r&#17FF35от игрока &f&l{player}"
   - "[message] &r"
-  # В типе [button] НЕ ПОДЕРЖИВАЮТСЯ HEX ЦВЕТА!!!!
-  - "[button] <hover:show_text:'&7Нажмите, чтобы &aпринять'><click:run_command:/{cmd} accept {clan}>              &a[Принять]</click></hover> &7| <hover:show_text:'&7Нажмите, чтобы &cотклонить&c'><click:run_command:/{cmd} deny {clan}>&c[Отклонить]&c</click></hover>"
+  - "[message] <hover:show_text:'&7Нажмите, чтобы <#17FF35>принять'><click:run_command:/{cmd} accept {clan}>              <#17FF35>[Принять]</click></hover> &7| <hover:show_text:'&7Нажмите, чтобы <#FB0000>отклонить&c'><click:run_command:/{cmd} deny {clan}><#FB0000>[Отклонить]</click></hover>"
   - "[message] &r"
 clan-join:
   - '[message] {prefix} &aВы вступили в клан {clan}'
@@ -165,10 +164,6 @@ clan-base:
   - '[actionbar] &7Телепорт на базу'
 clan-base-unset:
   - '[message] &cКлан база не установлена'
-clan-glow-on:
-  - '[message] {prefix} &fСвечение соклановцев &#17FF35включён'
-clan-glow-off:
-  - '[message] {prefix} &fСвечение соклановцев &#FB0000выключен'
 clan-setslogan:
   - "[message] {prefix} &fВы поставили слоган клана таким: &6{slogan}"
 clan-setprefix:

@@ -8,6 +8,7 @@ import me.jetby.libb.gui.item.ItemWrapper;
 import me.jetby.libb.gui.parser.Item;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -54,8 +55,10 @@ public class ChestGui extends Gui {
         onClick(event -> {
             if (onClick != null) onClick.accept(event);
 
-
-            if (!slots.contains(event.getSlot())) return;
+            if (!slots.contains(event.getSlot())) {
+                event.setCancelled(true);
+                return;
+            }
             int guiSlot = event.getSlot();
             int pageOffset = slots.indexOf(guiSlot);
             if (pageOffset == -1) return;
@@ -64,12 +67,19 @@ public class ChestGui extends Gui {
                 event.setCancelled(true);
                 return;
             }
+
             event.setCancelled(false);
+
             getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
                 ItemStack current = getInventory().getItem(guiSlot);
                 getClan().getChest().put(index, current != null ? current : new ItemStack(AIR_ITEM));
                 syncToOpenViewers(getCurrentPage());
             });
+        });
+        Consumer<InventoryDragEvent> onDrag = onDrag();
+        onDrag(event -> {
+            if (onDrag!=null) onDrag.accept(event);
+
         });
 
         onClose(event -> {

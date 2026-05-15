@@ -2,6 +2,7 @@ package me.jetby.clans.common.listeners;
 
 import me.jetby.clans.api.service.ClanManager;
 import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.common.TreexClans;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -65,38 +66,20 @@ public class ClanListeners implements Listener {
         }
     }
 
-//    @EventHandler
-//    public void onTeamDamageByProjectile(ProjectileHitEvent e) {
-//        if (e.getEntity().getShooter() != null) {
-//            if (e.getEntity().getShooter() instanceof Player player) {
-//                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) return;
-//                var clanImpl = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-//                if (clanImpl == null) return;
-//                if (clanImpl.isPvp()) return;
-//                if (e.getHitEntity() instanceof Player target) {
-//                    if (plugin.getClanManager().lookup().getClanByMember(target.getUniqueId()) != null && plugin.getClanManager().lookup().getClanByMember(target.getUniqueId()).equals(clanImpl)) {
-//                        plugin.getMessages().sendMessage(player, clanImpl, "pvp-disabled");
-//                        e.setCancelled(true);
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     @EventHandler
     public void onClanKillsOrDeaths(PlayerDeathEvent e) {
         Player player = e.getEntity();
         Player killer = player.getKiller();
         if (manager.lookup().isInClan(player.getUniqueId())) {
-            var clanImpl = manager.lookup().getClanByMember(player.getUniqueId());
-            var memberImpl = clanImpl.getMember(player.getUniqueId());
-            memberImpl.setDeaths(memberImpl.getDeaths() + 1);
+            Clan clan = manager.lookup().getClanByMember(player.getUniqueId());
+            Member member = clan.getMember(player.getUniqueId());
+            member.setDeaths(member.getDeaths() + 1);
         }
         if (killer != null) {
             if (manager.lookup().isInClan(killer.getUniqueId())) {
-                var clanImpl = manager.lookup().getClanByMember(killer.getUniqueId());
-                var memberImpl = clanImpl.getMember(killer.getUniqueId());
-                memberImpl.setKills(memberImpl.getKills() + 1);
+                Clan clan = manager.lookup().getClanByMember(killer.getUniqueId());
+                Member member = clan.getMember(killer.getUniqueId());
+                member.setKills(member.getKills() + 1);
             }
         }
     }

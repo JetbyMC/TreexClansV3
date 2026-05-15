@@ -3,9 +3,11 @@ package me.jetby.clans.common.gui;
 import lombok.Getter;
 import me.jetby.clans.api.gui.*;
 import me.jetby.clans.common.gui.core.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @Getter
 public class GuiFactoryImpl implements GuiFactory {
@@ -45,5 +47,29 @@ public class GuiFactoryImpl implements GuiFactory {
     @Override
     public void unregister(String type) {
         customTypes.remove(type.toUpperCase());
+    }
+
+    @Override
+    public @Nullable ClanGuiData getGui(String id) {
+        return GuiLoader.getGuiConfiguration(id);
+    }
+
+    @Override
+    public @Nullable ClanGuiData getGui(GuiModel model) {
+        return GuiLoader.getGuiConfiguration(model);
+    }
+
+    @Override
+    public @Nullable ClanGuiData findGui(Predicate<ClanGuiData> predicate) {
+        for (ClanGuiData gui : GuiLoader.API_GUIS.values()) {
+            if (predicate.test(gui)) return gui;
+        }
+        for (ClanGuiData gui : GuiLoader.CUSTOM_GUIS.values()) {
+            if (predicate.test(gui)) return gui;
+        }
+        for (ClanGuiData gui : GuiLoader.REQUIRED_GUIS.values()) {
+            if (predicate.test(gui)) return gui;
+        }
+        return null;
     }
 }

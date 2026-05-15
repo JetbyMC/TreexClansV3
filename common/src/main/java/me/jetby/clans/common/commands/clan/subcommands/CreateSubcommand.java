@@ -30,7 +30,10 @@ public class CreateSubcommand implements Subcommand {
                 return true;
             } else {
                 if (args.length < 1) {
-                    sender.sendMessage("§cUsage: /clan create <clanName>");
+                    plugin.getMessages().of(player, "commands.create")
+                            .replace("{cmd}", command.getName())
+                            .replace("{arg}", sub)
+                            .run();
                     return true;
                 }
                 String clanName = args[0].toLowerCase();

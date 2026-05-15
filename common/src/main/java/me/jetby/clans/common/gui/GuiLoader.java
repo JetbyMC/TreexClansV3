@@ -38,7 +38,7 @@ public class GuiLoader {
     }
 
     /**
-     * @param id Gui id — ищет во всех картах: custom, api, required
+     * @param id GUI ID — searches across all maps: custom, api, required.
      */
     public static ClanGuiData getGuiConfiguration(@NotNull String id) {
         ClanGuiData gui = CUSTOM_GUIS.get(id);
@@ -59,8 +59,7 @@ public class GuiLoader {
         REQUIRED_GUIS.clear();
         File folder = new File(plugin.getDataFolder(), "Menu/models");
         if (!folder.exists() && folder.mkdirs()) {
-            for (String name : new String[]{"members.yml", "choose-player-color.yml",
-                    "glow-color.yml", "rank-perms.yml", "ranks.yml", "storage.yml", "top-clans.yml"}) {
+            for (String name : new String[]{"members.yml", "rank-perms.yml", "ranks.yml", "chest.yml"}) {
                 saveDefault("Menu/models/" + name, folder, name);
             }
         }

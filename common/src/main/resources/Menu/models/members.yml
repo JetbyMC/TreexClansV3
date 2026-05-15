@@ -5,12 +5,13 @@ open_args: { }
 
 model: members
 
-# Available types
-# leader
-# members
 Items:
 
   leader:
+    material: PLAYER_HEAD
+    # types
+    # leader
+    # members
     type: leader
     display_name: "{rank} &f&l{name}"
     slot: 13
@@ -27,6 +28,7 @@ Items:
       - "&6&m                    "
 
   members:
+    material: PLAYER_HEAD
     type: members
     slots:
       - '19-25'
