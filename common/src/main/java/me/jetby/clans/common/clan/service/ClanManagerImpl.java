@@ -148,8 +148,6 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                     0,
                     false,
                     new HashMap<>(),
-                    new HashMap<>(),
-                    new HashMap<>(),
                     "",
                     plugin
             );

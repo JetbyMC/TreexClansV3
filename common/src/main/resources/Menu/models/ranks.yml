@@ -11,22 +11,22 @@ Items:
     slot: 9
     hide_attributes: true
     type: leader_rank
-    display_name: "%rank%"
+    display_name: "{rank}"
     lore:
       - "&6&m                    "
       - "&c&lДанный ранг не настраивается"
       - "&6&m                    "
       - "&6&lПрава"
-      - "&6⚐ &fПриглашать в клан %invite_status%"
-      - "&6⚐ &fКикать с клана %kick_status%"
-      - "&6⚐ &fПоставить базу %setbase_status%"
-      - "&6⚐ &fТелепорт на базу %base_status%"
-      - "&6⚐ &fНастраивать ранги %setrank_status%"
-      - "&6⚐ &fВносить деньги в баланс клана %deposit_status%"
-      - "&6⚐ &fСнимать деньги с баланса клана %withdraw_status%"
-      - "&6⚐ &fПереключать pvp %pvp_status%"
-      - "&6⚐ &fСтавить слоган %setslogan_status%"
-      - "&6⚐ &fМенять префикс %setprefix_status%"
+      - "&6⚐ &fПриглашать в клан {invite_status}"
+      - "&6⚐ &fКикать с клана {kick_status}"
+      - "&6⚐ &fПоставить базу {setbase_status}"
+      - "&6⚐ &fТелепорт на базу {base_status}"
+      - "&6⚐ &fНастраивать ранги {setrank_status}"
+      - "&6⚐ &fВносить деньги в баланс клана {deposit_status}"
+      - "&6⚐ &fСнимать деньги с баланса клана {withdraw_status}"
+      - "&6⚐ &fПереключать pvp {pvp_status}"
+      - "&6⚐ &fСтавить слоган {setslogan_status}"
+      - "&6⚐ &fМенять префикс {setprefix_status}"
       - "&6&m                    "
 
 
@@ -36,22 +36,22 @@ Items:
       - 10-16
     type: all_ranks
     hide_attributes: true
-    display_name: "%rank%"
+    display_name: "{rank}"
     lore:
       - "&6&m                    "
       - "&7Нажмите чтобы настроить"
       - "&6&m                    "
       - "&6&lПрава"
-      - "&6⚐ &fПриглашать в клан %invite_status%"
-      - "&6⚐ &fКикать с клана %kick_status%"
-      - "&6⚐ &fПоставить базу %setbase_status%"
-      - "&6⚐ &fТелепорт на базу %base_status%"
-      - "&6⚐ &fНастраивать ранги %setrank_status%"
-      - "&6⚐ &fВносить деньги в баланс клана %deposit_status%"
-      - "&6⚐ &fСнимать деньги с баланса клана %withdraw_status%"
-      - "&6⚐ &fПереключать pvp %pvp_status%"
-      - "&6⚐ &fСтавить слоган %setslogan_status%"
-      - "&6⚐ &fМенять префикс %setprefix_status%"
+      - "&6⚐ &fПриглашать в клан {invite_status}"
+      - "&6⚐ &fКикать с клана {kick_status}"
+      - "&6⚐ &fПоставить базу {setbase_status}"
+      - "&6⚐ &fТелепорт на базу {base_status}"
+      - "&6⚐ &fНастраивать ранги {setrank_status}"
+      - "&6⚐ &fВносить деньги в баланс клана {deposit_status}"
+      - "&6⚐ &fСнимать деньги с баланса клана {withdraw_status}"
+      - "&6⚐ &fПереключать pvp {pvp_status}"
+      - "&6⚐ &fСтавить слоган {setslogan_status}"
+      - "&6⚐ &fМенять префикс {setprefix_status}"
       - "&6&m                    "
 
 

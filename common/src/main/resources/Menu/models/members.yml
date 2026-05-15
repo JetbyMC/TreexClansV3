@@ -12,18 +12,18 @@ Items:
 
   leader:
     type: leader
-    display_name: "%rank% &f&l%target_name%"
+    display_name: "{rank} &f&l{name}"
     slot: 13
     lore:
       - "&6&m                    "
-      - "&6⌚ &a%last-online%"
+      - "&6⌚ &a{last-online}"
       - "&6&m                    "
       - "&6&lСтатистика"
-      - "&6⚗ &fОпыта принёс клану: &6&l%exp%"
-      - "&6♦ &fЗаработано коинов: &6&l%coin%"
-      - "&6⚔ &fУбийств: &6&l%kills%"
-      - "&6☠ &fСмертей: &6&l%deaths%"
-      - "&6🛡 &fК/Д: &6&l%kd%"
+      - "&6⚗ &fОпыта принёс клану: &6&l{exp}"
+      - "&6♦ &fЗаработано коинов: &6&l{coin}"
+      - "&6⚔ &fУбийств: &6&l{kills}"
+      - "&6☠ &fСмертей: &6&l{deaths}"
+      - "&6🛡 &fК/Д: &6&l{kd}"
       - "&6&m                    "
 
   members:
@@ -32,19 +32,20 @@ Items:
       - '19-25'
       - '28-34'
       - '37-43'
-    display_name: "%rank% &f%target_name%"
+    display_name: "{rank} &f{name}"
     lore:
       - "&6&m                    "
-      - "&6⌚ &fБыл в сети: &a%last-online%"
-      - "&6⛨ &fВступил в клан &6&l%joined-at% назад"
+      - "&6⌚ &fБыл в сети: &a{last-online}"
+      - "&6⛨ &fВступил в клан &6&l{joined-at} назад"
       - "&6&m                    "
       - "&6&lСтатистика"
-      - "&6⚗ &fОпыта принёс клану: &6&l%exp%"
-      - "&6♦ &fЗаработано коинов: &6&l%coin%"
-      - "&6⚔ &fУбийств: &6&l%kills%"
-      - "&6☠ &fСмертей: &6&l%deaths%"
-      - "&6🛡 &fК/Д: &6&l%kd%"
+      - "&6⚗ &fОпыта принёс клану: &6&l{exp}"
+      - "&6♦ &fЗаработано коинов: &6&l{coin}"
+      - "&6⚔ &fУбийств: &6&l{kills}"
+      - "&6☠ &fСмертей: &6&l{deaths}"
+      - "&6🛡 &fК/Д: &6&l{kd}"
       - "&6&m                    "
+
 
 
   next_page:

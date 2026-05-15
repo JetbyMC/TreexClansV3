@@ -2,14 +2,12 @@ package me.jetby.clans.common;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.jetby.clans.api.InstanceFactory;
 import me.jetby.clans.api.TreexClansAPI;
 import me.jetby.clans.api.addons.AddonManager;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.addons.listener.EventRegistrar;
 import me.jetby.clans.api.gui.GuiFactory;
 import me.jetby.clans.api.service.ClanManager;
-import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import me.jetby.clans.common.addon.AddonManagerImpl;
 import me.jetby.clans.common.clan.service.ClanManagerImpl;
 import me.jetby.clans.common.commands.CommandServiceImpl;
@@ -17,15 +15,12 @@ import me.jetby.clans.common.commands.admin.AdminCommand;
 import me.jetby.clans.common.commands.clan.ClanCommand;
 import me.jetby.clans.common.configurations.*;
 import me.jetby.clans.common.configurations.configupdater.UpdateConfig;
-import me.jetby.clans.common.functions.quests.QuestManager;
-import me.jetby.clans.common.functions.tops.LeaderboardServiceImpl;
 import me.jetby.clans.common.gui.GuiFactoryImpl;
 import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.clans.common.hooks.ClanPlaceholder;
 import me.jetby.clans.common.hooks.Vault;
 import me.jetby.clans.common.listener.EventRegistryImpl;
 import me.jetby.clans.common.listeners.ClanListeners;
-import me.jetby.clans.common.listeners.QuestsListeners;
 import me.jetby.clans.common.storage.Storage;
 import me.jetby.clans.common.storage.YAML;
 import me.jetby.clans.common.tools.FormatTime;
@@ -36,7 +31,6 @@ import me.jetby.libb.action.ActionRegistry;
 import me.jetby.libb.util.Metrics;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
@@ -61,17 +55,12 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     private Config cfg;
     private FormatTime formatTime;
     private ClanManager clanManager;
-    private LeaderboardService leaderboardService;
     private Storage storage;
 
     public static Logger LOGGER;
-    public static NamespacedKey NAMESPACED_KEY;
     @Setter
     private GuiLoader guiLoader;
 
-    @Setter
-    private QuestsConfiguration questsLoader;
-    private QuestManager questManager;
     private ClanPlaceholder clanPlaceholder;
 
     private ModulesConfiguration modules;
@@ -86,10 +75,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         this.plugin = this;
         INSTANCE = this;
         LOGGER = new Logger(this);
-
-        InstanceFactory.ITEM_KEY = new NamespacedKey("treexclans", "item");
-        NAMESPACED_KEY = InstanceFactory.ITEM_KEY;
-
         //            new TreexAutoDownload(this);
         new Actions().registerCustomActions();
 
@@ -122,9 +107,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         guiFactory = new GuiFactoryImpl();
 
         clanManager = new ClanManagerImpl(this);
-
-        questManager = new QuestManager(this);
-        leaderboardService = new LeaderboardServiceImpl();
 
         eventRegistrar = new EventRegistryImpl();
         this.commandService = new CommandServiceImpl();
@@ -159,12 +141,9 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         guiLoader.load();
         LOGGER.success(" └  ✔  Menus");
 
-        questsLoader = new QuestsConfiguration();
-        questsLoader.load();
-        LOGGER.success(" └  ✔  quests.yml");
-
         storage = new YAML(this);
         storage.load();
+
         LOGGER.success(" └  ✔  Storage");
         LOGGER.success("Configuration loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -180,15 +159,13 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         if (clanCommand != null) {
             CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
             commandsConfiguration.load();
-            new ClanCommand(commandsConfiguration,this).register();
+            new ClanCommand(commandsConfiguration, this).register();
         }
         LOGGER.success("┗ Commands created (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         LOGGER.info("&6Last details");
         getServer().getPluginManager().registerEvents(new ClanListeners(this), this);
-        getServer().getPluginManager().registerEvents(new QuestsListeners(this), this);
-
         new Metrics(this, 27749);
 
         LOGGER.success("⚡ TreexClans is ready");

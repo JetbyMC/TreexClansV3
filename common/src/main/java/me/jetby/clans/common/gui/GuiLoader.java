@@ -59,7 +59,7 @@ public class GuiLoader {
         REQUIRED_GUIS.clear();
         File folder = new File(plugin.getDataFolder(), "Menu/models");
         if (!folder.exists() && folder.mkdirs()) {
-            for (String name : new String[]{"quests.yml", "members.yml", "choose-player-color.yml",
+            for (String name : new String[]{"members.yml", "choose-player-color.yml",
                     "glow-color.yml", "rank-perms.yml", "ranks.yml", "storage.yml", "top-clans.yml"}) {
                 saveDefault("Menu/models/" + name, folder, name);
             }
@@ -114,7 +114,7 @@ public class GuiLoader {
                     continue;
                 }
                 GuiFactoryImpl factory = (GuiFactoryImpl) plugin.getGuiFactory();
-                if (!factory.getCustomTypes().containsKey(model.toUpperCase())) {
+                if (!factory.getCustomTypes().containsKey(model.split(":")[1].toUpperCase())) {
                     Logger.error(plugin, "Unknown renderer '" + model + "' for gui '" + id + "', is the addon loaded?");
                     continue;
                 }

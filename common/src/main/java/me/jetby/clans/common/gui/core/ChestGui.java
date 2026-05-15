@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -46,7 +47,7 @@ public class ChestGui extends Gui {
                 .put(ctx.getPlayer().getUniqueId(), this);
 
         for (int i = 0; i < totalWithPadding; i++) {
-            addItem(new ItemWrapper(new ItemStack(Material.AIR)));
+            addItem(new ItemWrapper(new ItemStack(AIR_ITEM)));
         }
 
         Consumer<InventoryClickEvent> onClick = onClick();
@@ -66,7 +67,7 @@ public class ChestGui extends Gui {
             event.setCancelled(false);
             getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
                 ItemStack current = getInventory().getItem(guiSlot);
-                getClan().getChest().put(index, current != null ? current : new ItemStack(Material.AIR));
+                getClan().getChest().put(index, current != null ? current : new ItemStack(AIR_ITEM));
                 syncToOpenViewers(getCurrentPage());
             });
         });
@@ -77,6 +78,7 @@ public class ChestGui extends Gui {
         });
     }
 
+    private static final ItemStack AIR_ITEM = new ItemStack(Material.AIR);
 
     @Override
     public void openPage(int page) {
@@ -90,23 +92,33 @@ public class ChestGui extends Gui {
         int totalSlots = getClan().getLevel().chest();
         int from = page * perPage;
 
+        List<Integer> blockedSlots = new ArrayList<>();
         for (int i = 0; i < perPage; i++) {
             int chestIndex = from + i;
             int guiSlot = slots.get(i);
 
             if (chestIndex < totalSlots) {
-                ItemStack item = getClan().getChest().getOrDefault(chestIndex, new ItemStack(Material.AIR));
+                ItemStack item = getClan().getChest().getOrDefault(chestIndex, AIR_ITEM);
                 getInventory().setItem(guiSlot, item);
             } else {
-                ItemStack barrier = new ItemStack(Material.BARRIER);
-                ItemMeta meta = barrier.getItemMeta();
-                if (meta != null) {
-                    meta.displayName(defaultSerializer.deserialize("&c&lСлот заблокирован"));
-                    barrier.setItemMeta(meta);
-                }
-                getInventory().setItem(guiSlot, barrier);
+                blockedSlots.add(guiSlot);
             }
         }
+
+        Item item = getBySectionOption("type")
+                .stream()
+                .filter(b -> "blocked-slot".equalsIgnoreCase(b.type()))
+                .findFirst()
+                .orElse(null);
+
+        if (item!=null) {
+            ItemWrapper wrapper = buildItemWrapper(item);
+            wrapper.slots(blockedSlots.toArray(new Integer[0]));
+            setItem("blocked-slot", wrapper);
+        }
+
+
+
     }
 
     private void syncToOpenViewers(int page) {

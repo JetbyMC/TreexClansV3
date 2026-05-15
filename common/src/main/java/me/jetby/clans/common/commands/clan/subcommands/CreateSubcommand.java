@@ -6,7 +6,6 @@ import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.api.service.ClanManager;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
-import me.jetby.clans.common.configurations.MessagesConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,13 +16,13 @@ import java.util.List;
 
 public class CreateSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
-    private final ClanManager clanManagerImpl = plugin.getClanManager();
+    private final ClanManager clanManager = plugin.getClanManager();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
         if (sender instanceof Player player) {
 
-            if (clanManagerImpl.lookup().isInClan(player.getUniqueId())) {
+            if (clanManager.lookup().isInClan(player.getUniqueId())) {
                 plugin.getMessages().of(player, "commands.create")
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
@@ -35,18 +34,18 @@ public class CreateSubcommand implements Subcommand {
                     return true;
                 }
                 String clanName = args[0].toLowerCase();
-                if (clanManagerImpl.lifecycle().clanExists(clanName)) {
+                if (clanManager.lifecycle().clanExists(clanName)) {
                     plugin.getMessages().of(player,  "clan-is-already-exists")
                             .replace("{cmd}", command.getName())
                             .replace("{arg}", sub)
                             .run();
                     return true;
                 }
-                if (!clanManagerImpl.validation().isAllowedName(player, clanName)) {
+                if (!clanManager.validation().isAllowedName(player, clanName)) {
                     return true;
                 }
 
-                if (clanManagerImpl.lifecycle().createClan(clanName, player)) {
+                if (clanManager.lifecycle().createClan(clanName, player)) {
                     Clan clan = plugin.getClanManager().lookup().getClan(clanName);
                     plugin.getMessages().of(player, "clan-create")
                             .replace("{clan}", clanName)
@@ -72,4 +71,8 @@ public class CreateSubcommand implements Subcommand {
     }
 
 
+    @Override
+    public boolean clanOnly() {
+        return false;
+    }
 }

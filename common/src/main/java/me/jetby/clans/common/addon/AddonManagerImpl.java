@@ -123,7 +123,7 @@ public final class AddonManagerImpl implements AddonManager {
             try {
                 addon = (JavaAddon) clazz.getDeclaredConstructor().newInstance();
                 addon.initialize(new AddonContext(
-                        new ServiceManagerImpl(this, addonsFolder, (TreexClans) plugin, meta)
+                        new ServiceManagerImpl(this, addonsFolder, (TreexClans) plugin, meta, loader)
                 ));
                 loadedAddons.put(meta.id(), addon);
                 jarFiles.put(meta.id(), jarFile);

@@ -5,7 +5,6 @@ import me.jetby.clans.api.command.Subcommand;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.addon.AddonManagerImpl;
 import me.jetby.clans.common.configurations.Config;
-import me.jetby.clans.common.configurations.QuestsConfiguration;
 import me.jetby.clans.common.gui.GuiLoader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -44,9 +43,6 @@ public class ReloadSubcommand implements Subcommand {
 //                plugin.getClanCommand().setTabCompleter(cmd);
 //            }
 
-            QuestsConfiguration questsLoader = new QuestsConfiguration();
-            questsLoader.load();
-            plugin.setQuestsLoader(questsLoader);
             plugin.getAddonManager().disableAddons();
             ((AddonManagerImpl) plugin.getAddonManager()).loadAddons();
 

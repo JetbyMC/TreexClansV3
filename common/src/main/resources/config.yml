@@ -12,7 +12,9 @@ debug: true
 # UNIFIED - Include all, except GSON
 serializer:
   type: UNIFIED
-  cache: true
+  cache:
+    enabled: true
+    max-size: 500
 
 clan-storage:
   # Фильтр предметов которых игроки не могут класть в клановый сундук
@@ -57,6 +59,7 @@ clan-create:
 chat-format: "<#FFE259>[Клановый чат]</#FFA751> &6{player} &7▶ &f{message}"
 
 prefix:
+  # placeholder %clan_prefix%
   placeholder:
     has_prefix: "&7[&6{prefix}&7]"
     no_prefix: "&8[&e{tag}&8]"
@@ -66,13 +69,11 @@ prefix:
   regex: "^[A-Za-z0-9]+$"
   # какие символы игнорировать из префикса
   length-ignored-symbols: "&x(?:&[0-9A-Fa-f]){6}|&[0-9A-Fa-f]"
+
+# placeholder %clan_tag%
 tag-placeholder:
   has_clan: "&8[&e{tag}&8]"
   no_clan: ""
-
-# Если true, то квесты будут, выполнятся постепенно, то есть нельзя перейти на другой квест пока не выполнишь предыдущий
-# Если false то, можно выполнить любой квест не смотря, на очерёдность
-gradual-quest: true
 
 ranks:
   # можно создавать сколько угодно рангов

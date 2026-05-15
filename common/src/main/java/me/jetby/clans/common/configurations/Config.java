@@ -58,7 +58,6 @@ public class Config {
     private String regex;
     private List<String> blockedTags;
     private List<Expression> requirements = new ArrayList<>();
-    private boolean gradualQuest;
 
     private int inviteCooldown = 60;
     private int disbandCooldown = 15;
@@ -72,8 +71,11 @@ public class Config {
         this.file = FileLoader.getFile("config.yml");
 
         CONFIG_COLORIZER = new HashedSerializer(
-                SerializerType.valueOf(configuration.getString("serializer.type", "UNIFIED").toUpperCase()),
-                configuration.getBoolean("serializer.cache"));
+                SerializerType.valueOf(
+                        configuration.getString("serializer.type", "UNIFIED").toUpperCase()),
+                configuration.getBoolean("serializer.cache.enabled", true),
+                configuration.getInt("serializer.cache.max-size", 500)
+        );
     }
 
     private String getStorageFilterType;
@@ -86,7 +88,8 @@ public class Config {
                 try {
                     Material material = Material.valueOf(str.toUpperCase());
                     set.remove(material);
-                } catch (IllegalArgumentException ignored) {}
+                } catch (IllegalArgumentException ignored) {
+                }
             }
             return set;
         } else if (getStorageFilterType.equalsIgnoreCase("whitelist")) {
@@ -95,12 +98,14 @@ public class Config {
                 try {
                     Material material = Material.valueOf(str.toUpperCase());
                     set.add(material);
-                } catch (IllegalArgumentException ignored) {}
+                } catch (IllegalArgumentException ignored) {
+                }
             }
             return set;
         }
         return EnumSet.noneOf(Material.class);
     }
+
     public void load() {
         requirements.clear();
         blockedTags = null;
@@ -216,7 +221,6 @@ public class Config {
             levels.put(Integer.parseInt(id), new Level(id, name, exp, maxMembers, maxBalance, chest, quests, levelUpActions));
         }
 
-        gradualQuest = configuration.getBoolean("gradual-quest", false);
         chatFormat = configuration.getString("chat-format", "<#FFE259>&l[TreexClans]</#FFA751> &e&l{player} &7▶ &f{message}");
     }
 

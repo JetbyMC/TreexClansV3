@@ -13,6 +13,7 @@ import me.jetby.clans.common.tools.ItemSerializer;
 import me.jetby.clans.common.tools.LocationHandler;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +35,8 @@ public class YAML implements Storage {
         this.configuration = FileLoader.getFileConfiguration("storage.yml");
         this.file = FileLoader.getFile("storage.yml");
     }
+
+    private boolean somethingWrong = true;
 
     @Override
     public void load() {
@@ -123,66 +126,35 @@ public class YAML implements Storage {
 
             Location base = LocationHandler.deserialize(clan.getString("base-location"));
 
-            List<ItemStack> chestItems = new ArrayList<>();
-            List<String> itemsStr = clan.getStringList("chest");
-            for (String base64 : itemsStr) {
-                try {
-                    chestItems.add(ItemSerializer.itemFromBase64(base64));
-                } catch (Exception e) {
-                    LOGGER.warn("Не удалось загрузить предмет из " + clanId + ": " + e.getMessage());
+            Map<Integer, ItemStack> chestItems = new HashMap<>();
+            ConfigurationSection chest = clan.getConfigurationSection("chest");
+            if (chest!=null) {
+                for (String key : chest.getKeys(false)) {
+                    int slot = Integer.parseInt(key);
+                    ItemStack item = chest.getItemStack(key);
+                    if (item==null) continue;
+                    chestItems.put(slot, item);
                 }
+
             }
-
-
-            Map<UUID, Map<String, Integer>> questsInProgress = new HashMap<>();
-            ConfigurationSection progress = clan.getConfigurationSection("quests-progress");
-
-            if (progress != null) {
-                for (String questId : progress.getKeys(false)) {
-                    ConfigurationSection playersInProgress = progress.getConfigurationSection(questId);
-                    if (playersInProgress == null) continue;
-
-                    for (String id : playersInProgress.getKeys(false)) {
-                        UUID uuid = UUID.fromString(id);
-                        int value = playersInProgress.getInt(id, 0);
-
-                        Map<String, Integer> playerMap = questsInProgress.getOrDefault(uuid, new HashMap<>());
-                        playerMap.put(questId, value);
-                        questsInProgress.put(uuid, playerMap);
-                    }
-                }
-            }
-
-            Map<UUID, List<String>> completedQuests = new HashMap<>();
-            ConfigurationSection quests = clan.getConfigurationSection("quests-completed");
-            if (quests != null) {
-                for (String uid : quests.getKeys(false)) {
-                    try {
-                        completedQuests.put(UUID.fromString(uid), quests.getStringList(uid));
-                    } catch (Exception e) {
-                        LOGGER.error(e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-
             Storage.CLANS.put(clanId, new ClanImpl(clanId, prefix, leader, memberImplSet, ranks,
                     plugin.getCfg().getLevels().get(Integer.parseInt(level)),
-                    balance, base, clanExp, pvp, questsInProgress, completedQuests,
-                    //todo items, its always empty right now
-                    new HashMap<>(),
-                    slogan, plugin));
+                    balance, base, clanExp, pvp,chestItems, slogan, plugin));
         }
+
+        somethingWrong = false;
     }
 
     @Override
     public void save() {
 
         try {
-            for (String key : configuration.getKeys(false)) {
-                configuration.set(key, null);
+            if (!somethingWrong) {
+                for (String key : configuration.getKeys(false)) {
+                    configuration.set(key, null);
+                }
             }
+
             for (String clanId : Storage.CLANS.keySet()) {
                 Clan clan = Storage.CLANS.get(clanId);
 
@@ -202,20 +174,6 @@ public class YAML implements Storage {
                 configuration.set(clanId + ".exp", clan.getExp());
                 configuration.set(clanId + ".pvp", clan.isPvp());
 
-                for (UUID uuid : clan.getQuestsProgress().keySet()) {
-                    Map<String, Integer> map = clan.getQuestsProgress().get(uuid);
-                    if (map != null) {
-                        for (String key : map.keySet()) {
-                            configuration.set(clanId + ".quests-progress." + key + "." + uuid.toString(), map.get(key));
-                        }
-
-                    }
-                }
-
-                for (Map.Entry<UUID, List<String>> entry : clan.getCompletedQuest().entrySet()) {
-                    configuration.set(clanId + ".quests-completed." + entry.getKey().toString(), entry.getValue());
-                }
-
 
                 var leader = clan.getLeader();
                 configuration.set(clan.getId() + ".leader.uuid", leader.getUuid().toString());
@@ -229,6 +187,11 @@ public class YAML implements Storage {
                         clan.getChest().values().stream()
                                 .map(ItemSerializer::itemToBase64)
                                 .toList());
+
+                for (Map.Entry<Integer, ItemStack> entry : clan.getChest().entrySet()) {
+                    if (entry.getValue()==null || entry.getValue().getType()== Material.AIR) continue;
+                    configuration.set(clanId + ".chest."+entry.getKey(), entry.getValue());
+                }
 
 
                 Location location = clan.getBase();

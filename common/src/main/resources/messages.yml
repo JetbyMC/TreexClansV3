@@ -35,7 +35,6 @@ commands:
     - "&#FFE259◀&m          &r <#FFE259>&lTreexClans</#FFA751> &#FFE259&m          &#FFE259▶ "
     - ""
     - "&#FC835C• /{cmd} create [тэг] &7- &fСоздать клан"
-    - "&#FC835C• /{cmd} top &7- &fСписок сильнейших кланов"
     - ""
     - "&#FFE259◀&m                                       &#FFE259▶ "
   help:
@@ -48,7 +47,6 @@ commands:
     - "&#FC835C• /{cmd} balance &7- &fПроверить баланс клана"
     - "&#FC835C• /{cmd} invest [сумма] &7- &fПополнить баланс клана"
     - "&#FC835C• /{cmd} withdraw [сумма] &7- &fСнять с баланса клана"
-    - "&#FC835C• /{cmd} glow &7- &fПереключить свечение игроков из клана"
     - "&#FC835C• /{cmd} invite [ник] &7- &fПригласить игрока в свой клан"
     - "&#FC835C• /{cmd} kick [ник] &7- &fИзгнать игрока из своего клана"
     - "&#FC835C• /{cmd} base &7- &fТелепортироваться на точку базы"
@@ -177,37 +175,8 @@ clan-setprefix:
   - "[message] {prefix} &fВы поставили префикс клана таким: &6{clan_prefix}"
 
 
-quest-status-progress: "&eВ прогрессе"
-quest-status-uncompleted: "&cНе выполнен"
-quest-status-completed: "&aВыполнено"
-quest-status-gradual: "&eВыполните предыдущий"
-quest-progress-type-individual: "&aИндивидуальный"
-quest-progress-type-global: "&e&lГлобальный"
-
 rank-perm-yes: "&a✔"
 rank-perm-no: "&c✘"
 
 status:
   online: "В сети"
-
-
-gui:
-  tops:
-    kills:
-      set: "&6✔ Убийствам"
-      unset: "&7⏺ Убийствам"
-    deaths:
-      set: "&6✔ Смертям"
-      unset: "&7⏺ Смертям"
-    level:
-      set: "&6✔ Уровню"
-      unset: "&7⏺ Уровню"
-    balance:
-      set: "&6✔ Балансу"
-      unset: "&7⏺ Балансу"
-    members:
-      set: "&6✔ Участникам"
-      unset: "&7⏺ Участникам"
-    kd:
-      set: "&6✔ У/С"
-      unset: "&7⏺ У/С"

@@ -12,12 +12,12 @@ Items:
     material: WRITABLE_BOOK
     slot: 49
     hide_attributes: true
-    display_name: "&6Клан %clan_prefix% &8(%clan_tag%)"
+    display_name: "&6Клан %clan_prefix% &8(%clan_id%)"
     lore:
       - "&6• &fЛидер: &6&l%clan_leader_name%"
       - "&6• &fБаланс: &6&l%clan_balance%"
       - "&6• &fОпыт: &6&l%clan_exp%&7/&c&l%clan_exp_max%"
-      - "&6• &fУровень: &6&l%clan_level%"
+      - "&6• &fУровень: &6&l%clan_level_name%"
 
   chest:
     material: CHEST

@@ -2,12 +2,7 @@ package me.jetby.clans.common.gui;
 
 import lombok.Getter;
 import me.jetby.clans.api.gui.*;
-import me.jetby.clans.api.service.leaderboard.LeaderboardService;
-import me.jetby.clans.common.gui.core.ChestGui;
-import me.jetby.clans.common.gui.core.QuestsGui;
-import me.jetby.clans.common.gui.core.RankPermissionGui;
-import me.jetby.clans.common.gui.core.RanksGui;
-import me.jetby.clans.common.gui.impl.*;
+import me.jetby.clans.common.gui.core.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +15,8 @@ public class GuiFactoryImpl implements GuiFactory {
     public Gui create(GuiContext ctx) {
         String renderer = ctx.getGui().getRenderer();
 
-        GuiCreator custom = customTypes.get(renderer.toUpperCase());
+        String rendererKey = renderer.contains(":") ? renderer.split(":")[1].toUpperCase() : renderer.toUpperCase();
+        GuiCreator custom = customTypes.get(rendererKey);
         if (custom != null) return custom.create(ctx);
 
         if (ctx.getGui().isNamespaced()) return new Gui(ctx);

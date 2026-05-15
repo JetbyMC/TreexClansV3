@@ -9,6 +9,7 @@ import me.jetby.clans.api.service.clan.member.Member;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.configurations.CommandsConfiguration;
+import me.jetby.clans.common.configurations.Config;
 import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.libb.action.ActionUtil;
 import me.jetby.libb.command.AdvancedCommand;
@@ -58,6 +59,9 @@ public class ClanCommand extends AdvancedCommand {
 
         Subcommand registeredSub = commandService.getCommands().get(sub);
         if (registeredSub != null && registeredSub.type() == CommandService.CommandType.CLAN) {
+            boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
+            if (registeredSub.clanOnly() && !inClan) return true;
+            if (!registeredSub.clanOnly() && inClan) return true;
             registeredSub.onCommand(sender, command, sub, subArgs);
             return true;
         }
@@ -107,7 +111,7 @@ public class ClanCommand extends AdvancedCommand {
             }
 
             Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            plugin.getGuiFactory().create(GuiContext.of(plugin, gui, player, clan)).open(player);
+            plugin.getGuiFactory().create(GuiContext.of(plugin, gui, player, clan, Config.CONFIG_COLORIZER)).open(player);
             return true;
         }
         return false;
@@ -133,6 +137,9 @@ public class ClanCommand extends AdvancedCommand {
 
         Subcommand registeredSub = commandService.getCommands().get(args[0].toLowerCase());
         if (registeredSub != null) {
+            boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
+            if (registeredSub.clanOnly() && !inClan) return List.of();
+            if (!registeredSub.clanOnly() && inClan) return List.of();
             return registeredSub.onTabCompleter(sender, command, s, Arrays.copyOfRange(args, 1, args.length));
         }
 
@@ -161,7 +168,7 @@ public class ClanCommand extends AdvancedCommand {
         }
 
         for (Map.Entry<String, Subcommand> entry : commandService.getCommands().entrySet()) {
-            if (entry.getValue().type() == CommandService.CommandType.CLAN) {
+            if (entry.getValue().type() == CommandService.CommandType.CLAN && !entry.getValue().clanOnly()) {
                 completions.add(entry.getKey());
             }
         }
@@ -197,7 +204,7 @@ public class ClanCommand extends AdvancedCommand {
         }
 
         for (Map.Entry<String, Subcommand> entry : commandService.getCommands().entrySet()) {
-            if (entry.getValue().type() == CommandService.CommandType.CLAN) {
+            if (entry.getValue().type() == CommandService.CommandType.CLAN && entry.getValue().clanOnly()) {
                 completions.add(entry.getKey());
             }
         }

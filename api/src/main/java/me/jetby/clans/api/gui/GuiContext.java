@@ -3,6 +3,7 @@ package me.jetby.clans.api.gui;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.jetby.clans.api.service.clan.Clan;
+import me.jetby.libb.color.Serializer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,8 @@ public class GuiContext {
     private final Player player;
     @Nullable
     private final Clan clan;
+    @Getter
+    private final Serializer serializer;
 
     private final Map<Class<?>, Object> objects = new HashMap<>();
 
@@ -54,6 +57,13 @@ public class GuiContext {
     }
 
     public static GuiContext of(@NotNull JavaPlugin plugin, @NotNull ClanGuiData gui, @NotNull Player player, @Nullable Clan clan) {
-        return new GuiContext(plugin, gui, player, clan);
+        return new GuiContext(plugin, gui, player, clan, Serializer.UNIFIED);
+    }
+    public static GuiContext of(@NotNull JavaPlugin plugin,
+                                @NotNull ClanGuiData gui,
+                                @NotNull Player player,
+                                @Nullable Clan clan,
+                                @NotNull Serializer serializer) {
+        return new GuiContext(plugin, gui, player, clan, serializer);
     }
 }

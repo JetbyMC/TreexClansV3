@@ -115,16 +115,6 @@ public interface Clan {
     void setSlogan(@Nullable String slogan);
 
     /**
-     * @return per-member quest progress.
-     */
-    @NotNull Map<UUID, Map<String, Integer>> getQuestsProgress();
-
-    /**
-     * @return per-member completed quests.
-     */
-    @NotNull Map<UUID, List<String>> getCompletedQuest();
-
-    /**
      * @return the shared clan chest inventory.
      */
     @NotNull Map<Integer, ItemStack> getChest(); // slot, item

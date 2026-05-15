@@ -9,7 +9,6 @@ import me.jetby.clans.api.addons.listener.EventRegistrar;
 import me.jetby.clans.api.addons.service.ServiceManager;
 import me.jetby.clans.api.gui.GuiFactory;
 import me.jetby.clans.api.service.ClanManager;
-import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.addon.configuration.ServiceConfigurationImpl;
 import net.milkbowl.vault.economy.Economy;
@@ -25,7 +24,6 @@ public class ServiceManagerImpl implements ServiceManager {
 
     private final Economy economy;
     private final ClanManager clanManager;
-    private final LeaderboardService leaderboardService;
     private final CommandService commandService;
     private final GuiFactory guiFactory;
 
@@ -35,20 +33,19 @@ public class ServiceManagerImpl implements ServiceManager {
     private final ClanAddon addon;
 
 
-    public ServiceManagerImpl(AddonManager addonManager, File dataFolder, TreexClans plugin, ClanAddon addon) {
+    public ServiceManagerImpl(AddonManager addonManager, File dataFolder, TreexClans plugin, ClanAddon addon, ClassLoader addonClassLoader) {
         this.plugin = plugin;
         this.dataFolder = new File(dataFolder, addon.id());
         if (!this.dataFolder.exists()) this.dataFolder.mkdirs();
 
         this.economy = plugin.getEconomy();
         this.clanManager = plugin.getClanManager();
-        this.leaderboardService = plugin.getLeaderboardService();
         this.commandService = plugin.getCommandService();
         this.guiFactory = plugin.getGuiFactory();
 
         this.eventRegistrar = plugin.getEventRegistrar();
         this.addonManager = addonManager;
-        this.serviceConfiguration = new ServiceConfigurationImpl(this);
+        this.serviceConfiguration = new ServiceConfigurationImpl(this, addonClassLoader);
         this.addon = addon;
     }
 }

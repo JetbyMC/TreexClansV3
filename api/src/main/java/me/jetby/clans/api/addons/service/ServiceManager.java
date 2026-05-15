@@ -7,7 +7,6 @@ import me.jetby.clans.api.addons.configuration.ServiceConfiguration;
 import me.jetby.clans.api.addons.listener.EventRegistrar;
 import me.jetby.clans.api.gui.GuiFactory;
 import me.jetby.clans.api.service.ClanManager;
-import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -72,18 +71,6 @@ public interface ServiceManager {
      * @return The {@link ClanManager} instance.
      */
     ClanManager getClanManager();
-
-    /**
-     * Provides access to the leaderboard service.
-     * <p>
-     * Used to retrieve ranking information and
-     * manage top clan statistics.
-     * </p>
-     *
-     * @return The {@link LeaderboardService} instance.
-     */
-    LeaderboardService getLeaderboardService();
-
     /**
      * Provides access to the command management system.
      * <p>

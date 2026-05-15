@@ -6,6 +6,7 @@ import me.jetby.clans.api.gui.GuiModel;
 import me.jetby.clans.api.service.clan.member.rank.Rank;
 import me.jetby.clans.api.service.clan.member.rank.RankPerm;
 import me.jetby.clans.common.TreexClans;
+import me.jetby.clans.common.configurations.Config;
 import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.libb.gui.parser.Item;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public class RanksGui extends Gui {
                                     getPlugin(),
                                     GuiLoader.getGuiConfiguration(GuiModel.RANK_PERMISSIONS),
                                     getViewer(),
-                                    getClan())
+                                    getClan(), Config.CONFIG_COLORIZER)
                             .with(rank))
                     .open(getViewer());
         });
@@ -102,17 +103,17 @@ public class RanksGui extends Gui {
     private static Map<String, String> placeholders(Rank rank) {
         Map<String, String> placeholders = new HashMap<>();
 
-        placeholders.put("%invite_status%", getStatus(rank.perms().contains(RankPerm.INVITE)));
-        placeholders.put("%kick_status%", getStatus(rank.perms().contains(RankPerm.KICK)));
-        placeholders.put("%base_status%", getStatus(rank.perms().contains(RankPerm.BASE)));
-        placeholders.put("%setrank_status%", getStatus(rank.perms().contains(RankPerm.SETRANK)));
-        placeholders.put("%setbase_status%", getStatus(rank.perms().contains(RankPerm.SETBASE)));
-        placeholders.put("%deposit_status%", getStatus(rank.perms().contains(RankPerm.DEPOSIT)));
-        placeholders.put("%withdraw_status%", getStatus(rank.perms().contains(RankPerm.WITHDRAW)));
-        placeholders.put("%pvp_status%", getStatus(rank.perms().contains(RankPerm.PVP)));
-        placeholders.put("%setslogan_status%", getStatus(rank.perms().contains(RankPerm.SETSLOGAN)));
-        placeholders.put("%setprefix_status%", getStatus(rank.perms().contains(RankPerm.SETPREFIX)));
-        placeholders.put("%rank%", rank.name());
+        placeholders.put("{invite_status}", getStatus(rank.perms().contains(RankPerm.INVITE)));
+        placeholders.put("{kick_status}", getStatus(rank.perms().contains(RankPerm.KICK)));
+        placeholders.put("{base_status}", getStatus(rank.perms().contains(RankPerm.BASE)));
+        placeholders.put("{setrank_status}", getStatus(rank.perms().contains(RankPerm.SETRANK)));
+        placeholders.put("{setbase_status}", getStatus(rank.perms().contains(RankPerm.SETBASE)));
+        placeholders.put("{deposit_status}", getStatus(rank.perms().contains(RankPerm.DEPOSIT)));
+        placeholders.put("{withdraw_status}", getStatus(rank.perms().contains(RankPerm.WITHDRAW)));
+        placeholders.put("{pvp_status}", getStatus(rank.perms().contains(RankPerm.PVP)));
+        placeholders.put("{setslogan_status}", getStatus(rank.perms().contains(RankPerm.SETSLOGAN)));
+        placeholders.put("{setprefix_status}", getStatus(rank.perms().contains(RankPerm.SETPREFIX)));
+        placeholders.put("{rank}", rank.name());
 
         return placeholders;
     }

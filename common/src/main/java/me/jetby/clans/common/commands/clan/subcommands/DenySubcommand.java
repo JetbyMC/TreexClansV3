@@ -69,4 +69,10 @@ public class DenySubcommand implements Subcommand {
     public CommandService.CommandType type() {
         return CommandService.CommandType.CLAN;
     }
+
+    @Override
+    public boolean clanOnly() {
+        return false;
+    }
 }
+

@@ -34,8 +34,6 @@ public class ClanImpl implements Clan {
     private Location base;
     private int exp;
     private boolean pvp;
-    private Map<UUID, Map<String, Integer>> questsProgress;
-    private Map<UUID, List<String>> completedQuest;
     private Map<Integer, ItemStack> chest;
     private String slogan;
 

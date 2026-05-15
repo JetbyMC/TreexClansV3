@@ -1,6 +1,3 @@
-# Добавляет команду /clan glow
-glow: true
-
 # Добавляет команду /clan slogan
 setslogan: true
 

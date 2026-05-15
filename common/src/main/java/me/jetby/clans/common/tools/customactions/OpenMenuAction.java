@@ -6,6 +6,7 @@ import me.jetby.clans.api.gui.GuiModel;
 import me.jetby.clans.api.service.clan.Clan;
 import me.jetby.clans.common.TreexClans;
 import me.jetby.clans.common.clan.model.ClanImpl;
+import me.jetby.clans.common.configurations.Config;
 import me.jetby.clans.common.gui.GuiLoader;
 import me.jetby.libb.action.Action;
 import me.jetby.libb.action.ActionContext;
@@ -39,7 +40,7 @@ public class OpenMenuAction implements Action {
                             TreexClans.getInstance(),
                             gui,
                             player,
-                            clan))
+                            clan, Config.CONFIG_COLORIZER))
                     .open(player);
         }
     }

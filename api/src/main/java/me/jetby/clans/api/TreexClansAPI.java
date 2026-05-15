@@ -5,7 +5,6 @@ import me.jetby.clans.api.addons.AddonManager;
 import me.jetby.clans.api.addons.commands.CommandService;
 import me.jetby.clans.api.addons.listener.EventRegistrar;
 import me.jetby.clans.api.service.ClanManager;
-import me.jetby.clans.api.service.leaderboard.LeaderboardService;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -114,15 +113,5 @@ public interface TreexClansAPI {
      */
     @NotNull ClanManager getClanManager();
 
-    /**
-     * Returns the leaderboard service.
-     *
-     * <p>
-     * The {@link LeaderboardService} handles ranking logic,
-     * top statistics, and performance tracking for clans.
-     * </p>
-     *
-     * @return the {@link LeaderboardService} instance
-     */
-    @NotNull LeaderboardService getLeaderboardService();
+
 }

@@ -35,7 +35,7 @@ public class Gui extends ParsedGui {
     public Gui(@NotNull GuiContext ctx) {
         // todo get serializer from config
         super(ctx.getPlayer(), ctx.getGui(), ctx.getPlugin(),
-                ParserContext.of(Serializer.UNIFIED, ctx.getClan())
+                ParserContext.of(ctx.getSerializer(), ctx.getClan())
         );
         // for [refresh] action
         getParserContext().actionsObjects().put(Gui.class, this);
