@@ -75,6 +75,11 @@ public class GuiFactoryImpl implements GuiFactory {
     }
 
     @Override
+    public void add(ClanGuiData gui) {
+        GuiLoader.API_GUIS.put(gui.getId(), gui);
+    }
+
+    @Override
     public void remove(String id) {
         GuiLoader.API_GUIS.remove(id);
     }

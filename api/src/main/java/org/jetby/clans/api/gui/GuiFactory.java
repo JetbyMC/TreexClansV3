@@ -16,5 +16,6 @@ public interface GuiFactory {
     @Nullable ClanGuiData find(Predicate<ClanGuiData> predicate);
     ClanGuiData parse(FileConfiguration configuration);
     void add(String id, ClanGuiData gui);
+    void add(ClanGuiData gui);
     void remove(String id);
 }
