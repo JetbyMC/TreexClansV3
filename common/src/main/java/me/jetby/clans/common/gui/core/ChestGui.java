@@ -56,7 +56,6 @@ public class ChestGui extends Gui {
             if (onClick != null) onClick.accept(event);
 
             if (!slots.contains(event.getSlot())) {
-                event.setCancelled(true);
                 return;
             }
             int guiSlot = event.getSlot();

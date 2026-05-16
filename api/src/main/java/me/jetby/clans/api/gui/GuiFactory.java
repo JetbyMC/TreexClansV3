@@ -1,5 +1,7 @@
 package me.jetby.clans.api.gui;
 
+import org.bukkit.configuration.file.FileConfiguration;
+
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
@@ -9,7 +11,10 @@ public interface GuiFactory {
     void unregister(String type);
 
     @Nullable
-    ClanGuiData getGui(String id);
-    @Nullable ClanGuiData getGui(GuiModel model);
-    @Nullable ClanGuiData findGui(Predicate<ClanGuiData> predicate);
+    ClanGuiData get(String id);
+    @Nullable ClanGuiData get(GuiModel model);
+    @Nullable ClanGuiData find(Predicate<ClanGuiData> predicate);
+    ClanGuiData parse(FileConfiguration configuration);
+    void add(String id, ClanGuiData gui);
+    void remove(String id);
 }

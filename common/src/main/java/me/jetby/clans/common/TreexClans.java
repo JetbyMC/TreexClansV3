@@ -149,7 +149,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading commands:");
         Speedometer.start();
-        PluginCommand xClanCommand = this.getCommand("xclan");
+        PluginCommand xClanCommand = this.getCommand("treexclans");
         if (xClanCommand != null) {
             AdminCommand cmd = new AdminCommand(commandService);
             xClanCommand.setExecutor(cmd);

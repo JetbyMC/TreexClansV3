@@ -2,10 +2,19 @@ package me.jetby.clans.common.gui;
 
 import lombok.Getter;
 import me.jetby.clans.api.gui.*;
-import me.jetby.clans.common.gui.core.*;
+import me.jetby.clans.common.gui.core.ChestGui;
+import me.jetby.clans.common.gui.core.MembersGui;
+import me.jetby.clans.common.gui.core.RankPermissionGui;
+import me.jetby.clans.common.gui.core.RanksGui;
+import me.jetby.libb.action.record.ActionBlock;
+import me.jetby.libb.action.record.Expression;
+import me.jetby.libb.gui.parser.Item;
+import me.jetby.libb.gui.parser.ParseUtil;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -31,11 +40,11 @@ public class GuiFactoryImpl implements GuiFactory {
         }
 
         return switch (type) {
-            case CHEST            -> new ChestGui(ctx);
-            case MEMBERS          -> new MembersGui(ctx);
-            case RANKS            -> new RanksGui(ctx);
+            case CHEST -> new ChestGui(ctx);
+            case MEMBERS -> new MembersGui(ctx);
+            case RANKS -> new RanksGui(ctx);
             case RANK_PERMISSIONS -> new RankPermissionGui(ctx);
-            default               -> new Gui(ctx);
+            default -> new Gui(ctx);
         };
     }
 
@@ -50,17 +59,28 @@ public class GuiFactoryImpl implements GuiFactory {
     }
 
     @Override
-    public @Nullable ClanGuiData getGui(String id) {
+    public @Nullable ClanGuiData get(String id) {
         return GuiLoader.getGuiConfiguration(id);
     }
 
     @Override
-    public @Nullable ClanGuiData getGui(GuiModel model) {
+    public @Nullable ClanGuiData get(GuiModel model) {
         return GuiLoader.getGuiConfiguration(model);
     }
 
+
     @Override
-    public @Nullable ClanGuiData findGui(Predicate<ClanGuiData> predicate) {
+    public void add(String id, ClanGuiData gui) {
+        GuiLoader.API_GUIS.put(id, gui);
+    }
+
+    @Override
+    public void remove(String id) {
+        GuiLoader.API_GUIS.remove(id);
+    }
+
+    @Override
+    public @Nullable ClanGuiData find(Predicate<ClanGuiData> predicate) {
         for (ClanGuiData gui : GuiLoader.API_GUIS.values()) {
             if (predicate.test(gui)) return gui;
         }
@@ -71,5 +91,24 @@ public class GuiFactoryImpl implements GuiFactory {
             if (predicate.test(gui)) return gui;
         }
         return null;
+    }
+
+    @Override
+    public ClanGuiData parse(FileConfiguration configuration) {
+        try {
+            String id = configuration.getString("id");
+            String title = configuration.getString("title");
+            String model = configuration.getString("model");
+            int size = configuration.getInt("size");
+            List<String> command = configuration.getStringList("command");
+            List<Expression> preOpenExpressions = ParseUtil.getExpressions(configuration.getStringList("pre_open"));
+            ActionBlock onOpen = ParseUtil.getActionBlock(configuration, "on_open");
+            ActionBlock onClose = ParseUtil.getActionBlock(configuration, "on_close");
+            List<String> args = configuration.getStringList("open_args");
+            List<Item> items = ParseUtil.getItems(configuration);
+            return new ClanGuiData(id, title, size, command, preOpenExpressions, onOpen, onClose, items, model, args);
+        } catch (Exception e) {
+            throw new RuntimeException("Error trying to load menu: " + e.getMessage());
+        }
     }
 }

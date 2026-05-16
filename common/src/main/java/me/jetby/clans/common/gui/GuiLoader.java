@@ -62,6 +62,7 @@ public class GuiLoader {
             for (String name : new String[]{"members.yml", "rank-perms.yml", "ranks.yml", "chest.yml"}) {
                 saveDefault("Menu/models/" + name, folder, name);
             }
+            saveDefault("Menu/models/README.md", folder, "README.md");
         }
         loadFilesRecursive(folder, true);
     }
@@ -73,6 +74,7 @@ public class GuiLoader {
             for (String name : new String[]{"main.yml", "shop.yml"}) {
                 saveDefault("Menu/custom/" + name, folder, name);
             }
+            saveDefault("Menu/custom/README.md", folder, "README.md");
         }
         loadFilesRecursive(folder, false);
     }
