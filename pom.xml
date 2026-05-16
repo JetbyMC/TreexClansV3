@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.jetby.treexclans</groupId>
+    <groupId>org.jetby.treexclans</groupId>
     <artifactId>Parent</artifactId>
     <version>${pluginVersion}</version>
     <packaging>pom</packaging>

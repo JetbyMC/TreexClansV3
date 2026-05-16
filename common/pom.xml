@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.jetby.common</groupId>
-    <artifactId>TreexClans</artifactId>
+    <groupId>org.jetby.treexclans</groupId>
+    <artifactId>common</artifactId>
     <version>3.0</version>
     <packaging>jar</packaging>
 
@@ -60,10 +60,6 @@
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>jetby-repo</id>
-            <url>https://api.jetby.org/</url>
-        </repository>
-        <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
@@ -77,7 +73,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.jetby.treexclans</groupId>
+            <groupId>org.jetby.treexclans</groupId>
             <artifactId>api</artifactId>
             <version>3.0</version>
             <scope>compile</scope>
@@ -95,7 +91,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.jetby.libb</groupId>
+            <groupId>org.jetby.libb</groupId>
             <artifactId>api</artifactId>
             <version>1.2</version>
             <scope>provided</scope>
