@@ -105,7 +105,6 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             Bukkit.getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {
-                plugin.getLogger().info("Clan creation process halted — event cancelled externally.");
                 return false;
             }
 
@@ -141,7 +140,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                     null,
                     leader,
                     new HashSet<>(),
-                    plugin.getCfg().getDefaultRanks(),
+                    plugin.getCfg().getRanks(),
                     baseLevel,
                     0.0,
                     null,
@@ -156,7 +155,6 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             Bukkit.getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {
-                plugin.getLogger().info("Clan creation process halted — event cancelled externally.");
                 return false;
             }
 
@@ -170,7 +168,6 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             Bukkit.getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {
-                plugin.getLogger().info("Clan delete process halted — event cancelled externally.");
                 return false;
             }
 
@@ -189,7 +186,6 @@ public final class ClanManagerImpl implements Listener, ClanManager {
             Bukkit.getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {
-                plugin.getLogger().info("Clan delete process halted — event cancelled externally.");
                 return false;
             }
 
@@ -345,12 +341,12 @@ public final class ClanManagerImpl implements Listener, ClanManager {
     private static final class EconomyImpl implements ClanManager.Economy {
 
         @Override
-        public void addBalance(double amount, @NotNull Clan clan) {
+        public synchronized void addBalance(double amount, @NotNull Clan clan) {
             clan.setBalance(clan.getBalance() + amount);
         }
 
         @Override
-        public void takeBalance(double amount, @NotNull Clan clan) {
+        public synchronized void takeBalance(double amount, @NotNull Clan clan) {
             clan.setBalance(clan.getBalance() - amount);
         }
 
@@ -369,16 +365,6 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                             (clan.getLeader().getUuid().equals(uuid)) ||
                                     clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
                     );
-        }
-
-        @Override
-        @Deprecated(since = "Это так не работает если не ошибаюсь")
-        public boolean isInClan(@NotNull String uuidString) {
-            try {
-                return isInClan(UUID.fromString(uuidString));
-            } catch (IllegalArgumentException e) {
-                return false;
-            }
         }
 
         @Override

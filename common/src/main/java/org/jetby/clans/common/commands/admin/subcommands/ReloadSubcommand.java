@@ -1,5 +1,8 @@
 package org.jetby.clans.common.commands.admin.subcommands;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.jetby.clans.api.TreexClansAPI;
 import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.common.TreexClans;
@@ -28,25 +31,19 @@ public class ReloadSubcommand implements Subcommand {
 
             plugin.getStorage().save();
 
+            if (plugin.getAddonManager() != null) {
+                plugin.getAddonManager().disableAddons();
+            }
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.getOpenInventory().close();
+            }
+            plugin.getServer().getServicesManager().unregister(TreexClansAPI.class);
+
+            plugin.loadApi();
+            plugin.loadConfigurations();
             Config cfg = new Config();
             cfg.load();
             plugin.setCfg(cfg);
-
-            GuiLoader guiLoader = new GuiLoader(plugin);
-            guiLoader.load();
-
-            plugin.setGuiLoader(guiLoader);
-//            todo why you do that?
-//            if (plugin.getClanCommand() != null) {
-//                ClanCommand cmd = new ClanCommand(plugin);
-//                plugin.getClanCommand().setExecutor(cmd);
-//                plugin.getClanCommand().setTabCompleter(cmd);
-//            }
-
-            plugin.getAddonManager().disableAddons();
-            ((AddonManagerImpl) plugin.getAddonManager()).loadAddons();
-
-            plugin.getStorage().load();
 
             sender.sendMessage("Reloaded by " + (System.currentTimeMillis() - start) + " ms");
         } catch (Exception e) {

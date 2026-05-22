@@ -1,0 +1,132 @@
+config-version: 4
+
+debug: true
+
+
+storage:
+  # MYSQL, SQLITE, YAML
+  type: "SQLITE"
+  # The data below is used only for MySQL.
+  host: "localhost"
+  port: 3306
+  database: "treexclans"
+  username: "root"
+  password: ""
+
+# Available serializers:
+# LEGACY_AMPERSAND  - "&c&lExample &c&9Text"
+# LEGACY_SECTION    - "§c§lExample §c§9Text"
+# MINI_MESSAGE      - "<bold><red>Example</red> <blue>Text</blue></bold>"
+# GSON              - "[{"text":"Example","bold":true,"color":"red"},{"text":" Text","color":"blue"}]"
+# PLAIN             - "Example Text"
+# MINIMAL           - &l#RGBExample <#RGB>Text</#RGB>
+# UNIFIED - Include all, except GSON
+serializer:
+  type: UNIFIED
+  cache:
+    enabled: true
+    max-size: 500
+
+clan-storage:
+  # Filter for items that players cannot place in the clan chest
+  filter:
+    type: BLACKLIST # BLACKLIST or WHITELIST
+    materials:
+      - BEDROCK
+      - BARRIER
+
+
+cooldowns:
+  # Cooldown for sending a clan invite to a player
+  invite-expiration: 60
+  # Time to confirm clan disbanding
+  disband-expiration: 15
+  # If a player denies a clan invite, the clan cannot re-invite them for this duration
+  deny: 120
+
+clan-create:
+  ##
+  ## Checks before creating a clan
+  ## You can add as many checks as needed
+  ##
+  requirements:
+    - money-check:
+        if: "%vault_eco_balance_fixed% >= 5000"
+        then:
+          - "[money_take] 5000"
+        else:
+          - "[message] <#FFE259>&lTreexClans</#FFA751> &7> &cNot enough coins! Your balance: &f%vault_eco_balance_fixed%"
+  min-clan-tag-length: 3
+  max-clan-tag-length: 6
+  blocked-tags:
+    - "admin"
+    - "owner"
+    - "op"
+  regex: "^[A-Za-z0-9]+$"
+  member-rank: MEMBER # IMPORTANT: Specify the rank that will be assigned to a new clan member upon joining
+  leader-rank: LEADER # IMPORTANT: Specify the rank that will be assigned to the clan creator upon creation
+
+
+chat-format: "<#FFE259>[Clan Chat]</#FFA751> &6{player} &7▶ &f{message}"
+
+prefix:
+  # placeholder %clan_prefix%
+  placeholder:
+    has_prefix: "&7[&6{prefix}&7]"
+    no_prefix: "&8[&e{tag}&8]"
+    no_clan: ""
+  min-clan-prefix-length: 3
+  max-clan-prefix-length: 16
+  regex: "^[A-Za-z0-9]+$"
+  # which symbols to ignore when calculating prefix length
+  length-ignored-symbols: "&x(?:&[0-9A-Fa-f]){6}|&[0-9A-Fa-f]"
+
+# placeholder %clan_tag%
+tag-placeholder:
+  has_clan: "&8[&e{tag}&8]"
+  no_clan: ""
+
+ranks:
+  # you can create as many ranks as needed
+  MEMBER:
+    display-name: "&7Member"
+    permissions:
+      invite: true
+      kick: false
+      base: true
+      setbase: false
+      setrank: false
+      deposit: true
+      withdraw: false
+      pvp: false
+      setslogan: false
+      setprefix: false
+  CONTROL:
+    display-name: "&3Manager"
+    permissions:
+      invite: true
+      kick: true
+      base: true
+      setbase: true
+      setrank: false
+      deposit: true
+      withdraw: true
+      pvp: true
+      setslogan: false
+      setprefix: false
+  LEADER:
+    display-name: "&4&lLeader"
+    permissions:
+      invite: true
+      kick: true
+      base: true
+      setbase: true
+      setrank: true
+      deposit: true
+      withdraw: true
+      pvp: true
+      setslogan: true
+      setprefix: true
+
+
+placeholder-show-format: "%weeks% %days% %hours% %minutes%"

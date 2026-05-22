@@ -45,7 +45,7 @@ public class YAML implements Storage {
             if (clan == null) continue;
 
             String prefix = clan.getString("prefix");
-            Set<Member> memberImplSet = new HashSet<>();
+            Set<Member> memberSet = new HashSet<>();
             double balance = clan.getDouble("balance", 0.0);
             String level = clan.getString("level", "1");
             int clanExp = clan.getInt("exp", 0);
@@ -64,7 +64,7 @@ public class YAML implements Storage {
             if (ranksSection != null) {
 
                 for (String key : ranksSection.getKeys(false)) {
-                    String displayName = ranksSection.getString(key + ".display-name");
+                    String displayName = plugin.getCfg().getRanks().get(key).name();
                     ConfigurationSection permission = ranksSection.getConfigurationSection(key + ".permissions");
                     if (permission == null) continue;
                     Set<RankPerm> perms = new HashSet<>();
@@ -107,7 +107,7 @@ public class YAML implements Storage {
                     ranks.put(key.toLowerCase(), new Rank(key.toLowerCase(), displayName, perms));
                 }
             } else {
-                ranks.putAll(plugin.getCfg().getDefaultRanks());
+                ranks.putAll(plugin.getCfg().getRanks());
             }
             ConfigurationSection leaderSection = clan.getConfigurationSection("leader");
             if (leaderSection == null) continue;
@@ -118,7 +118,7 @@ public class YAML implements Storage {
                 for (String key : members.getKeys(false)) {
                     ConfigurationSection member = members.getConfigurationSection(key);
                     if (member == null) continue;
-                    memberImplSet.add(getMember(key, member, ranks));
+                    memberSet.add(getMember(key, member, ranks));
                 }
             }
 
@@ -135,7 +135,7 @@ public class YAML implements Storage {
                 }
 
             }
-            Storage.CLANS.put(clanId, new ClanImpl(clanId, prefix, leader, memberImplSet, ranks,
+            Storage.CLANS.put(clanId, new ClanImpl(clanId, prefix, leader, memberSet, ranks,
                     plugin.getCfg().getLevels().get(Integer.parseInt(level)),
                     balance, base, clanExp, pvp,chestItems, slogan, plugin));
         }
@@ -158,7 +158,6 @@ public class YAML implements Storage {
 
                 for (String key : clan.getRanks().keySet()) {
                     Rank rank = clan.getRanks().get(key);
-                    configuration.set(clanId + ".ranks." + rank.id() + ".display-name", rank.name());
                     Set<RankPerm> perms = rank.perms();
                     configuration.set(clanId + ".ranks." + rank.id() + ".permissions.ALWAYS", true);
                     for (RankPerm perm : perms) {
@@ -177,8 +176,8 @@ public class YAML implements Storage {
                 configuration.set(clan.getId() + ".leader.uuid", leader.getUuid().toString());
                 setMember(leader, clan, "leader");
 
-                for (var memberImpl : clan.getMembers()) {
-                    setMember(memberImpl, clan, "members." + memberImpl.getUuid());
+                for (var member : clan.getMembers()) {
+                    setMember(member, clan, "members." + member.getUuid());
                 }
 
                 configuration.set(clanId + ".chest",
@@ -232,14 +231,14 @@ public class YAML implements Storage {
         );
     }
 
-    private void setMember(Member member, Clan clanImpl, String path) {
-        configuration.set(clanImpl.getId() + "." + path + ".rank", member.getRank().id());
-        configuration.set(clanImpl.getId() + "." + path + ".joined-at", member.getJoinedAt());
-        configuration.set(clanImpl.getId() + "." + path + ".last-online", member.getLastOnline());
+    private void setMember(Member member, Clan clan, String path) {
+        configuration.set(clan.getId() + "." + path + ".rank", member.getRank().id());
+        configuration.set(clan.getId() + "." + path + ".joined-at", member.getJoinedAt());
+        configuration.set(clan.getId() + "." + path + ".last-online", member.getLastOnline());
 
-        configuration.set(clanImpl.getId() + "." + path + ".coin", member.getCoin());
-        configuration.set(clanImpl.getId() + "." + path + ".exp", member.getExp());
-        configuration.set(clanImpl.getId() + "." + path + ".kills", member.getKills());
-        configuration.set(clanImpl.getId() + "." + path + ".deaths", member.getDeaths());
+        configuration.set(clan.getId() + "." + path + ".coin", member.getCoin());
+        configuration.set(clan.getId() + "." + path + ".exp", member.getExp());
+        configuration.set(clan.getId() + "." + path + ".kills", member.getKills());
+        configuration.set(clan.getId() + "." + path + ".deaths", member.getDeaths());
     }
 }

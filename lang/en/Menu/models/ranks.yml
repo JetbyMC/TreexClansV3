@@ -1,0 +1,102 @@
+id: ranks
+title: "&0&lRanks"
+size: 36
+
+model: ranks
+
+Items:
+
+  leader-rank:
+    material: DIAMOND_HELMET
+    slot: 9
+    flags:
+      - HIDE_ATTRIBUTES
+    # Available
+    # all
+    # members
+    # rank_id
+    rank: leader
+    display_name: "{rank}"
+    lore:
+      - "&6&m                    "
+      - "&c&lThis rank cannot be configured"
+      - "&6&m                    "
+      - "&6&lPermissions"
+      - "&6⚐ &fInvite to clan {invite_status}"
+      - "&6⚐ &fKick from clan {kick_status}"
+      - "&6⚐ &fSet base location {setbase_status}"
+      - "&6⚐ &fTeleport to base {base_status}"
+      - "&6⚐ &fManage ranks {setrank_status}"
+      - "&6⚐ &fDeposit to clan balance {deposit_status}"
+      - "&6⚐ &fWithdraw from clan balance {withdraw_status}"
+      - "&6⚐ &fToggle pvp {pvp_status}"
+      - "&6⚐ &fSet slogan {setslogan_status}"
+      - "&6⚐ &fChange prefix {setprefix_status}"
+      - "&6&m                    "
+
+
+  ranks:
+    material: IRON_HELMET
+    slots:
+      - 10-16
+
+    # Available
+    # all
+    # members
+    # rank_id
+    rank: members
+    flags:
+      - HIDE_ATTRIBUTES
+    display_name: "{rank}"
+    lore:
+      - "&6&m                    "
+      - "&7Click to configure"
+      - "&6&m                    "
+      - "&6&lPermissions"
+      - "&6⚐ &fInvite to clan {invite_status}"
+      - "&6⚐ &fKick from clan {kick_status}"
+      - "&6⚐ &fSet base location {setbase_status}"
+      - "&6⚐ &fTeleport to base {base_status}"
+      - "&6⚐ &fManage ranks {setrank_status}"
+      - "&6⚐ &fDeposit to clan balance {deposit_status}"
+      - "&6⚐ &fWithdraw from clan balance {withdraw_status}"
+      - "&6⚐ &fToggle pvp {pvp_status}"
+      - "&6⚐ &fSet slogan {setslogan_status}"
+      - "&6⚐ &fChange prefix {setprefix_status}"
+      - "&6&m                    "
+
+
+  orange:
+    material: ORANGE_STAINED_GLASS_PANE
+    slots:
+      - 0-2
+      - 6-8
+      - 27-29
+      - 33-35
+    display_name: " "
+
+  black:
+    material: BLACK_STAINED_GLASS_PANE
+    slots:
+      - 3
+      - 5
+      - 30
+      - 32
+    display_name: " "
+
+
+  gray:
+    material: GRAY_STAINED_GLASS_PANE
+    slots:
+      - 4
+    display_name: " "
+
+
+
+  back:
+    slot: 31
+    material: DARK_OAK_DOOR
+    display_name: "&6Back to menu"
+    on_click:
+      any:
+        - "[open] main"

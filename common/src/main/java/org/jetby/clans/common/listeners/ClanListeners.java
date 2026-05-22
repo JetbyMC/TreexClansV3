@@ -27,10 +27,10 @@ public class ClanListeners implements Listener {
     @EventHandler
     public void onClanChat(AsyncPlayerChatEvent e) {
         if (!plugin.getClanManager().lookup().isInClan(e.getPlayer().getUniqueId())) return;
-        var clanImpl = plugin.getClanManager().lookup().getClanByMember(e.getPlayer().getUniqueId());
-        if (clanImpl == null) return;
-        if (!clanImpl.getMember(e.getPlayer().getUniqueId()).isChat()) return;
-        plugin.getClanManager().chat().sendChat(clanImpl, e.getPlayer(), e.getMessage());
+        var clan = plugin.getClanManager().lookup().getClanByMember(e.getPlayer().getUniqueId());
+        if (clan == null) return;
+        if (!clan.getMember(e.getPlayer().getUniqueId()).isChat()) return;
+        plugin.getClanManager().chat().sendChat(clan, e.getPlayer(), e.getMessage());
         e.setCancelled(true);
     }
 

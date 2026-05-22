@@ -1,5 +1,7 @@
-package org.jetby.clans.common.tools.customactions;
+package org.jetby.clans.common.actions;
 
+import org.bukkit.entity.Player;
+import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.clan.model.ClanImpl;
 import org.jetby.libb.action.Action;
@@ -12,8 +14,14 @@ public class ClanMessageAction implements Action {
 
     @Override
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
-        ClanImpl clanImpl = ctx.get(ClanImpl.class);
-        if (clanImpl == null) return;
-        plugin.getClanManager().chat().sendMessage(clanImpl, input.rawText());
+        Clan clan = ctx.get(ClanImpl.class);
+        if (clan==null) {
+            Player player = ctx.getPlayer();
+            if (player!=null) {
+                clan = TreexClans.getInstance().getClanManager().lookup().getClanByMember(player.getUniqueId());
+            }
+        }
+
+        plugin.getClanManager().chat().sendMessage(clan, input.rawText());
     }
 }

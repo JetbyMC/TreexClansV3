@@ -19,17 +19,16 @@ import java.util.Map;
 public class RanksGui extends Gui {
 
 
+    private final TreexClans plugin;
     public RanksGui(@NotNull GuiContext ctx) {
         super(ctx);
+        this.plugin = (TreexClans) getPlugin();
 
-        addClickHandler("type", event -> {
-            if (!event.getSection().getString("type").equalsIgnoreCase("all_ranks")) return;
-            String type = event.getItem().type();
-            if (type == null) return;
-            if (!type.startsWith("rank-")) return;
-            String rankName = type.replace("rank-", "");
-            Rank rank = getClan().getRanks().get(rankName);
+        addClickHandler("rank", event -> {
+            String rankName = event.getItem().type().replace("rank-", "");
+            Rank rank = plugin.getCfg().getRanks().get(rankName);
             if (rank == null) return;
+            if (rank==plugin.getCfg().getLeaderRank()) return;
 
             ((TreexClans) getPlugin()).getGuiFactory().create(GuiContext.of(
                                     getPlugin(),
@@ -45,7 +44,7 @@ public class RanksGui extends Gui {
     public void buildItems(List<Item> items) {
         if (getClan() == null) return;
 
-        List<Rank> ranks = getClan().getRanks().values()
+        List<Rank> ranks = plugin.getCfg().getRanks().values()
                 .stream()
                 .filter(rank ->
                         getClan().getLeader().getRank() != rank
@@ -53,22 +52,44 @@ public class RanksGui extends Gui {
         List<Item> result = new ArrayList<>();
 
         for (Item item : items) {
-            if (!("all_ranks").equalsIgnoreCase(item.type())) {
-                if ("leader_rank".equalsIgnoreCase(item.type())) {
-                    result.add(cloneItemForRank(item, item.slots(), getClan().getLeader().getRank()));
-                    continue;
-                }
+            String rankName = item.section().getString("rank");
+            if (rankName==null) {
                 result.add(item);
                 continue;
             }
+            switch (rankName.toLowerCase()) {
+                case "all": {
+                    List<Integer> slots = item.slots();
+                    for (int i = 0; i < Math.min(slots.size(), ranks.size()); i++) {
+                        Rank rank = ranks.get(i);
+                        int slot = slots.get(i);
 
-            List<Integer> slots = item.slots();
-            for (int i = 0; i < Math.min(slots.size(), ranks.size()); i++) {
-                Rank rank = ranks.get(i);
-                int slot = slots.get(i);
+                        result.add(cloneItemForRank(item, List.of(slot), rank));
+                    }
+                    continue;
+                }
+                case "members": {
+                    List<Integer> slots = item.slots();
+                    for (int i = 0; i < Math.min(slots.size(), ranks.size()); i++) {
+                        Rank rank = ranks.get(i);
+                        if (rank==plugin.getCfg().getLeaderRank()) continue;
+                        int slot = slots.get(i-1);
 
-                result.add(cloneItemForRank(item, List.of(slot), rank));
+                        result.add(cloneItemForRank(item, List.of(slot), rank));
+                    }
+                 continue;
+                }
+                default: {
+                    Rank rank = plugin.getCfg().getRanks().get(rankName);
+                    if (rank == null) {
+                        TreexClans.LOGGER.error("Rank '" + rankName + "' not found");
+                        continue;
+                    }
+                    result.add(cloneItemForRank(item, item.slots(), rank));
+                    continue;
+                }
             }
+
         }
         super.buildItems(result);
     }

@@ -26,33 +26,33 @@ public class ExpSubcommand implements Subcommand {
                 if (args.length<2) break;
                 String clanName = args[1];
                 int amount = Integer.parseInt(args[2]);
-                var clanImpl = plugin.getClanManager().lookup().getClan(clanName);
-                if (clanImpl ==null) break;
+                var clan = plugin.getClanManager().lookup().getClan(clanName);
+                if (clan ==null) break;
                 if (amount<1) break;
-                clanImpl.addExp(amount, plugin.getCfg().getLevels());
-                sender.sendMessage("Clan "+clanName+" has "+ clanImpl.getExp()+ " now.");
+                clan.addExp(amount, plugin.getCfg().getLevels());
+                sender.sendMessage("Clan "+clanName+" has "+ clan.getExp()+ " now.");
                 break;
             }
             case "set": {
                 if (args.length<2) break;
                 String clanName = args[1];
                 int amount = Integer.parseInt(args[2]);
-                var clanImpl = plugin.getClanManager().lookup().getClan(clanName);
-                if (clanImpl ==null) break;
+                var clan = plugin.getClanManager().lookup().getClan(clanName);
+                if (clan ==null) break;
                 if (amount<0) amount = 0;
-                clanImpl.setExp(amount);
-                sender.sendMessage("Clan "+clanName+" has "+ clanImpl.getExp()+ " now.");
+                clan.setExp(amount);
+                sender.sendMessage("Clan "+clanName+" has "+ clan.getExp()+ " now.");
                 break;
             }
             case "take": {
                 if (args.length<2) break;
                 String clanName = args[1];
                 int amount = Integer.parseInt(args[2]);
-                var clanImpl = plugin.getClanManager().lookup().getClan(clanName);
-                if (clanImpl ==null) break;
+                var clan = plugin.getClanManager().lookup().getClan(clanName);
+                if (clan ==null) break;
                 if (amount<1) break;
-                clanImpl.takeExp(amount);
-                sender.sendMessage("Clan "+clanName+" has "+ clanImpl.getExp()+ " now.");
+                clan.takeExp(amount);
+                sender.sendMessage("Clan "+clanName+" has "+ clan.getExp()+ " now.");
                 break;
             }
             default: {

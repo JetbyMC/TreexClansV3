@@ -1,0 +1,5 @@
+# Adds the /clan slogan command
+setslogan: true
+
+# Adds the /clan setprefix command
+setprefix: true

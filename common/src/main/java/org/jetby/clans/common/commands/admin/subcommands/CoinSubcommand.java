@@ -2,6 +2,8 @@ package org.jetby.clans.common.commands.admin.subcommands;
 
 import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
+import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.api.service.clan.member.Member;
 import org.jetby.clans.common.TreexClans;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -42,13 +44,13 @@ public class CoinSubcommand implements Subcommand {
                 } else {
                     uuid = target.getUniqueId();
                 }
-                var clanImpl = plugin.getClanManager().lookup().getClanByMember(uuid);
-                if (clanImpl == null) break;
-                var memberImpl = clanImpl.getMember(uuid);
-                if (memberImpl == null) break;
+                Clan clan = plugin.getClanManager().lookup().getClanByMember(uuid);
+                if (clan == null) break;
+                Member member = clan.getMember(uuid);
+                if (member == null) break;
                 if (amount < 1) break;
-                memberImpl.addCoin(amount);
-                sender.sendMessage(playerName + " has " + memberImpl.getCoin() + " coins now.");
+                member.addCoin(amount);
+                sender.sendMessage(playerName + " has " + member.getCoin() + " coins now.");
                 break;
             }
             case "set": {
@@ -63,13 +65,13 @@ public class CoinSubcommand implements Subcommand {
                 } else {
                     uuid = target.getUniqueId();
                 }
-                var clanImpl = plugin.getClanManager().lookup().getClanByMember(uuid);
-                if (clanImpl == null) break;
-                var memberImpl = clanImpl.getMember(uuid);
-                if (memberImpl == null) break;
+                var clan = plugin.getClanManager().lookup().getClanByMember(uuid);
+                if (clan == null) break;
+                var member = clan.getMember(uuid);
+                if (member == null) break;
                 if (amount < 0) amount = 0;
-                memberImpl.setCoin(amount);
-                sender.sendMessage(playerName + " has " + memberImpl.getCoin() + " coins now.");
+                member.setCoin(amount);
+                sender.sendMessage(playerName + " has " + member.getCoin() + " coins now.");
                 break;
 
             }
@@ -85,13 +87,13 @@ public class CoinSubcommand implements Subcommand {
                 } else {
                     uuid = target.getUniqueId();
                 }
-                var clanImpl = plugin.getClanManager().lookup().getClanByMember(uuid);
-                if (clanImpl == null) break;
-                var memberImpl = clanImpl.getMember(uuid);
-                if (memberImpl == null) break;
+                var clan = plugin.getClanManager().lookup().getClanByMember(uuid);
+                if (clan == null) break;
+                var member = clan.getMember(uuid);
+                if (member == null) break;
                 if (amount < 1) break;
-                memberImpl.takeCoin(amount);
-                sender.sendMessage(playerName + " has " + memberImpl.getCoin() + " coins now.");
+                member.takeCoin(amount);
+                sender.sendMessage(playerName + " has " + member.getCoin() + " coins now.");
                 break;
 
             }

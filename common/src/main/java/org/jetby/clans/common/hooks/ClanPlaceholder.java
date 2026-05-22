@@ -18,7 +18,8 @@ public class ClanPlaceholder extends PlaceholderExpansion {
 
     public ClanPlaceholder(TreexClans plugin) {
         this.plugin = plugin;
-        this.papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI").isEnabled();
+        this.papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null
+                && Bukkit.getPluginManager().getPlugin("PlaceholderAPI").isEnabled();
     }
 
     @Override
@@ -39,13 +40,16 @@ public class ClanPlaceholder extends PlaceholderExpansion {
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String identifier) {
         String[] args = identifier.split("_");
-        Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-        Member member = clan.getMember(player.getUniqueId());
+        boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
+        Clan clan = inClan ? plugin.getClanManager().lookup().getClanByMember(player.getUniqueId()) : null;
 
         return switch (args[0].toLowerCase()) {
-            case "id" -> clan.getId();
+            case "id" -> {
+                if (!inClan || clan == null) yield "";
+                yield clan.getId();
+            }
             case "tag" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId()))
+                if (!inClan || clan == null)
                     yield plugin.getCfg().getTagPlaceholder_noClan();
 
                 yield plugin.getCfg().getTagPlaceholder_hasClan()
@@ -53,58 +57,61 @@ public class ClanPlaceholder extends PlaceholderExpansion {
                         .replace("{prefix}", clan.getPrefix() == null ? "" : clan.getPrefix());
             }
             case "prefix" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId()))
+                if (!inClan || clan == null)
                     yield plugin.getCfg().getPrefixPlaceholder_noClan();
-                if (clan.getPrefix() == null) yield plugin.getCfg().getPrefixPlaceholder_noPrefix()
-                        .replace("{tag}", clan.getId());
+                if (clan.getPrefix() == null)
+                    yield plugin.getCfg().getPrefixPlaceholder_noPrefix()
+                            .replace("{tag}", clan.getId());
 
                 yield plugin.getCfg().getPrefixPlaceholder_hasPrefix()
                         .replace("{tag}", clan.getId())
                         .replace("{prefix}", clan.getPrefix());
             }
             case "coin" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                if (!inClan || clan == null) yield "0";
                 yield String.valueOf(clan.getMember(player.getUniqueId()).getCoin());
             }
             case "slogan" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "";
+                if (!inClan || clan == null) yield "";
                 yield clan.getSlogan();
             }
             case "balance" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                if (!inClan || clan == null) yield "0";
                 yield String.valueOf(clan.getBalance());
             }
             case "level" -> {
-                if (args.length==1) {
-                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                if (!inClan || clan == null) yield "0";
+                if (args.length == 1) {
                     yield clan.getLevel().id();
-                } else if (args.length==2 && args[1].equalsIgnoreCase("name")) {
-                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                } else if (args.length == 2 && args[1].equalsIgnoreCase("name")) {
                     yield clan.getLevel().name();
                 } else yield null;
             }
             case "exp" -> {
-                if (args.length==1) {
-                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                if (!inClan || clan == null) yield "0";
+                if (args.length == 1) {
                     yield String.valueOf(clan.getExp());
-                } else if (args.length==2 && args[1].equalsIgnoreCase("max")) {
-                    if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "0";
+                } else if (args.length == 2 && args[1].equalsIgnoreCase("max")) {
                     yield String.valueOf(clan.getLevel().minExp());
                 } else yield null;
             }
             case "leader" -> {
+                if (!inClan || clan == null || args.length < 2) yield "";
                 if (args[1].equalsIgnoreCase("name")) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(clan.getLeader().getUuid());
-                    yield offlinePlayer.getName();
+                    yield offlinePlayer.getName() != null ? offlinePlayer.getName() : "";
                 }
                 yield null;
             }
             case "isleader" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "";
-                yield member==clan.getLeader() ? "true" : "false";
+                if (!inClan || clan == null) yield "";
+                Member member = clan.getMember(player.getUniqueId());
+                yield clan.getLeader().equals(member) ? "true" : "false";
             }
             case "rank" -> {
-                if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) yield "";
+                if (!inClan || clan == null) yield "";
+                Member member = clan.getMember(player.getUniqueId());
+                if (member == null) yield "";
                 yield member.getRank().name();
             }
             default -> null;

@@ -11,5 +11,6 @@ depend:
 softdepend:
   - PlaceholderAPI
 commands:
-  clan: {}
-  treexclans: {}
+  treexclans:
+    aliases:
+      - tc

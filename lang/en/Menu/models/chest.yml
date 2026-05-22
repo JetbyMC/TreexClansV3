@@ -1,0 +1,79 @@
+id: chest
+title: "&0&lClan Chest"
+size: 54
+open_args:
+  - 'storage'
+  - 'chest'
+
+model: chest
+
+Items:
+
+  items:
+    type: items
+    slots:
+      - 9-44
+
+  bs:
+    slot: -1
+    type: blocked-slot
+    material: BARRIER
+    display_name: "&c&lSlot Locked"
+    lore:
+      - "&7This slot is unavailable."
+      - "&7Level up your clan"
+      - "&7to unlock more slots."
+
+
+  next_page:
+    material: SPECTRAL_ARROW
+    slot: 52
+    display_name: "&aNext page ▶"
+    on_click:
+      any:
+        - "[next_page]"
+
+
+  prev_page:
+    material: ARROW
+    slot: 46
+    display_name: "&c◀ Previous page"
+    on_click:
+      any:
+        - "[prev_page]"
+
+  orange:
+    material: ORANGE_STAINED_GLASS_PANE
+    slots:
+      - 0-2
+      - 6-8
+      - 45
+      - 47
+      - 51
+      - 53
+    display_name: " "
+
+  black:
+    material: BLACK_STAINED_GLASS_PANE
+    slots:
+      - 3
+      - 5
+      - 48
+      - 50
+    display_name: " "
+
+
+  gray:
+    material: GRAY_STAINED_GLASS_PANE
+    slots:
+      - 4
+    display_name: " "
+
+
+  menu:
+    material: DARK_OAK_DOOR
+    slot: 49
+    display_name: "&6Back to menu"
+    on_click:
+      any:
+        - "[open] main"

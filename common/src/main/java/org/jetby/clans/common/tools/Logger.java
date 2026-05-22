@@ -13,21 +13,21 @@ public final class Logger {
     }
 
     public void warn(String message) {
-        plugin.getComponentLogger().warn(Serializer.UNIFIED.deserialize(message));
+        org.jetby.libb.util.Logger.warn(plugin, message);
     }
 
     public void info(String message) {
-        plugin.getComponentLogger().info(Serializer.UNIFIED.deserialize(message));
+        org.jetby.libb.util.Logger.info(plugin, message);
     }
 
     public void success(String message) {
-        plugin.getComponentLogger().info(Serializer.UNIFIED.deserialize("&a" + message));
+        org.jetby.libb.util.Logger.info(plugin, Serializer.UNIFIED.deserialize("&a" + message));
     }
 
     public void error(String message) {
-        plugin.getComponentLogger().error(Serializer.UNIFIED.deserialize(message));
+        org.jetby.libb.util.Logger.error(plugin, Serializer.UNIFIED.deserialize(message));
     }
     public void error(String message, Object... objects) {
-        plugin.getComponentLogger().error(Serializer.UNIFIED.deserialize(message), objects);
+        org.jetby.libb.util.Logger.error(plugin, message, objects);
     }
 }

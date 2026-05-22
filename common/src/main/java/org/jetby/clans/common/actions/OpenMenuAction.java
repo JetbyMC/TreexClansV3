@@ -1,4 +1,4 @@
-package org.jetby.clans.common.tools.customactions;
+package org.jetby.clans.common.actions;
 
 import org.jetby.clans.api.gui.ClanGuiData;
 import org.jetby.clans.api.gui.GuiContext;
@@ -20,6 +20,12 @@ public class OpenMenuAction implements Action {
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
         Player player = ctx.getPlayer();
         Clan clan = ctx.get(ClanImpl.class);
+        if (clan==null) {
+            if (player!=null) {
+                clan = TreexClans.getInstance().getClanManager().lookup().getClanByMember(player.getUniqueId());
+            }
+        }
+
         ClanGuiData gui;
 
         String raw = input.rawText();

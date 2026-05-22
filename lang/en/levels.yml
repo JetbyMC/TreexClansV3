@@ -1,0 +1,78 @@
+'1':
+  name: "I"
+  exp: 100
+  chest: 3
+  max-members: 2
+  max-balance: 50000
+'2':
+  name: "II"
+  exp: 250
+  chest: 15
+  max-members: 3
+  max-balance: 250000
+  level-up-actions:
+    - "[message] &7"
+    - "[message] &6&m                                      &r"
+    - "[message] &6&lLEVEL-UP"
+    - "[message] &7Your clan has reached &elevel 2"
+    - "[message] &7"
+    - "[message] &6&lBonuses:"
+    - "[message] &a+ &fStorage slots: &615"
+    - "[message] &a+ &fMax clan members: &63"
+    - "[message] &a+ &fMax clan balance: &6250,000"
+    - "[message] &7"
+    - "[message] &6&m                                      &r"
+'3':
+  name: "III"
+  exp: 300
+  chest: 30
+  max-members: 4
+  max-balance: 500000
+  level-up-actions:
+    - "[message] &7"
+    - "[message] &6&m                                      &r"
+    - "[message] &6&lLEVEL-UP"
+    - "[message] &7Your clan has reached &elevel 3"
+    - "[message] &7"
+    - "[message] &6&lBonuses:"
+    - "[message] &a+ &fStorage slots: &630"
+    - "[message] &a+ &fMax clan members: &64"
+    - "[message] &a+ &fMax clan balance: &6500,000"
+    - "[message] &7"
+    - "[message] &6&m                                      &r"
+'4':
+  name: "IV"
+  exp: 350
+  chest: 40
+  max-members: 5
+  max-balance: 1500000
+  level-up-actions:
+    - "[message] &7"
+    - "[message] &6&m                                      &r"
+    - "[message] &6&lLEVEL-UP"
+    - "[message] &7Your clan has reached &elevel 4"
+    - "[message] &7"
+    - "[message] &6&lBonuses:"
+    - "[message] &a+ &fStorage slots: &640"
+    - "[message] &a+ &fMax clan members: &65"
+    - "[message] &a+ &fMax clan balance: &61,500,000"
+    - "[message] &7"
+    - "[message] &6&m                                      &r"
+'5':
+  name: "MAX"
+  exp: 400
+  chest: 50
+  max-members: 6
+  max-balance: 2500000
+  level-up-actions:
+    - "[message] &7"
+    - "[message] &6&m                                      &r"
+    - "[message] &6&lLEVEL-UP"
+    - "[message] &7Your clan has reached the &emax level"
+    - "[message] &7"
+    - "[message] &6&lBonuses:"
+    - "[message] &a+ &fStorage slots: &650"
+    - "[message] &a+ &fMax clan members: &66"
+    - "[message] &a+ &fMax clan balance: &62,500,000"
+    - "[message] &7"
+    - "[message] &6&m                                      &r"

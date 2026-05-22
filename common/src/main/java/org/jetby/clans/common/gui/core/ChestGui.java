@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 public class ChestGui extends Gui {
 
-    private static final Map<Clan, Map<UUID, ChestGui>> openGuis = new ConcurrentHashMap<>();
+    private static final Map<Clan, Map<UUID, ChestGui>> OPEN_GUIS = new ConcurrentHashMap<>();
 
     public ChestGui(@NotNull GuiContext ctx) {
         super(ctx);
@@ -42,11 +42,11 @@ public class ChestGui extends Gui {
         int perPage = slots.size();
         int totalWithPadding = totalSlots + (perPage - totalSlots % perPage) % perPage;
 
-        openGuis.computeIfAbsent(getClan(), k -> new ConcurrentHashMap<>())
+        OPEN_GUIS.computeIfAbsent(getClan(), k -> new ConcurrentHashMap<>())
                 .put(ctx.getPlayer().getUniqueId(), this);
 
         for (int i = 0; i < totalWithPadding; i++) {
-            addItem(new ItemWrapper(new ItemStack(AIR_ITEM)));
+            addItem(new ItemWrapper(AIR_ITEM));
         }
 
         Consumer<InventoryClickEvent> onClick = onClick();
@@ -54,6 +54,9 @@ public class ChestGui extends Gui {
             if (onClick != null) onClick.accept(event);
 
             if (!slots.contains(event.getSlot())) {
+                if (event.getClickedInventory().equals(this)) {
+                    event.setCancelled(true);
+                }
                 return;
             }
             int guiSlot = event.getSlot();
@@ -69,7 +72,7 @@ public class ChestGui extends Gui {
 
             getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
                 ItemStack current = getInventory().getItem(guiSlot);
-                getClan().getChest().put(index, current != null ? current : new ItemStack(AIR_ITEM));
+                getClan().getChest().put(index, current != null ? current : AIR_ITEM);
                 syncToOpenViewers(getCurrentPage());
             });
         });
@@ -80,7 +83,7 @@ public class ChestGui extends Gui {
         });
 
         onClose(event -> {
-            openGuis.getOrDefault(getClan(), Map.of())
+            OPEN_GUIS.getOrDefault(getClan(), Map.of())
                     .remove(ctx.getPlayer().getUniqueId());
         });
     }
@@ -129,7 +132,7 @@ public class ChestGui extends Gui {
     }
 
     private void syncToOpenViewers(int page) {
-        Map<UUID, ChestGui> clanGuis = openGuis.get(getClan());
+        Map<UUID, ChestGui> clanGuis = OPEN_GUIS.get(getClan());
         if (clanGuis == null) return;
         clanGuis.values().stream()
                 .filter(gui -> gui != this)

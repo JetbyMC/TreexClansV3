@@ -9,8 +9,15 @@ Items:
   leader-rank:
     material: DIAMOND_HELMET
     slot: 9
-    hide_attributes: true
-    type: leader_rank
+
+
+    # Доступно
+    # all
+    # members
+    # rank_id
+    rank: leader
+    flags:
+      - HIDE_ATTRIBUTES
     display_name: "{rank}"
     lore:
       - "&6&m                    "
@@ -34,8 +41,15 @@ Items:
     material: IRON_HELMET
     slots:
       - 10-16
-    type: all_ranks
-    hide_attributes: true
+
+
+    # Доступно
+    # all
+    # members
+    # rank_id
+    rank: members
+    flags:
+      - HIDE_ATTRIBUTES
     display_name: "{rank}"
     lore:
       - "&6&m                    "

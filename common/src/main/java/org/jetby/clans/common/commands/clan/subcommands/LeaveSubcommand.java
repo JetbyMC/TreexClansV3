@@ -31,6 +31,7 @@ public class LeaveSubcommand implements Subcommand {
             Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
             if (clan.getLeader().equals(clan.getMember(player.getUniqueId()))) {
                 plugin.getMessages().of(player, "you-cant-leave-leader")
+                        .replace("{cmd}", command.getName())
                         .with(clan)
                         .run();
                 return true;

@@ -1,0 +1,177 @@
+prefix: "<#FFE259>&lTreexClans</#FFA751> &7>"
+
+formattedTime:
+  weeks: [ "w.", "w.", "w." ]
+  days: [ "d.", "d.", "d." ]
+  hours: [ "h.", "h.", "h." ]
+  minutes: [ "min.", "min.", "min." ]
+  seconds: [ "sec.", "sec.", "sec." ]
+
+
+restart-needed: "It seems the server administration loaded the plugin in an unusual way. If you are an administrator, you need to restart the server because this feature requires packet handling (packetevents)."
+
+commands:
+  setprefix:
+    - "[message] &#FC835C• /{cmd} {arg} [prefix] &7- &fSet the clan prefix"
+  setslogan:
+    - "[message] &#FC835C• /{cmd} {arg} [slogan] &7- &fSet the clan slogan"
+  setrank:
+    - "[message] &#FC835C• /{cmd} {arg} [name] [rank] &7- &fSet a rank for a player"
+  kick:
+    - "[message] &#FC835C• /{cmd} {arg} [name] &7- &fKick a player from your clan"
+  invite:
+    - "[message] &#FC835C• /{cmd} {arg} [name] &7- &fInvite a player to your clan"
+  withdraw:
+    - "[message] &#FC835C• /{cmd} {arg} [amount] &7- &fWithdraw from clan balance"
+  deposit:
+    - "[message] &#FC835C• /{cmd} {arg} [amount] &7- &fDeposit to clan balance"
+  create:
+    - "[message] &#FC835C• /{cmd} {arg} [tag] &7- &fCreate a clan"
+  accept:
+    - "[message] &#FC835C• /{cmd} {arg} [tag] &7- &fAccept a clan invitation"
+  deny:
+    - "[message] &#FC835C• /{cmd} {arg} [tag] &7- &fDecline a clan invitation"
+  help-no-clan:
+    - "[message] &#FFE259◀&m          &r <#FFE259>&lTreexClans</#FFA751> &#FFE259&m          &#FFE259▶ "
+    - "[message] "
+    - "[message] &#FC835C• /{cmd} create [tag] &7- &fCreate a clan"
+    - "[message] "
+    - "[message] &#FFE259◀&m                                       &#FFE259▶ "
+  help:
+    - "[message] &#FFE259◀&m          &r <#FFE259>&lTreexClans</#FFA751> &#FFE259&m          &#FFE259▶ "
+    - "[message] "
+    - "[message] &#FC835C• /{cmd} menu &7- &fClan menu"
+    - "[message] &#FC835C• /{cmd} chat &7- &fToggle clan chat"
+    - "[message] &#FC835C• /{cmd} chat [text] &7- &fSend a message to clan chat"
+    - "[message] &#FC835C• /{cmd} pvp &7- &fToggle pvp"
+    - "[message] &#FC835C• /{cmd} balance &7- &fCheck clan balance"
+    - "[message] &#FC835C• /{cmd} invest [amount] &7- &fDeposit to clan balance"
+    - "[message] &#FC835C• /{cmd} withdraw [amount] &7- &fWithdraw from clan balance"
+    - "[message] &#FC835C• /{cmd} invite [name] &7- &fInvite a player to your clan"
+    - "[message] &#FC835C• /{cmd} kick [name] &7- &fKick a player from your clan"
+    - "[message] &#FC835C• /{cmd} base &7- &fTeleport to base location"
+    - "[message] &#FC835C• /{cmd} setbase &7- &fSet base location"
+    - "[message] &#FC835C• /{cmd} setrank [name] [rank] &7- &fSet a rank for a player"
+    - "[message] &#FC835C• /{cmd} disband &7- &fDisband the clan (permanently deletes it)"
+    - "[message] "
+    - "[message] &#FFE259◀&m                                       &#FFE259▶ "
+you-cant-leave-leader:
+  - "[message] {prefix} &cYou can't leave this clan because you are the leader. If you want to disband this clan you can use /{cmd} disband"
+player-not-found:
+  - "[message] {prefix} &cPlayer not found"
+disallowed-tag-regex:
+  - "[message] {prefix} &cClan tag contains invalid characters"
+disallowed-prefix-regex:
+  - "[message] {prefix} &cClan prefix contains invalid characters"
+clan-does-not-exist:
+  - "[message] {prefix} &cClan {clan} not found."
+clan-is-already-exists:
+  - "[message] {prefix} &cThis clan already exists. Please choose a different tag"
+clan-created-successfully:
+  - "[message] {prefix} &aYou have successfully created the clan &e{clan_tag} &a!"
+your-not-in-clan:
+  - "[message] {prefix} &cYou are not in a clan!"
+your-already-in-clan:
+  - "[message] {prefix} &cYou are already in a clan"
+clan-tag-too-short:
+  - "[message] {prefix} &cTag is too short. Minimum length is {min_length} characters."
+clan-tag-too-long:
+  - "[message] {prefix} &cTag is too long! Maximum length is {max_length} characters."
+clan-prefix-too-short:
+  - "[message] {prefix} &cPrefix is too short. Minimum length is {min_length} characters."
+clan-prefix-too-long:
+  - "[message] {prefix} &cPrefix is too long! Maximum length is {max_length} characters."
+clan-tag-blocked:
+  - "[message] {prefix} &cThis clan tag is not allowed!"
+clan-you-cant-kick-yourself:
+  - '[message] {prefix} &cYou cannot kick yourself'
+clan-you-cant-setrank-yourself:
+  - '[message] {prefix} &cYou cannot set a rank for yourself'
+you-haven-not-enough-money:
+  - "[message] {prefix} &cYou do not have enough funds!"
+no-invite:
+  - "[message] {prefix} &cThis clan has not sent you an invitation"
+pvp-disabled:
+  # If you don't need this message just leave it empty: pvp-disabled: {}
+  - "[actionbar] &cPvP against clan members is disabled"
+clan-deny:
+  - "[message] {prefix} &cYou declined the clan invitation."
+
+you-cant-do-that-with-leader:
+  - "[message] {prefix} &cYou cannot perform this action against the clan leader"
+
+your-rank-is-not-allowed-to-do-that:
+  - "[message] {prefix} &cYou are not allowed to do that! Please ask your clan leader to grant you permission."
+
+
+clan-create:
+  - "[message] {prefix} &#17FF35You have successfully created the clan &l{clan}"
+clan-balance:
+  - "[message] {prefix} &fClan balance: &#17FF35&l${balance}"
+clan-balance-deposit:
+  - "[message] {prefix} &#17FF35You successfully &edeposited &#17FF35to the clan balance: &l${sum}"
+clan-balance-limit:
+  - "[message] {prefix} &cClan balance limit reached! &7(Limit: {max-balance})"
+clan-deposit-no-money:
+  - '[message] {prefix} &cYou do not have enough funds to deposit that amount'
+clan-balance-withdraw:
+  - "[message] {prefix} &#17FF35You successfully &cwithdrawn &#17FF35from the clan balance: &l${sum}"
+clan-player-kick:
+  - "[message] {prefix} &aYou kicked player {target} from the clan"
+clan-you-was-kicked:
+  - "[message] {prefix} &aPlayer {player} kicked you from the clan"
+clan-invite:
+  - "[message] {prefix} &#17FF35Clan invitation successfully sent to &l{target}&r&#17FF35."
+clan-already-invited:
+  - "[message] {prefix} &cYou have already sent an invitation to this player."
+clan-player-already-in-clan:
+  - "[message] {prefix} &7This player is already in a clan"
+clan-invite-denied:
+  - "[message] {prefix} &cPlayer &f{target} &cdeclined your invitation."
+clan-invite-limit:
+  - "[message] {prefix} &cClan member limit reached"
+clan-setrank:
+  - "[message] {prefix} &fYou set the rank {rank_prefix} &ffor player &e{target}"
+clan-join-request:
+  - "[message] {prefix} &#17FF35You have received a join request for clan &l{clan} &r&#17FF35from player &f&l{player}"
+  - "[message] &r"
+  - "[message] {prefix} &#17FF35You have received a join request for clan &l{clan} &r&#17FF35from player &f&l{player}"
+  - "[message] &r"
+  - "[message] <hover:show_text:'&7Click to <#17FF35>accept'><click:run_command:/{cmd} accept {clan}>              <#17FF35>[Accept]</click></hover> &7| <hover:show_text:'&7Click to <#FB0000>decline&c'><click:run_command:/{cmd} deny {clan}><#FB0000>[Decline]</click></hover>"
+  - "[message] &r"
+clan-join:
+  - '[message] {prefix} &aYou joined the clan {clan}'
+  - '[team_msg] {prefix} &aA new player &f{player}&a has joined the clan. Welcome them!'
+clan-chat-on:
+  - '[message] {prefix} &fClan chat &#17FF35enabled'
+clan-chat-off:
+  - '[message] {prefix} &fClan chat &#FB0000disabled'
+clan-pvp-on:
+  - '[message] {prefix} &fClan pvp &#17FF35enabled'
+clan-pvp-off:
+  - '[message] {prefix} &fClan pvp &#FB0000disabled'
+clan-disband:
+  - '[message] {prefix} &a&lClan has been successfully disbanded'
+  - '[team_msg] {prefix} &c&lYour clan has been disbanded by the leader'
+clan-disband-confirm:
+  - '[message] {prefix} &c&lConfirm that you want to permanently delete your clan by running the command again.'
+clan-leave:
+  - "[message] {prefix} &eYou left the clan {clan}"
+  - "[team_msg] {prefix} &cPlayer {player} left the clan"
+clan-setbase:
+  - '[message] {prefix} &aLocation successfully set'
+clan-base:
+  - '[actionbar] &7Teleporting to base'
+clan-base-unset:
+  - '[message] &cClan base is not set'
+clan-setslogan:
+  - "[message] {prefix} &fYou set the clan slogan to: &6{slogan}"
+clan-setprefix:
+  - "[message] {prefix} &fYou set the clan prefix to: &6{clan_prefix}"
+
+
+rank-perm-yes: "&a✔"
+rank-perm-no: "&c✘"
+
+status:
+  online: "Online"

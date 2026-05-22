@@ -1,4 +1,4 @@
-package org.jetby.clans.common.tools.customactions;
+package org.jetby.clans.common.actions;
 
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.common.TreexClans;
@@ -20,12 +20,18 @@ public class ClanExpGiveAction implements Action {
         Player player = ctx.getPlayer();
         Clan clan = ctx.get(ClanImpl.class);
 
+        if (clan==null) {
+            if (player!=null) {
+                clan = TreexClans.getInstance().getClanManager().lookup().getClanByMember(player.getUniqueId());
+            }
+        }
+
         if (clan != null) {
             if (player != null) {
                 try {
                     int amount = Integer.parseInt(input.rawText());
-                    var memberImpl = clan.getMember(player.getUniqueId());
-                    clan.addExp(amount, memberImpl, plugin.getCfg().getLevels());
+                    var member = clan.getMember(player.getUniqueId());
+                    clan.addExp(amount, member, plugin.getCfg().getLevels());
                 } catch (NumberFormatException e) {
                     LOGGER.warn(e.getMessage());
                 }

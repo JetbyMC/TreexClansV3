@@ -1,0 +1,92 @@
+id: main
+title: "&0&lClan Menu"
+size: 54
+open_args:
+  - 'menu'
+
+model: clan_only
+
+Items:
+
+  info:
+    material: WRITABLE_BOOK
+    slot: 49
+    hide_attributes: true
+    display_name: "&6Clan %clan_prefix% &8(%clan_tag%)"
+    lore:
+      - "&6• &fLeader: &6&l%clan_leader_name%"
+      - "&6• &fBalance: &6&l%clan_balance%"
+      - "&6• &fExp: &6&l%clan_exp%&7/&c&l%clan_exp_max%"
+      - "&6• &fLevel: &6&l%clan_level%"
+
+  chest:
+    material: CHEST
+    slot: 20
+    display_name: "&6Storage"
+    lore:
+      - "&7Click to open"
+    on_click:
+      any:
+        - '[open] model:chest'
+  members:
+    material: PLAYER_HEAD
+    slot: 24
+    display_name: "&6Clan Members"
+    lore:
+      - "&7Click to open"
+    on_click:
+      any:
+        - '[open] model:members'
+  quests:
+    material: TOTEM_OF_UNDYING
+    slot: 30
+    display_name: "&6Quests"
+    lore:
+      - "&7Click to open"
+    on_click:
+      any:
+        - '[open] quests'
+  ranks:
+    material: TURTLE_HELMET
+    slot: 31
+    display_name: "&6Ranks"
+    hide_attributes: true
+    lore:
+      - "&7Click to open"
+    on_click:
+      any:
+        - '[open] model:ranks'
+  glow:
+    material: LEATHER_CHESTPLATE
+    color: YELLOW
+    slot: 32
+    hide_attributes: true
+    display_name: "&6Glow"
+    lore:
+      - "&7Click to open"
+    on_click:
+      any:
+        - '[open] choose_player_color'
+
+  orange:
+    material: ORANGE_STAINED_GLASS_PANE
+    slots:
+      - 0-2
+      - 6-8
+      - 45-47
+      - 51-53
+    display_name: " "
+
+  black:
+    material: BLACK_STAINED_GLASS_PANE
+    slots:
+      - 3
+      - 5
+      - 48
+      - 50
+    display_name: " "
+
+  gray:
+    material: GRAY_STAINED_GLASS_PANE
+    slot: 4
+    display_name: " "

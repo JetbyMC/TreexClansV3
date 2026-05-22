@@ -1,4 +1,4 @@
-package org.jetby.clans.common.tools.customactions;
+package org.jetby.clans.common.actions;
 
 import org.jetby.clans.common.TreexClans;
 import org.jetby.libb.action.Action;
@@ -9,18 +9,16 @@ import org.jetbrains.annotations.NotNull;
 
 import static org.jetby.clans.common.TreexClans.LOGGER;
 
-
-public class MoneyTakeAction implements Action {
+public class MoneyGiveAction implements Action {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
         Player player = ctx.getPlayer();
-
         if (player != null) {
             try {
                 int amount = Integer.parseInt(input.rawText());
-                plugin.getEconomy().withdrawPlayer(player, amount);
+                plugin.getEconomy().depositPlayer(player, amount);
             } catch (NumberFormatException e) {
                 LOGGER.warn(e.getMessage());
             }

@@ -4,19 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jetby.treexclans</groupId>
-    <artifactId>common</artifactId>
-    <version>3.0</version>
-    <packaging>jar</packaging>
+    <parent>
+        <groupId>org.jetby.treexclans</groupId>
+        <artifactId>Parent</artifactId>
+        <version>3.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
+    <artifactId>common</artifactId>
+    <packaging>jar</packaging>
     <name>TreexClans</name>
 
     <properties>
-        <java.version>17</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lang.dir>${project.basedir}/../lang</lang.dir>
     </properties>
 
     <build>
+        <finalName>TreexClans-${project.version}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
@@ -38,6 +42,35 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>build-lang-jars</id>
+                        <phase>package</phase>
+                        <goals><goal>run</goal></goals>
+                        <configuration>
+                            <target>
+                                <macrodef name="make-lang-jar">
+                                    <attribute name="lang"/>
+                                    <sequential>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                                              tofile="${project.build.directory}/${project.build.finalName}-@{lang}.jar"/>
+                                        <jar destfile="${project.build.directory}/${project.build.finalName}-@{lang}.jar"
+                                             update="true">
+                                            <fileset dir="${lang.dir}/@{lang}"/>
+                                        </jar>
+                                    </sequential>
+                                </macrodef>
+                                <make-lang-jar lang="en"/>
+                                <make-lang-jar lang="ru"/>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -75,7 +108,7 @@
         <dependency>
             <groupId>org.jetby.treexclans</groupId>
             <artifactId>api</artifactId>
-            <version>3.0</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -93,7 +126,7 @@
         <dependency>
             <groupId>org.jetby.libb</groupId>
             <artifactId>api</artifactId>
-            <version>1.2</version>
+            <version>1.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

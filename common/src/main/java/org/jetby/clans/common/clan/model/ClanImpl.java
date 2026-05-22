@@ -59,12 +59,12 @@ public class ClanImpl implements Clan {
         return list;
     }
 
-    public void removeMember(@NotNull Member memberImpl) {
-        this.members.remove(memberImpl);
+    public void removeMember(@NotNull Member member) {
+        this.members.remove(member);
     }
 
 
-    public synchronized void addExp(int amount, @NotNull Member memberImpl, @NotNull Map<Integer, Level> levels) {
+    public synchronized void addExp(int amount, @NotNull Member member, @NotNull Map<Integer, Level> levels) {
         int remaining = amount;
 
         while (remaining > 0) {
@@ -91,7 +91,7 @@ public class ClanImpl implements Clan {
             }
         }
 
-        memberImpl.setExp(memberImpl.getExp() + amount);
+        member.setExp(member.getExp() + amount);
     }
 
     public synchronized void addExp(int amount, @NotNull Map<Integer, Level> levels) {
@@ -127,9 +127,9 @@ public class ClanImpl implements Clan {
         return level.minExp() - exp;
     }
 
-    public synchronized void takeExp(int a, @NotNull Member memberImpl) {
+    public synchronized void takeExp(int a, @NotNull Member member) {
         setExp(getExp() - a);
-        memberImpl.setExp(memberImpl.getExp() - a);
+        member.setExp(member.getExp() - a);
     }
 
     public synchronized void takeExp(int a) {

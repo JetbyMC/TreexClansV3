@@ -1,4 +1,4 @@
-package org.jetby.clans.common.tools.customactions;
+package org.jetby.clans.common.actions;
 
 
 import org.jetby.clans.api.gui.Gui;

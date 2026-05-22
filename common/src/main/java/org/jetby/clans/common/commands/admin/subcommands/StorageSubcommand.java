@@ -1,8 +1,14 @@
 package org.jetby.clans.common.commands.admin.subcommands;
 
+import org.bukkit.entity.Player;
 import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
+import org.jetby.clans.api.gui.GuiContext;
+import org.jetby.clans.api.gui.GuiFactory;
+import org.jetby.clans.api.gui.GuiModel;
+import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.common.TreexClans;
+import org.jetby.clans.common.gui.GuiLoader;
 import org.jetby.clans.common.storage.Storage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,30 +24,17 @@ public class StorageSubcommand implements Subcommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
 
-        // TODO sex
-//        if (sender instanceof Player player) {
-//
-//            Menu menu = plugin.getGuiLoader().getMenus().values().stream()
-//                    .filter(m -> m.type().equalsIgnoreCase("chest"))
-//                    .findFirst()
-//                    .orElse(null);
-//            if (menu != null) {
-//
-//                if (args.length > 0) {
-//                    String clanName = args[0].toLowerCase();
-//                    var clanImpl = plugin.getClanManager().lookup().getClan(clanName);
-//                    if (clanImpl == null) return true;
-//
-//                    Gui gui = new ChestGui(plugin, menu, player, clanImpl);
-//                    gui.open(player);
-//
-//                    return true;
-//                } else {
-//                    sender.sendMessage("/xclan storage <clan>");
-//                }
-//
-//            }
-//        }
+        if (sender instanceof Player player) {
+            Clan clan = plugin.getClanManager().lookup().getClan(args[0]);
+            if (clan==null) return true;
+
+            plugin.getGuiFactory().create(GuiContext.of(
+                    plugin,
+                    GuiLoader.getGuiConfiguration(GuiModel.CHEST),
+                    player,
+                    clan)
+            ).open(player);
+        }
 
 
         return true;

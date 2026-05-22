@@ -234,14 +234,6 @@ public interface ClanManager {
         boolean isInClan(@NotNull UUID uuid);
 
         /**
-         * Checks whether a player with the given UUID (as a string) is in a clan.
-         *
-         * @param uuidString the player’s UUID as a string.
-         * @return true if the player belongs to a clan.
-         */
-        boolean isInClan(@NotNull String uuidString);
-
-        /**
          * Retrieves a clan by its name.
          *
          * @param name the clan name.

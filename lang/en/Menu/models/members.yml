@@ -1,0 +1,103 @@
+id: members
+title: "&0&lClan Members"
+size: 54
+open_args: { }
+
+model: members
+
+Items:
+
+  leader:
+    material: PLAYER_HEAD
+    type: leader
+    display_name: "{rank} &f&l{name}"
+    slot: 13
+    lore:
+      - "&6&m                    "
+      - "&6⌚ &a{last-online}"
+      - "&6&m                    "
+      - "&6&lStats"
+      - "&6⚗ &fExp brought to clan: &6&l{exp}"
+      - "&6♦ &fCoins earned: &6&l{coin}"
+      - "&6⚔ &fKills: &6&l{kills}"
+      - "&6☠ &fDeaths: &6&l{deaths}"
+      - "&6🛡 &fK/D: &6&l{kd}"
+      - "&6&m                    "
+
+  members:
+    material: PLAYER_HEAD
+    type: members
+    slots:
+      - '19-25'
+      - '28-34'
+      - '37-43'
+    display_name: "{rank} &f{name}"
+    lore:
+      - "&6&m                    "
+      - "&6⌚ &fLast seen: &a{last-online}"
+      - "&6⛨ &fJoined clan &6&l{joined-at} &fago"
+      - "&6&m                    "
+      - "&6&lStats"
+      - "&6⚗ &fExp brought to clan: &6&l{exp}"
+      - "&6♦ &fCoins earned: &6&l{coin}"
+      - "&6⚔ &fKills: &6&l{kills}"
+      - "&6☠ &fDeaths: &6&l{deaths}"
+      - "&6🛡 &fK/D: &6&l{kd}"
+      - "&6&m                    "
+
+
+
+  next_page:
+    material: SPECTRAL_ARROW
+    slot: 52
+    display_name: "&aNext page ▶"
+    on_click:
+      any:
+        - "[next_page]"
+
+
+  prev_page:
+    material: ARROW
+    slot: 46
+    display_name: "&c◀ Previous page"
+    on_click:
+      any:
+        - "[prev_page]"
+
+
+  orange:
+    material: ORANGE_STAINED_GLASS_PANE
+    slots:
+      - 0-2
+      - 6-8
+      - 45
+      - 47
+      - 51
+      - 53
+    display_name: " "
+
+  black:
+    material: BLACK_STAINED_GLASS_PANE
+    slots:
+      - 3
+      - 5
+      - 48
+      - 50
+    display_name: " "
+
+
+  gray:
+    material: GRAY_STAINED_GLASS_PANE
+    slots:
+      - 4
+    display_name: " "
+
+
+
+  menu:
+    material: DARK_OAK_DOOR
+    slot: 49
+    display_name: "&6Back to menu"
+    on_click:
+      any:
+        - "[open] main"

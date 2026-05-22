@@ -1,0 +1,225 @@
+id: rank-perms
+title: "&0&lPermissions"
+size: 36
+
+model: rank_permissions
+
+Items:
+
+  invite-yes:
+    slot: 2
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%invite_status_boolean% == true'
+    type: perm-invite
+    display_name: "&6⚐ &fInvite to clan %invite_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  invite-no:
+    slot: 2
+    material: red_wool
+    priority: 1
+    type: perm-invite
+    display_name: "&6⚐ &fInvite to clan %invite_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  kick-yes:
+    slot: 3
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%kick_status_boolean% == true'
+    type: perm-kick
+    display_name: "&6⚐ &fKick from clan %kick_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  kick-no:
+    slot: 3
+    material: red_wool
+    priority: 1
+    type: perm-kick
+    display_name: "&6⚐ &fKick from clan %kick_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  setbase-yes:
+    slot: 4
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%setbase_status_boolean% == true'
+    type: perm-setbase
+    display_name: "&6⚐ &fSet base location %setbase_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  setbase-no:
+    slot: 4
+    material: red_wool
+    priority: 1
+    type: perm-setbase
+    display_name: "&6⚐ &fSet base location %setbase_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  base-yes:
+    slot: 5
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%base_status_boolean% == true'
+    type: perm-base
+    display_name: "&6⚐ &fTeleport to base %base_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  base-no:
+    slot: 5
+    material: red_wool
+    priority: 1
+    type: perm-base
+    display_name: "&6⚐ &fTeleport to base %base_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  setrank-yes:
+    slot: 6
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%setrank_status_boolean% == true'
+    type: perm-setrank
+    display_name: "&6⚐ &fManage ranks %setrank_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  setrank-no:
+    slot: 6
+    material: red_wool
+    priority: 1
+    type: perm-setrank
+    display_name: "&6⚐ &fManage ranks %setrank_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  deposit-yes:
+    slot: 11
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%deposit_status_boolean% == true'
+    type: perm-deposit
+    display_name: "&6⚐ &fDeposit money to clan balance %deposit_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  deposit-no:
+    slot: 11
+    material: red_wool
+    priority: 1
+    type: perm-deposit
+    display_name: "&6⚐ &fDeposit money to clan balance %deposit_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  withdraw-yes:
+    slot: 12
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%withdraw_status_boolean% == true'
+    type: perm-withdraw
+    display_name: "&6⚐ &fWithdraw money from clan balance %withdraw_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  withdraw-no:
+    slot: 12
+    material: red_wool
+    priority: 1
+    type: perm-withdraw
+    display_name: "&6⚐ &fWithdraw money from clan balance %withdraw_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  pvp-yes:
+    slot: 13
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%pvp_status_boolean% == true'
+    type: perm-pvp
+    display_name: "&6⚐ &fToggle pvp %pvp_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  pvp-no:
+    slot: 13
+    material: red_wool
+    priority: 1
+    type: perm-pvp
+    display_name: "&6⚐ &fToggle pvp %pvp_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  setslogan-yes:
+    slot: 14
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%setslogan_status_boolean% == true'
+    type: perm-setslogan
+    display_name: "&6⚐ &fChange slogan %setslogan_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  setslogan-no:
+    slot: 14
+    material: red_wool
+    priority: 1
+    type: perm-setslogan
+    display_name: "&6⚐ &fChange slogan %setslogan_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  setprefix-yes:
+    slot: 15
+    material: green_wool
+    priority: 0
+    view_requirements:
+      - '%setprefix_status_boolean% == true'
+    type: perm-setprefix
+    display_name: "&6⚐ &fChange prefix %setprefix_status%"
+    on_click:
+      any:
+        - '[refresh]'
+  setprefix-no:
+    slot: 15
+    material: red_wool
+    priority: 1
+    type: perm-setprefix
+    display_name: "&6⚐ &fChange prefix %setprefix_status%"
+    on_click:
+      any:
+        - '[refresh]'
+
+  back:
+    slot: 31
+    material: DARK_OAK_DOOR
+    display_name: "&6Back to menu"
+    on_click:
+      any:
+        - '[open] model:ranks'

@@ -32,7 +32,7 @@ public class Config {
 
     private final Map<Integer, Level> levels = new LinkedHashMap<>();
 
-    private final Map<String, Rank> defaultRanks = new HashMap<>();
+    private final Map<String, Rank> ranks = new HashMap<>();
     private Rank defaultRank;
     private Rank leaderRank;
 
@@ -109,7 +109,7 @@ public class Config {
     public void load() {
         requirements.clear();
         blockedTags = null;
-        defaultRanks.clear();
+        ranks.clear();
         levels.clear();
 
         debug = configuration.getBoolean("debug", false);
@@ -189,7 +189,7 @@ public class Config {
                     }
 
                 }
-                defaultRanks.put(key.toLowerCase(), new Rank(key.toLowerCase(), name, perms));
+                this.ranks.put(key.toLowerCase(), new Rank(key.toLowerCase(), name, perms));
             }
         }
 
@@ -200,8 +200,8 @@ public class Config {
             requirements = ParseUtil.getExpressions(clanCreate.getList("requirements"));
 
 
-            defaultRank = defaultRanks.get(clanCreate.getString("member-rank", "member").toLowerCase());
-            leaderRank = defaultRanks.get(clanCreate.getString("leader-rank", "leader").toLowerCase());
+            defaultRank = this.ranks.get(clanCreate.getString("member-rank", "member").toLowerCase());
+            leaderRank = this.ranks.get(clanCreate.getString("leader-rank", "leader").toLowerCase());
             minTagLength = clanCreate.getInt("min-clan-tag-length", 3);
             maxTagLength = clanCreate.getInt("max-clan-tag-length", 6);
             blockedTags = clanCreate.getStringList("blocked-tags");
