@@ -81,8 +81,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
 
         new UpdateConfig(getConfig().getInt("config-version", 1));
 
-        new Actions().registerCustomActions();
-
         cfg = new Config();
         cfg.load();
 
@@ -94,6 +92,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         LOGGER.info("&6┏ Loading API:");
         Speedometer.start();
         loadApi();
+        new Actions().registerCustomActions();
         LOGGER.success("┗ API loaded (" + Speedometer.result() + "ms)");
         LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         LOGGER.info("&6┏ Loading configurations:");

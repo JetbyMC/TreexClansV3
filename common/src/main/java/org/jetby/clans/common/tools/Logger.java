@@ -13,11 +13,11 @@ public final class Logger {
     }
 
     public void warn(String message) {
-        org.jetby.libb.util.Logger.warn(plugin, message);
+        org.jetby.libb.util.Logger.warn(plugin, Serializer.UNIFIED.deserialize(message));
     }
 
     public void info(String message) {
-        org.jetby.libb.util.Logger.info(plugin, message);
+        org.jetby.libb.util.Logger.info(plugin, Serializer.UNIFIED.deserialize(message));
     }
 
     public void success(String message) {

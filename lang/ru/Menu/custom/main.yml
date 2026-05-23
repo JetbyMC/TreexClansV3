@@ -11,7 +11,8 @@ Items:
   info:
     material: WRITABLE_BOOK
     slot: 49
-    hide_attributes: true
+    flags:
+      - HIDE_ATTRIBUTES
     display_name: "&6Клан %clan_prefix% &8(%clan_tag%)"
     lore:
       - "&6• &fЛидер: &6&l%clan_leader_name%"
@@ -50,7 +51,8 @@ Items:
     material: TURTLE_HELMET
     slot: 31
     display_name: "&6Ранги"
-    hide_attributes: true
+    flags:
+      - HIDE_ATTRIBUTES
     lore:
       - "&7Нажмите чтобы открыть"
     on_click:
@@ -60,7 +62,8 @@ Items:
     material: LEATHER_CHESTPLATE
     color: YELLOW
     slot: 32
-    hide_attributes: true
+    flags:
+      - HIDE_ATTRIBUTES
     display_name: "&6Свечение"
     lore:
       - "&7Нажмите чтобы открыть"
