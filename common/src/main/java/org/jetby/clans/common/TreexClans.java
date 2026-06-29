@@ -42,6 +42,7 @@ import org.jetby.clans.common.tools.Logger;
 import org.jetby.clans.common.tools.Speedometer;
 import org.jetby.libb.action.ActionRegistry;
 import org.jetby.libb.util.Metrics;
+import org.jetby.libb.util.VersionUtil;
 
 @Getter
 public final class TreexClans extends JavaPlugin implements TreexClansAPI {
@@ -117,6 +118,9 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
 
         LOGGER.info("&6Last details");
         getServer().getPluginManager().registerEvents(new ClanListeners(this), this);
+
+        new VersionUtil(this, getDescription().getVersion(), "https://raw.githubusercontent.com/JetbyMC/TreexClansV3/refs/heads/master/VERSION", "treexclans.admin");
+
         new Metrics(this, 27749);
 
         LOGGER.success("⚡ TreexClans is ready");

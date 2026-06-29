@@ -125,6 +125,7 @@ public abstract class StorageCore implements Storage {
             }
         }
 
+        section.set(clan, "prefix", clan.getPrefix());
         section.set(clan, "slogan", clan.getSlogan());
         section.set(clan, "balance", clan.getBalance());
         section.set(clan, "level", clan.getLevel().id());
