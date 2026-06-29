@@ -132,11 +132,11 @@ public abstract class StorageCore implements Storage {
         section.set(clan, "exp", clan.getExp());
         section.set(clan, "pvp", clan.isPvp());
 
-        var leader = clan.getLeader();
+        Member leader = clan.getLeader();
         section.set(clan, "leader_uuid", leader.getUuid().toString());
         saveMember(clan, leader);
 
-        for (var member : clan.getMembers()) {
+        for (Member member : clan.getMembers()) {
             saveMember(clan, member);
         }
 
