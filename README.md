@@ -61,3 +61,4 @@ commands:
 - Discord Integration (soon)
 
 
+[![](https://bstats.org/signatures/bukkit/TreexClans.svg)](https://bstats.org/plugin/bukkit/TreexClans/27749)
