@@ -17,6 +17,7 @@ import org.jetby.clans.api.service.clan.Lifecycle;
 import org.jetby.clans.api.service.clan.Lookup;
 import org.jetby.clans.api.service.clan.level.Level;
 import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.api.util.Papi;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.clan.model.ClanImpl;
 import org.jetby.clans.common.clan.model.MemberImpl;
@@ -304,7 +305,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
         @Override
         public void sendMessage(@NotNull Clan clan, @NotNull String message) {
-            Component colored = Config.CONFIG_COLORIZER.deserialize(message);
+            Component colored = Config.CONFIG_COLORIZER.deserialize(Papi.set(null, message));
 
             for (Member member : clan.getMembers()) {
                 Player player = Bukkit.getPlayer(member.getUuid());
@@ -326,16 +327,16 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                     .replace("{player}", sender.getName())
                     .replace("{message}", message);
 
-            Component colored = Config.CONFIG_COLORIZER.deserialize(format);
+            Component colored = Config.CONFIG_COLORIZER.deserialize(Papi.set(sender, format));
 
-            for (var member : clan.getMembers()) {
+            for (Member member : clan.getMembers()) {
                 Player player = Bukkit.getPlayer(member.getUuid());
                 if (player != null) {
                     player.sendMessage(colored);
                 }
             }
 
-            var leader = clan.getLeader();
+            Member leader = clan.getLeader();
             Player leaderPlayer = Bukkit.getPlayer(leader.getUuid());
             if (leaderPlayer != null) {
                 leaderPlayer.sendMessage(colored);

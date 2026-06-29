@@ -172,7 +172,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         guiLoader.load();
         LOGGER.success(" └  ✔  Menus");
 
-        storage = new YamlStorageCore(this);
+        storage = new YamlStorageCore();
         storage.initialize();
 
         LOGGER.success(" └  ✔  Storage");

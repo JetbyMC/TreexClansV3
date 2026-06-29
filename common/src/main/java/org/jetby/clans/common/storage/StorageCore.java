@@ -18,12 +18,9 @@ import org.jetby.clans.api.storage.base.BaseSection;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.clan.model.ClanImpl;
 import org.jetby.clans.common.clan.model.MemberImpl;
-import org.jetby.clans.common.tools.ItemSerializer;
 import org.jetby.clans.common.tools.LocationHandler;
 
 import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public abstract class StorageCore implements Storage {
 
@@ -113,49 +110,143 @@ public abstract class StorageCore implements Storage {
         return null;
     }
 
+    @Override
+    public @Nullable Clan getClan(@NotNull String name) {
+        if (cache.containsKey(name)) return cache.get(name);
+        return loadClan(name);
+    }
+
+    @Override
+    public boolean clanExists(@NotNull String name) {
+        return cache.containsKey(name);
+    }
+
+    @Override
+    public boolean deleteClan(@NotNull String name) {
+        cache.remove(name);
+        return true;
+    }
+
+    @Override
+    public List<Clan> getClanList(int limit) {
+        return cache.values().stream().limit(limit).toList();
+    }
+    public Clan loadClan(String name) {
+        if (cache.containsKey(name)) return cache.get(name);
+
+        BaseSection base = section.section(name);
+        if (base == null) return null;
+
+
+        String leaderUuidStr = base.getString("leader_uuid").join();
+        if (leaderUuidStr == null) return null;
+
+        Member leader = loadMember(base, UUID.fromString(leaderUuidStr));
+
+        Set<Member> members = new HashSet<>();
+        BaseSection membersSection = base.section("members");
+        if (membersSection != null) {
+            for (String uuidStr : membersSection.keys().join()) {
+                members.add(loadMember(base, UUID.fromString(uuidStr)));
+            }
+        }
+
+        String levelId = base.getString("level").join();
+        Level level = plugin.getCfg().getLevels().getOrDefault(Integer.parseInt(levelId), new Level("1", "1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>()));
+
+        double balance = base.getDouble("balance").join();
+        int exp = base.getInt("exp").join();
+        boolean pvp = base.getBoolean("pvp").join();
+        String slogan = base.getString("slogan").join();
+
+        String locStr = base.getString("base-location").join();
+        Location baseLocation = locStr != null ? LocationHandler.deserialize(locStr) : null;
+
+        Map<Integer, ItemStack> chest = new HashMap<>();
+        for (String key : base.section("chests").keys().join()) {
+            if (key.startsWith("chest") && key.length() > 5) {
+                try {
+                    int slot = Integer.parseInt(key.substring(5));
+                    ItemStack item = (ItemStack) base.section("chests").get(key).join();
+
+                    if (item != null) chest.put(slot, item);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+
+
+        Clan clan = new ClanImpl(name, null, leader, members, plugin.getCfg().getRanks(), level, balance, baseLocation, exp, pvp, chest, slogan);
+        cache.put(name, clan);
+        return clan;
+    }
+
+    private Member loadMember(BaseSection clan, UUID uuid) {
+        BaseSection base = clan.section("members").section(uuid.toString());
+        String rankId = base.getString("rank").join();
+        Rank rank = plugin.getCfg().getRanks().get(rankId);
+        if (rank == null) {
+            rank = plugin.getCfg().getDefaultRank();
+        }
+        return new MemberImpl(uuid, rank,
+                base.getLong("joined-at").join(),
+                base.getLong("last-online").join(),
+                false,
+                base.getInt("coin").join(),
+                base.getInt("exp").join(),
+                base.getInt("kills").join(),
+                base.getInt("deaths").join());
+    }
+
     public void saveClan(Clan clan) {
         cache.put(clan.getId(), clan);
 
         for (String key : clan.getRanks().keySet()) {
             Rank rank = clan.getRanks().get(key);
             Set<Permission> perms = rank.perms();
-            section.set(clan, "ranks_" + rank.id() + "_permissions_ALWAYS", true);
+
+            BaseSection ranks = section.of(clan).section("ranks");
+
+            ranks.section(rank.id())
+                    .section("permissions")
+                    .set("ALWAYS", true);
+
             for (Permission perm : perms) {
-                section.set(clan, "ranks_" + rank.id() + "_permissions_" + perm.getId(), true);
+                ranks.section(rank.id())
+                        .section("permissions")
+                        .set(perm.getId(), true);
             }
         }
 
-        section.set(clan, "prefix", clan.getPrefix());
-        section.set(clan, "slogan", clan.getSlogan());
-        section.set(clan, "balance", clan.getBalance());
-        section.set(clan, "level", clan.getLevel().id());
-        section.set(clan, "exp", clan.getExp());
-        section.set(clan, "pvp", clan.isPvp());
+        section.of(clan).set("prefix", clan.getPrefix());
+        section.of(clan).set("slogan", clan.getSlogan());
+        section.of(clan).set("balance", clan.getBalance());
+        section.of(clan).set("level", clan.getLevel().id());
+        section.of(clan).set("exp", clan.getExp());
+        section.of(clan).set("pvp", clan.isPvp());
 
-        Member leader = clan.getLeader();
-        section.set(clan, "leader_uuid", leader.getUuid().toString());
-        saveMember(clan, leader);
+        section.of(clan).set("leader_uuid", clan.getLeader().getUuid().toString());
 
-        for (Member member : clan.getMembers()) {
+        for (Member member : clan.getMembersWithLeader()) {
             saveMember(clan, member);
         }
 
         for (Map.Entry<Integer, ItemStack> entry : clan.getChest().entrySet()) {
             if (entry.getValue() == null || entry.getValue().getType() == Material.AIR) continue;
-            section.set(clan, "chest" + entry.getKey(), entry.getValue());
+            section.of(clan).section("chests").set("chest" + entry.getKey(), entry.getValue());
         }
 
         Location location = clan.getBase();
-        section.set(clan, "base-location", location != null ? LocationHandler.serialize(location) : null);
+        section.of(clan).set("base-location", location != null ? LocationHandler.serialize(location) : null);
     }
 
     public void saveMember(Clan clan, Member member) {
-        section.set(clan, member, "rank", member.getRank().id());
-        section.set(clan, member, "joined-at", member.getJoinedAt());
-        section.set(clan, member, "last-online", member.getLastOnline());
-        section.set(clan, member, "coin", member.getCoin());
-        section.set(clan, member, "exp", member.getExp());
-        section.set(clan, member, "kills", member.getKills());
-        section.set(clan, member, "deaths", member.getDeaths());
+        section.of(clan, member).set("rank", member.getRank().id());
+        section.of(clan, member).set("joined-at", member.getJoinedAt());
+        section.of(clan, member).set("last-online", member.getLastOnline());
+        section.of(clan, member).set("coin", member.getCoin());
+        section.of(clan, member).set("exp", member.getExp());
+        section.of(clan, member).set("kills", member.getKills());
+        section.of(clan, member).set("deaths", member.getDeaths());
     }
 }
