@@ -27,7 +27,7 @@ public class ClanListeners implements Listener {
     @EventHandler
     public void onClanChat(AsyncPlayerChatEvent e) {
         if (!plugin.getClanManager().lookup().isInClan(e.getPlayer().getUniqueId())) return;
-        var clan = plugin.getClanManager().lookup().getClanByMember(e.getPlayer().getUniqueId());
+        Clan clan = plugin.getClanManager().lookup().getClanByMember(e.getPlayer().getUniqueId());
         if (clan == null) return;
         if (!clan.getMember(e.getPlayer().getUniqueId()).isChat()) return;
         plugin.getClanManager().chat().sendChat(clan, e.getPlayer(), e.getMessage());

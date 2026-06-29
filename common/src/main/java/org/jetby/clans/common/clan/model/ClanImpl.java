@@ -22,8 +22,7 @@ import java.util.*;
 @Getter
 @Setter
 public class ClanImpl implements Clan {
-    @Setter(AccessLevel.NONE)
-    private final String id;
+    private String id;
     private String prefix;
     @Setter(AccessLevel.NONE)
     private final Member leader;
@@ -37,7 +36,7 @@ public class ClanImpl implements Clan {
     private Map<Integer, ItemStack> chest;
     private String slogan;
 
-    private final TreexClans plugin;
+    private final TreexClans plugin = TreexClans.getInstance();
 
     public void addMember(@NotNull Member member) {
         this.members.add(member);
@@ -63,6 +62,11 @@ public class ClanImpl implements Clan {
         this.members.remove(member);
     }
 
+
+    @Override
+    public void rename(String id) {
+        this.id = id;
+    }
 
     public synchronized void addExp(int amount, @NotNull Member member, @NotNull Map<Integer, Level> levels) {
         int remaining = amount;

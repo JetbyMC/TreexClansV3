@@ -1,19 +1,5 @@
 package org.jetby.clans.common.clan.service;
 
-import org.jetby.clans.api.events.ClanCreateEvent;
-import org.jetby.clans.api.events.ClanDeleteEvent;
-import org.jetby.clans.api.service.ClanManager;
-import org.jetby.clans.api.service.clan.Clan;
-import org.jetby.clans.api.service.clan.level.Level;
-import org.jetby.clans.api.service.clan.member.Member;
-import org.jetby.clans.common.TreexClans;
-import org.jetby.clans.common.clan.model.ClanImpl;
-import org.jetby.clans.common.clan.model.MemberImpl;
-import org.jetby.clans.common.configurations.Config;
-import org.jetby.clans.common.storage.Storage;
-import org.jetby.libb.action.ActionContext;
-import org.jetby.libb.action.ActionExecute;
-import org.jetby.libb.action.ActionUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -23,6 +9,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.events.ClanCreateEvent;
+import org.jetby.clans.api.events.ClanDeleteEvent;
+import org.jetby.clans.api.service.ClanManager;
+import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.api.service.clan.Lifecycle;
+import org.jetby.clans.api.service.clan.Lookup;
+import org.jetby.clans.api.service.clan.level.Level;
+import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.common.TreexClans;
+import org.jetby.clans.common.clan.model.ClanImpl;
+import org.jetby.clans.common.clan.model.MemberImpl;
+import org.jetby.clans.common.configurations.Config;
+import org.jetby.libb.action.ActionContext;
+import org.jetby.libb.action.ActionExecute;
+import org.jetby.libb.action.ActionUtil;
 
 import java.util.*;
 
@@ -87,118 +88,122 @@ public final class ClanManagerImpl implements Listener, ClanManager {
     }
 
     @Override
-    public @NotNull Map<String, Clan> getClanList() {
-        return Storage.CLANS;
+    public @NotNull List<Clan> getClanList(int limit) {
+        return plugin.getStorage().getClanList(limit);
     }
 
-    private boolean exists(@NotNull String name) {
-        return getClanList().containsKey(name);
+    private boolean exists(@NotNull String tag) {
+        return plugin.getStorage().getClan(tag)!=null;
     }
 
-    private final class LifecycleImpl implements ClanManager.Lifecycle {
+    private final class LifecycleImpl implements Lifecycle {
 
         @Override
         public boolean createClan(@NotNull String name, @NotNull Clan clan) {
-            if (exists(name)) return false;
+            plugin.getStorage().createClan(name, clan);
 
-            var event = new ClanCreateEvent(clan, null);
-            Bukkit.getPluginManager().callEvent(event);
-
-            if (event.isCancelled()) {
-                return false;
-            }
-
-            getClanList().put(name, clan);
+//            if (exists(name)) return false;
+//
+//            var event = new ClanCreateEvent(clan, null);
+//            Bukkit.getPluginManager().callEvent(event);
+//
+//            if (event.isCancelled()) {
+//                return false;
+//            }
+//
+//            getClanList().put(name, clan);
             return true;
         }
 
         @Override
         public boolean createClan(@NotNull String name, @NotNull Player leaderPlayer) {
-            if (exists(name)) return false;
-
-            MemberImpl leader = new MemberImpl(
-                    leaderPlayer.getUniqueId(),
-                    plugin.getCfg().getLeaderRank(),
-                    System.currentTimeMillis(),
-                    System.currentTimeMillis(),
-                    false,
-                    false,
-                    0,
-                    0,
-                    new HashMap<>(),
-                    0,
-                    0
-            );
-
-            Level baseLevel = plugin.getCfg().getLevels().getOrDefault(
-                    1,
-                    new Level("1", "1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>())
-            );
-
-            Clan clan = new ClanImpl(
-                    name,
-                    null,
-                    leader,
-                    new HashSet<>(),
-                    plugin.getCfg().getRanks(),
-                    baseLevel,
-                    0.0,
-                    null,
-                    0,
-                    false,
-                    new HashMap<>(),
-                    "",
-                    plugin
-            );
-
-            var event = new ClanCreateEvent(clan, leaderPlayer);
-            Bukkit.getPluginManager().callEvent(event);
-
-            if (event.isCancelled()) {
-                return false;
-            }
-
-            getClanList().put(name, clan);
-            return true;
+          return   plugin.getStorage().createClan(name, leaderPlayer);
+//            if (exists(name)) return false;
+//
+//            MemberImpl leader = new MemberImpl(
+//                    leaderPlayer.getUniqueId(),
+//                    plugin.getCfg().getLeaderRank(),
+//                    System.currentTimeMillis(),
+//                    System.currentTimeMillis(),
+//                    false,
+//                    0,
+//                    0,
+//                    0,
+//                    0
+//            );
+//
+//            Level baseLevel = plugin.getCfg().getLevels().getOrDefault(
+//                    1,
+//                    new Level("1", "1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>())
+//            );
+//
+//            Clan clan = new ClanImpl(
+//                    name,
+//                    null,
+//                    leader,
+//                    new HashSet<>(),
+//                    plugin.getCfg().getRanks(),
+//                    baseLevel,
+//                    0.0,
+//                    null,
+//                    0,
+//                    false,
+//                    new HashMap<>(),
+//                    ""
+//            );
+//
+//            var event = new ClanCreateEvent(clan, leaderPlayer);
+//            Bukkit.getPluginManager().callEvent(event);
+//
+//            if (event.isCancelled()) {
+//                return false;
+//            }
+//
+//            getClanList().put(name, clan);
+//            return true;
         }
 
         @Override
         public boolean deleteClan(@NotNull Clan clan, @Nullable Player initiator) {
-            var event = new ClanDeleteEvent(clan, initiator);
-            Bukkit.getPluginManager().callEvent(event);
+           return plugin.getStorage().deleteClan(clan, initiator);
 
-            if (event.isCancelled()) {
-                return false;
-            }
-
-            getClanList().remove(clan.getId());
-            return true;
+//            var event = new ClanDeleteEvent(clan, initiator);
+//            Bukkit.getPluginManager().callEvent(event);
+//
+//            if (event.isCancelled()) {
+//                return false;
+//            }
+//
+//            getClanList().remove(clan.getId());
+//            return true;
         }
 
         @Override
         public boolean deleteClan(@NotNull String name) {
-            var clan = getClanList().get(name);
-            if (clan == null) {
-                return false;
-            }
+            return plugin.getStorage().deleteClan(name);
 
-            var event = new ClanDeleteEvent(clan, null);
-            Bukkit.getPluginManager().callEvent(event);
-
-            if (event.isCancelled()) {
-                return false;
-            }
-
-            // notify members
-//            for (Member member : clan.getMembers()) {
-//                Player player = Bukkit.getPlayer(member.getUuid());
-//                if (player != null) {
-//                    player.sendMessage("Your clan was disbanded by clan leader");
-//                }
+//            var clan = getClanList().get(name);
+//            if (clan == null) {
+//                return false;
 //            }
-
-            getClanList().remove(clan.getId());
-            return true;
+//
+//            var event = new ClanDeleteEvent(clan, null);
+//            Bukkit.getPluginManager().callEvent(event);
+//
+//            if (event.isCancelled()) {
+//                return false;
+//            }
+//
+//            // notify members
+////            for (Member member : clan.getMembers()) {
+////                Player player = Bukkit.getPlayer(member.getUuid());
+////                if (player != null) {
+////                    player.sendMessage("Your clan was disbanded by clan leader");
+////                }
+////            }
+//
+//            getClanList().remove(clan.getId());
+//            return true;
         }
 
         @Override
@@ -356,90 +361,61 @@ public final class ClanManagerImpl implements Listener, ClanManager {
         }
     }
 
-    private final class LookupImpl implements ClanManager.Lookup {
+    private final class LookupImpl implements Lookup {
 
         @Override
         public boolean isInClan(@NotNull UUID uuid) {
-            return getClanList().values().stream()
-                    .anyMatch(clan ->
-                            (clan.getLeader().getUuid().equals(uuid)) ||
-                                    clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
-                    );
+            return plugin.getStorage().isInClan(uuid);
+
+//            return getClanList().values().stream()
+//                    .anyMatch(clan ->
+//                            (clan.getLeader().getUuid().equals(uuid)) ||
+//                                    clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
+//                    );
         }
 
         @Override
         public @Nullable Clan getClan(@NotNull String name) {
-            return getClanList().get(name);
+            return plugin.getStorage().getClan(name);
+//            return getClanList().get(name);
         }
 
         @Override
         public @Nullable Clan getClanByMember(@NotNull UUID uuid) {
-            return getClanList().values().stream()
-                    .filter(clan ->
-                            (clan.getLeader().getUuid().equals(uuid)) ||
-                                    clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
-                    )
-                    .findFirst()
-                    .orElse(null);
-        }
-
-        @Override
-        public @Nullable Clan getClanByMember(@NotNull String uuidString) {
-            try {
-                return getClanByMember(UUID.fromString(uuidString));
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
+            return plugin.getStorage().getClanByMember(uuid);
+//            return getClanList().values().stream()
+//                    .filter(clan ->
+//                            (clan.getLeader().getUuid().equals(uuid)) ||
+//                                    clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
+//                    )
+//                    .findFirst()
+//                    .orElse(null);
         }
 
         @Override
         public @Nullable Clan getClanByMember(@NotNull Member member) {
-            return getClanList().values().stream()
-                    .filter(clan ->
-                            (clan.getLeader().equals(member)) ||
-                                    clan.getMembers().contains(member)
-                    )
-                    .findFirst()
-                    .orElse(null);
+            return plugin.getStorage().getClanByMember(member);
+//            return getClanList().values().stream()
+//                    .filter(clan ->
+//                            (clan.getLeader().equals(member)) ||
+//                                    clan.getMembers().contains(member)
+//                    )
+//                    .findFirst()
+//                    .orElse(null);
         }
 
-        @Override
-        public @NotNull String getLastOnlineFormatted(@NotNull UUID uuid) {
-            if (!isInClan(uuid)) {
-                return "-1";
-            }
+    }
 
-            OfflinePlayer offline = Bukkit.getOfflinePlayer(uuid);
-            Clan clan = getClanByMember(uuid);
-            if (clan == null) {
-                return "-1";
-            }
+    @Override
+    public @NotNull String getLastOnlineFormatted(@NotNull Member member) {
+        OfflinePlayer offline = Bukkit.getOfflinePlayer(member.getUuid());
 
-            Member member = clan.getMember(uuid);
-            if (member == null) {
-                return "-1";
-            }
-
-            if (offline.isOnline()) {
-                member.setLastOnline(System.currentTimeMillis());
-                return plugin.getMessages().getCleanMessage("status.online");
-            }
-
-            long diff = System.currentTimeMillis() - member.getLastOnline();
-            return plugin.getFormatTime().stringFormat(diff);
+        if (offline.isOnline()) {
+            member.setLastOnline(System.currentTimeMillis());
+            return plugin.getMessages().getCleanMessage("status.online");
         }
 
-        @Override
-        public @NotNull String getLastOnlineFormatted(@NotNull Member member) {
-            OfflinePlayer offline = Bukkit.getOfflinePlayer(member.getUuid());
-
-            if (offline.isOnline()) {
-                member.setLastOnline(System.currentTimeMillis());
-                return plugin.getMessages().getCleanMessage("status.online");
-            }
-
-            long diff = System.currentTimeMillis() - member.getLastOnline();
-            return plugin.getFormatTime().stringFormat(diff);
-        }
+        long diff = System.currentTimeMillis() - member.getLastOnline();
+        return plugin.getFormatTime().stringFormat(diff);
     }
 }

@@ -29,7 +29,7 @@ public class ReloadSubcommand implements Subcommand {
         try {
             long start = System.currentTimeMillis();
 
-            plugin.getStorage().save();
+            plugin.getStorage().shutdown();
 
             if (plugin.getAddonManager() != null) {
                 plugin.getAddonManager().disableAddons();

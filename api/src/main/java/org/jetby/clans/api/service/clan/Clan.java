@@ -1,12 +1,12 @@
 package org.jetby.clans.api.service.clan;
 
-import org.jetby.clans.api.service.clan.level.Level;
-import org.jetby.clans.api.service.clan.member.Member;
-import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.service.clan.level.Level;
+import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.api.service.clan.member.rank.Rank;
 
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +17,7 @@ import java.util.UUID;
  * <p>
  * Provides access to its leader, members, ranks, level, economy,
  * base location, quest progress, and inventory storage.
+ *
  * @see Member
  * @see Rank
  * @see Level
@@ -28,6 +29,11 @@ public interface Clan {
      * @return unique clan ID (usually its name).
      */
     @NotNull String getId();
+
+    /**
+     * Renames the clan unique ID
+     */
+    void rename(String id);
 
     /**
      * @return clan tag/prefix displayed before names.

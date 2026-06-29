@@ -98,7 +98,7 @@ public class MembersGui extends Gui {
         placeholders.put("{name}", player.getName());
         placeholders.put("{rank}", member.getRank().name());
         placeholders.put("{joined-at}", TreexClans.getInstance().getFormatTime().stringFormat(System.currentTimeMillis() - member.getJoinedAt()));
-        placeholders.put("{last-online}", TreexClans.getInstance().getClanManager().lookup().getLastOnlineFormatted(member));
+        placeholders.put("{last-online}", TreexClans.getInstance().getClanManager().getLastOnlineFormatted(member));
         placeholders.put("{exp}", String.valueOf(member.getExp()));
         placeholders.put("{coin}", String.valueOf(member.getCoin()));
         placeholders.put("{kills}", String.valueOf(member.getKills()));

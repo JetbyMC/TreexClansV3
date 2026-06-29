@@ -39,3 +39,5 @@ args:
     - setrank # /clan setrank
   setprefix:
     - setprefix # /clan setprefix
+  rename:
+    - rename # /clan rename

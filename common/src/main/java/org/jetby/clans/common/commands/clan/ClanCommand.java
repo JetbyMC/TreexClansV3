@@ -6,6 +6,7 @@ import org.jetby.clans.api.gui.ClanGuiData;
 import org.jetby.clans.api.gui.GuiContext;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.api.service.clan.member.rank.Permission;
 import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.configurations.CommandsConfiguration;
@@ -184,7 +185,7 @@ public class ClanCommand extends AdvancedCommand {
         Member member = clan.getMember(player.getUniqueId());
         if (member == null) return List.of();
 
-        Set<RankPerm> perms = member.getRank().perms();
+        Set<Permission> perms = member.getRank().perms();
 
         List<String> completions = new ArrayList<>();
 
@@ -215,10 +216,11 @@ public class ClanCommand extends AdvancedCommand {
                 .toList();
     }
 
-    private boolean isExcluded(Map.Entry<ClanSubcommand, List<String>> entry, Set<RankPerm> perms) {
+    private boolean isExcluded(Map.Entry<ClanSubcommand, List<String>> entry, Set<Permission> perms) {
         ClanSubcommand sub = entry.getKey();
 
         return switch (sub) {
+            case RENAME -> !perms.contains(RankPerm.RENAME);
             case SETBASE -> !perms.contains(RankPerm.SETBASE);
             case BASE -> !perms.contains(RankPerm.BASE);
             case INVITE -> !perms.contains(RankPerm.INVITE);

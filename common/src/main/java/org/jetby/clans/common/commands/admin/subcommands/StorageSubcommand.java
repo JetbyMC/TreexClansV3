@@ -4,12 +4,10 @@ import org.bukkit.entity.Player;
 import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.api.gui.GuiContext;
-import org.jetby.clans.api.gui.GuiFactory;
 import org.jetby.clans.api.gui.GuiModel;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.gui.GuiLoader;
-import org.jetby.clans.common.storage.Storage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -43,11 +41,12 @@ public class StorageSubcommand implements Subcommand {
     @Override
     public @Nullable List<String> onTabCompleter(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        List<String> completions = new ArrayList<>(Storage.CLANS.keySet());
-
-        return completions.stream()
-                .filter(cmd -> cmd.startsWith(args[1].toLowerCase()))
-                .toList();
+//        List<String> completions = new ArrayList<>(Storage.CLANS.keySet());
+//
+//        return completions.stream()
+//                .filter(cmd -> cmd.startsWith(args[1].toLowerCase()))
+//                .toList();
+        return List.of();
 
     }
 

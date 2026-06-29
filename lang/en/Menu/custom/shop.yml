@@ -1,15 +1,19 @@
-id: shop
+id: shop # unique identification name
 title: "&0&lClan Shop"
 size: 54
-open_args:
-  - 'shop'
 
+# Args helps you make the command part of TreexClans
+open_args:
+  - 'shop' # it means /clan shop - easy right?
+
+# A model is something that completely changes the behavior of the gui.
+# CLAN_ONLY means that only players who's in clan can open the gui.
 model: clan_only
 
+# You can make any item, as much as you want
 Items:
 
-
-  diamond:
+  diamond: # unique name (never uses, it could be anything)
     slot: 9
     material: DIAMOND
     lore:
@@ -18,10 +22,14 @@ Items:
       - "&6• Your balance &6%clan_coin% coins"
       - ""
       - "&7▶ Click to buy"
+
+    # This can be the part that you, never seen before, it's simple actions section, with custom features called checks
     on_click:
       any:
-        - check1:
-            if: "%clan_coin% >= 10"
+        # make sure that the spaces for checks is important
+        - check1: # unique name
+            if: "%clan_coin% >= 10" # expression
+            # actions, also support other checks
             then:
               - "[console] minecraft:give %player_name% diamond 1"
               - "[coin_take] 10"
@@ -29,6 +37,8 @@ Items:
             else:
               - "[message] &cYou do not have enough coins."
 
+
+ ### Decoration
 
   orange:
     material: ORANGE_STAINED_GLASS_PANE

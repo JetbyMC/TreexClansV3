@@ -1,8 +1,11 @@
 package org.jetby.clans.common.gui.core;
 
+import com.google.common.annotations.Beta;
+import org.bukkit.event.inventory.ClickType;
 import org.jetby.clans.api.gui.Gui;
 import org.jetby.clans.api.gui.GuiContext;
 import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.common.TreexClans;
 import org.jetby.libb.gui.item.ItemWrapper;
 import org.jetby.libb.gui.parser.Item;
 import org.bukkit.Material;
@@ -12,19 +15,21 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+@Beta
 public class ChestGui extends Gui {
 
     private static final Map<Clan, Map<UUID, ChestGui>> OPEN_GUIS = new ConcurrentHashMap<>();
+    private static final ItemStack AIR_ITEM = new ItemStack(Material.AIR);
 
     public ChestGui(@NotNull GuiContext ctx) {
         super(ctx);
-
 
         lockEmptySlots(false);
 
@@ -42,6 +47,8 @@ public class ChestGui extends Gui {
         int perPage = slots.size();
         int totalWithPadding = totalSlots + (perPage - totalSlots % perPage) % perPage;
 
+        EnumSet<Material> allowedMaterials = ((TreexClans) getPlugin()).getCfg().getAvailableStorageMaterials();
+
         OPEN_GUIS.computeIfAbsent(getClan(), k -> new ConcurrentHashMap<>())
                 .put(ctx.getPlayer().getUniqueId(), this);
 
@@ -53,17 +60,66 @@ public class ChestGui extends Gui {
         onClick(event -> {
             if (onClick != null) onClick.accept(event);
 
-            if (!slots.contains(event.getSlot())) {
-                if (event.getClickedInventory().equals(this)) {
-                    event.setCancelled(true);
-                }
+            boolean clickedGui = getInventory().equals(event.getClickedInventory());
+            boolean clickedPlayer = event.getWhoClicked().getInventory().equals(event.getClickedInventory());
+
+            if (clickedPlayer && event.getClick().isShiftClick()) {
+                event.setCancelled(true);
+                ItemStack moving = event.getCurrentItem();
+                if (moving == null || moving.getType() == Material.AIR) return;
+                if (!allowedMaterials.contains(moving.getType())) return;
+
+                int firstFree = findFirstFreeSlot(slots, totalSlots, perPage);
+                if (firstFree == -1) return;
+
+                int guiSlot = slots.get(firstFree % perPage);
+                int index = (getCurrentPage() * perPage) + firstFree % perPage;
+
+                getInventory().setItem(guiSlot, moving);
+                event.getWhoClicked().getInventory().setItem(event.getSlot(), AIR_ITEM);
+
+                getClan().getChest().put(index, moving);
+                syncToOpenViewers(getCurrentPage());
                 return;
             }
+            if (clickedGui && event.getClick() == ClickType.NUMBER_KEY) {
+                int guiSlot = event.getSlot();
+                if (!slots.contains(guiSlot)) {
+                    event.setCancelled(true);
+                    return;
+                }
+                int pageOffset = slots.indexOf(guiSlot);
+                int index = getCurrentPage() * perPage + pageOffset;
+                if (index >= totalSlots) {
+                    event.setCancelled(true);
+                    return;
+                }
+                ItemStack hotbarItem = event.getWhoClicked().getInventory().getItem(event.getHotbarButton());
+                if (hotbarItem != null && hotbarItem.getType() != Material.AIR && !allowedMaterials.contains(hotbarItem.getType())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+
+            if (!clickedGui) return;
+
             int guiSlot = event.getSlot();
+
+            if (!slots.contains(guiSlot)) {
+                event.setCancelled(true);
+                return;
+            }
+
             int pageOffset = slots.indexOf(guiSlot);
-            if (pageOffset == -1) return;
             int index = getCurrentPage() * perPage + pageOffset;
+
             if (index >= totalSlots) {
+                event.setCancelled(true);
+                return;
+            }
+
+            ItemStack cursor = event.getCursor();
+            if (cursor != null && cursor.getType() != Material.AIR && !allowedMaterials.contains(cursor.getType())) {
                 event.setCancelled(true);
                 return;
             }
@@ -76,10 +132,41 @@ public class ChestGui extends Gui {
                 syncToOpenViewers(getCurrentPage());
             });
         });
+
         Consumer<InventoryDragEvent> onDrag = onDrag();
         onDrag(event -> {
-            if (onDrag!=null) onDrag.accept(event);
+            if (onDrag != null) onDrag.accept(event);
 
+            ItemStack dragged = event.getOldCursor();
+            if (!allowedMaterials.contains(dragged.getType())) {
+                event.setCancelled(true);
+                return;
+            }
+
+            boolean hasInvalidSlot = event.getRawSlots().stream().anyMatch(slot -> {
+                if (slot >= getInventory().getSize()) return false;
+                if (!slots.contains(slot)) return true;
+                int pageOffset = slots.indexOf(slot);
+                int index = getCurrentPage() * perPage + pageOffset;
+                return index >= totalSlots;
+            });
+
+            if (hasInvalidSlot) {
+                event.setCancelled(true);
+            } else {
+                getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+                    for (int slot : event.getRawSlots()) {
+                        if (slot >= getInventory().getSize()) continue;
+                        int pageOffset = slots.indexOf(slot);
+                        if (pageOffset == -1) continue;
+                        int index = getCurrentPage() * perPage + pageOffset;
+                        if (index >= totalSlots) continue;
+                        ItemStack current = getInventory().getItem(slot);
+                        getClan().getChest().put(index, current != null ? current : AIR_ITEM);
+                    }
+                    syncToOpenViewers(getCurrentPage());
+                });
+            }
         });
 
         onClose(event -> {
@@ -88,7 +175,19 @@ public class ChestGui extends Gui {
         });
     }
 
-    private static final ItemStack AIR_ITEM = new ItemStack(Material.AIR);
+    private int findFirstFreeSlot(List<Integer> slots, int totalSlots, int perPage) {
+        for (int i = 0; i < totalSlots; i++) {
+            int page = i / perPage;
+            int pageOffset = i % perPage;
+            if (page != getCurrentPage()) continue;
+            int guiSlot = slots.get(pageOffset);
+            ItemStack current = getInventory().getItem(guiSlot);
+            if (current == null || current.getType() == Material.AIR) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     @Override
     public void openPage(int page) {
@@ -121,14 +220,11 @@ public class ChestGui extends Gui {
                 .findFirst()
                 .orElse(null);
 
-        if (item!=null) {
+        if (item != null) {
             ItemWrapper wrapper = buildItemWrapper(item);
             wrapper.slots(blockedSlots.toArray(new Integer[0]));
             setItem("blocked-slot", wrapper);
         }
-
-
-
     }
 
     private void syncToOpenViewers(int page) {

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-;
+
 
 public class PvpSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();

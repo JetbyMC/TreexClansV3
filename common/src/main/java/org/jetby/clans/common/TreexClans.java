@@ -13,8 +13,10 @@ import org.jetby.clans.api.TreexClansAPI;
 import org.jetby.clans.api.addons.AddonManager;
 import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.addons.listener.EventRegistrar;
+import org.jetby.clans.api.gui.Gui;
 import org.jetby.clans.api.gui.GuiFactory;
 import org.jetby.clans.api.service.ClanManager;
+import org.jetby.clans.api.storage.Storage;
 import org.jetby.clans.common.actions.Actions;
 import org.jetby.clans.common.addon.AddonManagerImpl;
 import org.jetby.clans.common.clan.service.ClanManagerImpl;
@@ -32,8 +34,9 @@ import org.jetby.clans.common.hooks.ClanPlaceholder;
 import org.jetby.clans.common.hooks.Vault;
 import org.jetby.clans.common.listener.EventRegistryImpl;
 import org.jetby.clans.common.listeners.ClanListeners;
-import org.jetby.clans.common.storage.Storage;
-import org.jetby.clans.common.storage.YAML;
+import org.jetby.clans.common.storage.YamlStorageCore;
+import org.jetby.clans.common.storage.trash.manager.DatabaseManager;
+import org.jetby.clans.common.storage.trash.simple.ClanTable;
 import org.jetby.clans.common.tools.FormatTime;
 import org.jetby.clans.common.tools.Logger;
 import org.jetby.clans.common.tools.Speedometer;
@@ -73,6 +76,9 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     @Getter
     private MessagesConfiguration messages;
 
+    private DatabaseManager db;
+    private ClanTable clanTable;
+
     @Override
     public void onEnable() {
         this.plugin = this;
@@ -83,6 +89,9 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
 
         cfg = new Config();
         cfg.load();
+
+        storage = new YamlStorageCore(this);
+        storage.initialize();
 
         LOGGER.info("&6┏ Loading hooks:");
         Speedometer.start();
@@ -166,9 +175,9 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         guiLoader = new GuiLoader(this);
         guiLoader.load();
         LOGGER.success(" └  ✔  Menus");
-
-        storage = new YAML(this);
-        storage.load();
+//
+//        storage = new YAML(this);
+//        storage.load();
 
         LOGGER.success(" └  ✔  Storage");
     }
@@ -189,19 +198,32 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
 
     @Override
     public void onDisable() {
+
+
+//        for (Clan clan : Storage.CLANS.values()) {
+//            clanTable.saveClan(clan);
+//            for (Member member : clan.getMembersWithLeader()) {
+//                clanTable.saveMember(clan.getId(), member);
+//            }
+//        }
+//        db.disconnect();
+
+
         ActionRegistry.unregisterAll("treexclans");
         if (addonManager != null) {
             addonManager.disableAddons();
         }
         getServer().getServicesManager().unregister(TreexClansAPI.class);
-        if (storage != null) storage.save();
+        if (storage != null) storage.shutdown();
         if (clanPlaceholder != null) {
             if (clanPlaceholder.isPapi()) {
                 clanPlaceholder.unregister();
             }
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.getOpenInventory().close();
+            if (player.getOpenInventory().getTopInventory().getHolder() instanceof Gui) {
+                player.closeInventory();
+            }
         }
     }
 }

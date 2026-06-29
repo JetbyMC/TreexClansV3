@@ -2,6 +2,16 @@ config-version: 4
 
 debug: true
 
+storage:
+  # MYSQL, SQLITE, YAML
+  type: "SQLITE"
+  # Данные ниже заполнять только если используете MySQL
+  host: "localhost"
+  port: 3306
+  database: "treexclans"
+  username: "root"
+  password: ""
+
 # Available serializers:
 # LEGACY_AMPERSAND  - "&c&lExample &c&9Text"
 # LEGACY_SECTION    - "§c§lExample §c§9Text"
@@ -81,15 +91,6 @@ ranks:
     display-name: "&7Участник"
     permissions:
       invite: true
-      kick: false
-      base: true
-      setbase: false
-      setrank: false
-      deposit: true
-      withdraw: false
-      pvp: false
-      setslogan: false
-      setprefix: false
   CONTROL:
     display-name: "&3Управляющий"
     permissions:
@@ -101,8 +102,6 @@ ranks:
       deposit: true
       withdraw: true
       pvp: true
-      setslogan: false
-      setprefix: false
   LEADER:
     display-name: "&4&lЛидер"
     permissions:
@@ -116,6 +115,7 @@ ranks:
       pvp: true
       setslogan: true
       setprefix: true
+      rename: true
 
 
 placeholder-show-format: "%weeks% %days% %hours% %minutes%"

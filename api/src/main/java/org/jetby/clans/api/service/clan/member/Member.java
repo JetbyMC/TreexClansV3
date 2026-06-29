@@ -1,7 +1,7 @@
 package org.jetby.clans.api.service.clan.member;
 
-import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.jetbrains.annotations.NotNull;
+import org.jetby.clans.api.service.clan.member.rank.Rank;
 
 import java.util.UUID;
 
@@ -27,8 +27,6 @@ public interface Member {
      * @return timestamp (millis) when member joined the clan.
      */
     long getJoinedAt();
-
-    void setJoinedAt(long joinedAt);
 
     /**
      * @return timestamp (millis) when member was last online.

@@ -11,6 +11,8 @@ formattedTime:
 restart-needed: "It seems the server administration loaded the plugin in an unusual way. If you are an administrator, you need to restart the server because this feature requires packet handling (packetevents)."
 
 commands:
+  rename:
+    - "[message] &#FC835C• /{cmd} {arg} [тэг] &7- &fRename clan tag"
   setprefix:
     - "[message] &#FC835C• /{cmd} {arg} [prefix] &7- &fSet the clan prefix"
   setslogan:
@@ -168,6 +170,8 @@ clan-setslogan:
   - "[message] {prefix} &fYou set the clan slogan to: &6{slogan}"
 clan-setprefix:
   - "[message] {prefix} &fYou set the clan prefix to: &6{clan_prefix}"
+clan-renamed:
+  - '[message] {prefix} &fYou changed the clan tag from {old} to {new}.'
 
 
 rank-perm-yes: "&a✔"

@@ -23,7 +23,8 @@ public enum ClanSubcommand {
     CHAT(new ChatSubcommand()),
     SETSLOGAN(new SetSloganSubcommand()),
     SETPREFIX(new SetPrefixSubcommand()),
-    PVP(new PvpSubcommand());
+    PVP(new PvpSubcommand()),
+    RENAME(new RenameSubcommand());
 
     @Getter
     private final Subcommand subcommand;

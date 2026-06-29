@@ -63,8 +63,8 @@ public class AcceptSubcommand implements Subcommand {
                         plugin.getCfg().getDefaultRank(),
                         System.currentTimeMillis(),
                         System.currentTimeMillis(),
-                        false, false,
-                        0, 0, new HashMap<>(),
+                        false,
+                        0, 0,
                         0, 0
                 );
                 plugin.getMessages().of(player, "clan-join")

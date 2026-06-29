@@ -44,11 +44,17 @@ public class RanksGui extends Gui {
     public void buildItems(List<Item> items) {
         if (getClan() == null) return;
 
-        List<Rank> ranks = plugin.getCfg().getRanks().values()
+
+        List<Rank> members = plugin.getCfg().getRanks().values()
                 .stream()
                 .filter(rank ->
                         getClan().getLeader().getRank() != rank
                 ).toList();
+
+        List<Rank> ranks = plugin.getCfg().getRanks().values()
+                .stream()
+                .toList();
+
         List<Item> result = new ArrayList<>();
 
         for (Item item : items) {
@@ -70,10 +76,9 @@ public class RanksGui extends Gui {
                 }
                 case "members": {
                     List<Integer> slots = item.slots();
-                    for (int i = 0; i < Math.min(slots.size(), ranks.size()); i++) {
-                        Rank rank = ranks.get(i);
-                        if (rank==plugin.getCfg().getLeaderRank()) continue;
-                        int slot = slots.get(i-1);
+                    for (int i = 0; i < Math.min(slots.size(), members.size()); i++) {
+                        Rank rank = members.get(i);
+                        int slot = slots.get(i);
 
                         result.add(cloneItemForRank(item, List.of(slot), rank));
                     }

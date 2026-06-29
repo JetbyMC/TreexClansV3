@@ -19,11 +19,9 @@ public class MemberImpl implements Member {
     private Rank rank;
     private long joinedAt;
     private long lastOnline;
-    private boolean clanGlow;
     private boolean chat;
     private int coin;
     private int exp;
-    private Map<UUID, Color> glowColors;
     private int kills;
     private int deaths;
 

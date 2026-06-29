@@ -3,15 +3,16 @@ package org.jetby.clans.common.storage;
 
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.api.service.clan.member.rank.Permission;
 import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.jetby.clans.api.service.clan.member.rank.RankPerm;
+import org.jetby.clans.api.storage.Storage;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.clan.model.ClanImpl;
 import org.jetby.clans.common.clan.model.MemberImpl;
 import org.jetby.clans.common.tools.FileLoader;
 import org.jetby.clans.common.tools.ItemSerializer;
 import org.jetby.clans.common.tools.LocationHandler;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class YAML implements Storage {
+public class YAML {
 
     private final TreexClans plugin;
     private final File file;
@@ -32,12 +33,14 @@ public class YAML implements Storage {
         this.plugin = plugin;
         this.configuration = FileLoader.getFileConfiguration("storage.yml");
         this.file = FileLoader.getFile("storage.yml");
+
     }
+
 
     private boolean somethingWrong = true;
 
-    @Override
-    public void load() {
+
+    public void initialize() {
 
         for (String clanId : configuration.getKeys(false)) {
             if (clanId.equals("clan-id")) continue;
@@ -67,7 +70,7 @@ public class YAML implements Storage {
                     String displayName = plugin.getCfg().getRanks().get(key).name();
                     ConfigurationSection permission = ranksSection.getConfigurationSection(key + ".permissions");
                     if (permission == null) continue;
-                    Set<RankPerm> perms = new HashSet<>();
+                    Set<Permission> perms = new HashSet<>();
                     for (String perm : permission.getKeys(false)) {
                         switch (perm.toLowerCase()) {
                             case "invite" -> {
@@ -99,6 +102,10 @@ public class YAML implements Storage {
                             }
                             case "setprefix" -> {
                                 if (permission.getBoolean(perm)) perms.add(RankPerm.SETPREFIX);
+                            }
+                            default -> {
+                                Permission p = () -> perm;
+                                perms.add(p);
                             }
                         }
 
@@ -135,16 +142,15 @@ public class YAML implements Storage {
                 }
 
             }
-            Storage.CLANS.put(clanId, new ClanImpl(clanId, prefix, leader, memberSet, ranks,
-                    plugin.getCfg().getLevels().get(Integer.parseInt(level)),
-                    balance, base, clanExp, pvp,chestItems, slogan, plugin));
+//            Storage.CLANS.put(clanId, new ClanImpl(clanId, prefix, leader, memberSet, ranks,
+//                    plugin.getCfg().getLevels().get(Integer.parseInt(level)),
+//                    balance, base, clanExp, pvp,chestItems, slogan));
         }
 
         somethingWrong = false;
     }
 
-    @Override
-    public void save() {
+    public void shutdown() {
 
         try {
             if (!somethingWrong) {
@@ -153,51 +159,51 @@ public class YAML implements Storage {
                 }
             }
 
-            for (String clanId : Storage.CLANS.keySet()) {
-                Clan clan = Storage.CLANS.get(clanId);
-
-                for (String key : clan.getRanks().keySet()) {
-                    Rank rank = clan.getRanks().get(key);
-                    Set<RankPerm> perms = rank.perms();
-                    configuration.set(clanId + ".ranks." + rank.id() + ".permissions.ALWAYS", true);
-                    for (RankPerm perm : perms) {
-                        configuration.set(clanId + ".ranks." + rank.id() + ".permissions." + perm.name(), true);
-                    }
-                }
-
-                configuration.set(clanId + ".slogan", clan.getSlogan());
-                configuration.set(clanId + ".balance", clan.getBalance());
-                configuration.set(clanId + ".level", clan.getLevel().id());
-                configuration.set(clanId + ".exp", clan.getExp());
-                configuration.set(clanId + ".pvp", clan.isPvp());
-
-
-                var leader = clan.getLeader();
-                configuration.set(clan.getId() + ".leader.uuid", leader.getUuid().toString());
-                setMember(leader, clan, "leader");
-
-                for (var member : clan.getMembers()) {
-                    setMember(member, clan, "members." + member.getUuid());
-                }
-
-                configuration.set(clanId + ".chest",
-                        clan.getChest().values().stream()
-                                .map(ItemSerializer::itemToBase64)
-                                .toList());
-
-                for (Map.Entry<Integer, ItemStack> entry : clan.getChest().entrySet()) {
-                    if (entry.getValue()==null || entry.getValue().getType()== Material.AIR) continue;
-                    configuration.set(clanId + ".chest."+entry.getKey(), entry.getValue());
-                }
-
-
-                Location location = clan.getBase();
-                if (location != null) {
-                    configuration.set(clanId + ".base-location", LocationHandler.serialize(clan.getBase()));
-                } else {
-                    configuration.set(clanId + ".base-location", null);
-                }
-            }
+//            for (String clanId : Storage.CLANS.keySet()) {
+//                Clan clan = Storage.CLANS.get(clanId);
+//
+//                for (String key : clan.getRanks().keySet()) {
+//                    Rank rank = clan.getRanks().get(key);
+//                    Set<Permission> perms = rank.perms();
+//                    configuration.set(clanId + ".ranks." + rank.id() + ".permissions.ALWAYS", true);
+//                    for (Permission perm : perms) {
+//                        configuration.set(clanId + ".ranks." + rank.id() + ".permissions." + perm.getId(), true);
+//                    }
+//                }
+//
+//                configuration.set(clanId + ".slogan", clan.getSlogan());
+//                configuration.set(clanId + ".balance", clan.getBalance());
+//                configuration.set(clanId + ".level", clan.getLevel().id());
+//                configuration.set(clanId + ".exp", clan.getExp());
+//                configuration.set(clanId + ".pvp", clan.isPvp());
+//
+//
+//                var leader = clan.getLeader();
+//                configuration.set(clan.getId() + ".leader.uuid", leader.getUuid().toString());
+//                setMember(leader, clan, "leader");
+//
+//                for (var member : clan.getMembers()) {
+//                    setMember(member, clan, "members." + member.getUuid());
+//                }
+//
+//                configuration.set(clanId + ".chest",
+//                        clan.getChest().values().stream()
+//                                .map(ItemSerializer::itemToBase64)
+//                                .toList());
+//
+//                for (Map.Entry<Integer, ItemStack> entry : clan.getChest().entrySet()) {
+//                    if (entry.getValue()==null || entry.getValue().getType()== Material.AIR) continue;
+//                    configuration.set(clanId + ".chest."+entry.getKey(), entry.getValue());
+//                }
+//
+//
+//                Location location = clan.getBase();
+//                if (location != null) {
+//                    configuration.set(clanId + ".base-location", LocationHandler.serialize(clan.getBase()));
+//                } else {
+//                    configuration.set(clanId + ".base-location", null);
+//                }
+//            }
             configuration.save(file);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -210,22 +216,10 @@ public class YAML implements Storage {
         Rank rank = ranks.get(member.getString("rank"));
         long joinedAt = member.getLong("joined-at");
         long lastOnline = member.getLong("last-online");
-        boolean glow = member.getBoolean("clan-glow", false);
         int coin = member.getInt("coin", 0);
         int exp = member.getInt("exp", 0);
-        Map<UUID, Color> colors = new HashMap<>();
-        for (String str : member.getStringList("glow-colors")) {
-            String[] args = str.split(";");
-            if (args.length < 4) continue;
-            UUID id = UUID.fromString(args[0]);
-            int r = Integer.parseInt(args[1]);
-            int g = Integer.parseInt(args[2]);
-            int b = Integer.parseInt(args[3]);
-            Color color = Color.fromRGB(r, g, b);
-            colors.put(id, color);
-        }
 
-        return new MemberImpl(uuid, rank, joinedAt, lastOnline, glow, false, coin, exp, colors,
+        return new MemberImpl(uuid, rank, joinedAt, lastOnline, false, coin, exp,
                 member.getInt("kills", 0),
                 member.getInt("deaths", 0)
         );

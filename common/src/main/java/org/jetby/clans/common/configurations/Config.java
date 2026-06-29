@@ -4,6 +4,7 @@ package org.jetby.clans.common.configurations;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetby.clans.api.service.clan.level.Level;
+import org.jetby.clans.api.service.clan.member.rank.Permission;
 import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.tools.FileLoader;
@@ -21,7 +22,6 @@ import java.util.*;
 @Getter
 public class Config {
 
-    @Getter(AccessLevel.NONE)
     private final FileConfiguration configuration;
 
     @Getter(AccessLevel.NONE)
@@ -150,7 +150,7 @@ public class Config {
                 if (rank == null) continue;
                 String name = rank.getString("display-name");
                 ConfigurationSection permission = rank.getConfigurationSection("permissions");
-                Set<RankPerm> perms = new HashSet<>();
+                Set<Permission> perms = new HashSet<>();
                 if (permission != null) {
                     for (String perm : permission.getKeys(false)) {
                         switch (perm.toLowerCase()) {
@@ -183,6 +183,10 @@ public class Config {
                             }
                             case "setprefix" -> {
                                 if (permission.getBoolean(perm)) perms.add(RankPerm.SETPREFIX);
+                            }
+                            default -> {
+                                Permission p = () -> perm;
+                                perms.add(p);
                             }
                         }
 

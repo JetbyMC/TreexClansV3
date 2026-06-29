@@ -38,36 +38,18 @@ public class RankPermissionGui extends Gui {
 
     @Override
     public void refresh() {
-        setReplace("%invite_status%", getStatus(rank.perms().contains(RankPerm.INVITE)));
-        setReplace("%invite_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.INVITE)));
 
-        setReplace("%kick_status%", getStatus(rank.perms().contains(RankPerm.KICK)));
-        setReplace("%kick_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.KICK)));
 
-        setReplace("%base_status%", getStatus(rank.perms().contains(RankPerm.BASE)));
-        setReplace("%base_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.BASE)));
+        for (RankPerm perm : RankPerm.values()) {
 
-        setReplace("%setrank_status%", getStatus(rank.perms().contains(RankPerm.SETRANK)));
-        setReplace("%setrank_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.SETRANK)));
+            setReplace("{"+perm.getId().toLowerCase()+"_status}", getStatus(rank.perms().contains(perm)));
+            setReplace("{"+perm.getId().toLowerCase()+"_status_boolean}",  String.valueOf(rank.perms().contains(perm)));
 
-        setReplace("%setbase_status%", getStatus(rank.perms().contains(RankPerm.SETBASE)));
-        setReplace("%setbase_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.SETBASE)));
+            setReplace("%"+perm.getId().toLowerCase()+"_status%", getStatus(rank.perms().contains(perm)));
+            setReplace("%"+perm.getId().toLowerCase()+"_status_boolean%",  String.valueOf(rank.perms().contains(perm)));
+        }
 
-        setReplace("%deposit_status%", getStatus(rank.perms().contains(RankPerm.DEPOSIT)));
-        setReplace("%deposit_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.DEPOSIT)));
-
-        setReplace("%withdraw_status%", getStatus(rank.perms().contains(RankPerm.WITHDRAW)));
-        setReplace("%withdraw_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.WITHDRAW)));
-
-        setReplace("%pvp_status%", getStatus(rank.perms().contains(RankPerm.PVP)));
-        setReplace("%pvp_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.PVP)));
-
-        setReplace("%setslogan_status%", getStatus(rank.perms().contains(RankPerm.SETSLOGAN)));
-        setReplace("%setslogan_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.SETSLOGAN)));
-
-        setReplace("%setprefix_status%", getStatus(rank.perms().contains(RankPerm.SETPREFIX)));
-        setReplace("%setprefix_status_boolean%", String.valueOf(rank.perms().contains(RankPerm.SETPREFIX)));
-
+        setReplace("{rank}", rank.name());
         setReplace("%rank%", rank.name());
 
         super.refresh();

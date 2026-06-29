@@ -1,11 +1,14 @@
 package org.jetby.clans.api.service;
 
 import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.api.service.clan.Lifecycle;
+import org.jetby.clans.api.service.clan.Lookup;
 import org.jetby.clans.api.service.clan.member.Member;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,7 +26,7 @@ import java.util.UUID;
  */
 public interface ClanManager {
 
-    @NotNull Map<String, Clan> getClanList();
+    @NotNull List<Clan> getClanList(int limit);
     /**
      * Provides access to the clan creation and deletion lifecycle.
      *
@@ -63,60 +66,6 @@ public interface ClanManager {
     // ------------------------------------------------------------------------
     // Nested interfaces
     // ------------------------------------------------------------------------
-
-    /**
-     * Clan creation and deletion lifecycle management.
-     * <p>
-     * Handles the creation, registration, and removal of clans.
-     * This API ensures that all related data and members
-     * are properly handled when clans are created or deleted.
-     * </p>
-     */
-    interface Lifecycle {
-
-        /**
-         * Creates a new clan with the specified name and data.
-         *
-         * @param name the clan name.
-         * @param clan the clan instance.
-         * @return true if successfully created, false otherwise.
-         */
-        boolean createClan(@NotNull String name, @NotNull Clan clan);
-
-        /**
-         * Creates a new clan with the given name and leader.
-         *
-         * @param name   the clan name.
-         * @param leader the player who becomes the clan leader.
-         * @return true if the clan was successfully created.
-         */
-        boolean createClan(@NotNull String name, @NotNull Player leader);
-
-        /**
-         * Deletes a clan and performs all necessary cleanup.
-         *
-         * @param clan      the clan to delete.
-         * @param initiator the player who initiated deletion (nullable).
-         */
-        boolean deleteClan(@NotNull Clan clan, @Nullable Player initiator);
-
-        /**
-         * Deletes a clan by its name.
-         *
-         * @param name the clan name.
-         * @return true if deletion succeeded, false otherwise.
-         */
-        boolean deleteClan(@NotNull String name);
-
-        /**
-         * Checks whether a clan with the given name exists.
-         *
-         * @param name the clan name.
-         * @return true if a clan with that name exists.
-         */
-        boolean clanExists(@NotNull String name);
-
-    }
 
     /**
      * Validation and naming rules for clans and prefixes.
@@ -217,68 +166,10 @@ public interface ClanManager {
     }
 
     /**
-     * Clan and member lookup utilities.
-     * <p>
-     * Provides fast, cache-aware access to clan and member
-     * information based on UUID, name, or member object.
-     * </p>
+     * Returns a formatted last online time for a member.
+     *
+     * @param member the member instance.
+     * @return a human-readable last online string.
      */
-    interface Lookup {
-
-        /**
-         * Checks whether a player with the given UUID is in a clan.
-         *
-         * @param uuid the player’s UUID.
-         * @return true if the player belongs to a clan.
-         */
-        boolean isInClan(@NotNull UUID uuid);
-
-        /**
-         * Retrieves a clan by its name.
-         *
-         * @param name the clan name.
-         * @return the {@link Clan} instance or {@code null} if not found.
-         */
-        @Nullable Clan getClan(@NotNull String name);
-
-        /**
-         * Retrieves a clan by a member’s UUID.
-         *
-         * @param uuid the member’s UUID.
-         * @return the {@link Clan} instance or {@code null} if not found.
-         */
-        @Nullable Clan getClanByMember(@NotNull UUID uuid);
-
-        /**
-         * Retrieves a clan by a member’s UUID string.
-         *
-         * @param uuidString the member’s UUID as a string.
-         * @return the {@link Clan} instance or {@code null} if not found.
-         */
-        @Nullable Clan getClanByMember(@NotNull String uuidString);
-
-        /**
-         * Retrieves a clan by a {@link Member} instance.
-         *
-         * @param member the member.
-         * @return the {@link Clan} instance or {@code null} if not found.
-         */
-        @Nullable Clan getClanByMember(@NotNull Member member);
-
-        /**
-         * Returns a formatted last online time for a player.
-         *
-         * @param uuid the player’s UUID.
-         * @return a human-readable last online string.
-         */
-        @NotNull String getLastOnlineFormatted(@NotNull UUID uuid);
-
-        /**
-         * Returns a formatted last online time for a member.
-         *
-         * @param member the member instance.
-         * @return a human-readable last online string.
-         */
-        @NotNull String getLastOnlineFormatted(@NotNull Member member);
-    }
+    @NotNull String getLastOnlineFormatted(@NotNull Member member);
 }

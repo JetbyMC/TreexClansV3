@@ -92,15 +92,6 @@ ranks:
     display-name: "&7Member"
     permissions:
       invite: true
-      kick: false
-      base: true
-      setbase: false
-      setrank: false
-      deposit: true
-      withdraw: false
-      pvp: false
-      setslogan: false
-      setprefix: false
   CONTROL:
     display-name: "&3Manager"
     permissions:
@@ -112,8 +103,6 @@ ranks:
       deposit: true
       withdraw: true
       pvp: true
-      setslogan: false
-      setprefix: false
   LEADER:
     display-name: "&4&lLeader"
     permissions:
@@ -127,6 +116,7 @@ ranks:
       pvp: true
       setslogan: true
       setprefix: true
+      rename: true
 
 
 placeholder-show-format: "%weeks% %days% %hours% %minutes%"

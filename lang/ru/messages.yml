@@ -11,6 +11,8 @@ formattedTime:
 restart-needed: "Видимо администрация этого сервера загрузила плагин странным способом. Если вы администратор то вам нужно перезапустить сервер так как для этой функции требуется работа с пакетами (packetevents)."
 
 commands:
+  rename:
+    - "[message] &#FC835C• /{cmd} {arg} [тэг] &7- &fПереименовать тэг клана"
   setprefix:
     - "[message] &#FC835C• /{cmd} {arg} [префикс] &7- &fУстановить префикс клана"
   setslogan:
@@ -168,6 +170,9 @@ clan-setslogan:
   - "[message] {prefix} &fВы поставили слоган клана таким: &6{slogan}"
 clan-setprefix:
   - "[message] {prefix} &fВы поставили префикс клана таким: &6{clan_prefix}"
+clan-renamed:
+  - '[message] {prefix} &fВы изменили тэг клана из {old} на {new}'
+
 
 
 rank-perm-yes: "&a✔"

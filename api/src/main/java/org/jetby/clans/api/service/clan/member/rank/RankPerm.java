@@ -1,6 +1,6 @@
 package org.jetby.clans.api.service.clan.member.rank;
 
-public enum RankPerm {
+public enum RankPerm implements Permission {
     INVITE,
     KICK,
     BASE,
@@ -10,6 +10,11 @@ public enum RankPerm {
     WITHDRAW,
     SETSLOGAN,
     SETPREFIX,
-    PVP
+    RENAME,
+    PVP;
 
+    @Override
+    public String getId() {
+        return this.name();
+    }
 }
