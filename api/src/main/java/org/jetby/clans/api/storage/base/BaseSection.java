@@ -14,9 +14,10 @@ public interface BaseSection {
     BaseSection section(String name);
     CompletableFuture<Set<String>> keys();
 
+    CompletableFuture<Void> remove(String key);
     CompletableFuture<Void> set(String key, Object value);
-
     CompletableFuture<Object>       get(String key);
+
     CompletableFuture<String>       getString(String key);
     CompletableFuture<Integer>      getInt(String key);
     CompletableFuture<Double>       getDouble(String key);
