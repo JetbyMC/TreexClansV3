@@ -4,7 +4,7 @@ debug: true
 
 storage:
   # MYSQL, SQLITE, YAML
-  type: "SQLITE"
+  type: "YAML"
   # Данные ниже заполнять только если используете MySQL
   host: "localhost"
   port: 3306
@@ -79,6 +79,13 @@ prefix:
   regex: "^[A-Za-z0-9]+$"
   # какие символы игнорировать из префикса
   length-ignored-symbols: "&x(?:&[0-9A-Fa-f]){6}|&[0-9A-Fa-f]"
+
+slogan:
+  min-clan-slogan-length: 3
+  max-clan-slogan-length: 64
+  regex: "^[A-Za-zА-Яа-яЁё0-9 ]+$"
+  # какие символы игнорировать в слогане
+  length-ignored-symbols: ""
 
 # placeholder %clan_tag%
 tag-placeholder:

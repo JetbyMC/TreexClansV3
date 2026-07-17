@@ -5,7 +5,7 @@ debug: true
 
 storage:
   # MYSQL, SQLITE, YAML
-  type: "SQLITE"
+  type: "YAML"
   # The data below is used only for MySQL.
   host: "localhost"
   port: 3306
@@ -80,6 +80,14 @@ prefix:
   regex: "^[A-Za-z0-9]+$"
   # which symbols to ignore when calculating prefix length
   length-ignored-symbols: "&x(?:&[0-9A-Fa-f]){6}|&[0-9A-Fa-f]"
+
+slogan:
+  min-clan-prefix-length: 3
+  max-clan-prefix-length: 64
+  regex: "^[A-Za-z0-9 ]+$"
+  # which symbols to ignore when calculating slogan length
+  length-ignored-symbols: ""
+
 
 # placeholder %clan_tag%
 tag-placeholder:
