@@ -26,10 +26,10 @@ public class MemberImpl implements Member {
     private int deaths;
 
     public synchronized void addCoin(int a) {
-        coin = coin + a;
+        coin++;
     }
 
     public synchronized void takeCoin(int a) {
-        coin = coin - a;
+        coin--;
     }
 }
