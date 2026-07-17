@@ -45,16 +45,17 @@ public class SetSloganSubcommand implements Subcommand {
                 return true;
             }
 
-            StringBuilder message = new StringBuilder();
-            for (String str : args) message.append(str).append(" ");
+            String message = String.join(" ", args).trim();
 
-            clan.setSlogan(message.toString());
-            plugin.getMessages().of(player, "clan-setslogan")
-                    .replace("{cmd}", command.getName())
-                    .replace("{arg}", sub)
-                    .replace("{slogan}", message.toString())
-                    .with(clan)
-                    .run();
+            if (plugin.getClanManager().validation().isAllowedSlogan(player, message)) {
+                clan.setSlogan(message);
+                plugin.getMessages().of(player, "clan-setslogan")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .replace("{slogan}", message)
+                        .with(clan)
+                        .run();
+            }
         }
 
         return true;
