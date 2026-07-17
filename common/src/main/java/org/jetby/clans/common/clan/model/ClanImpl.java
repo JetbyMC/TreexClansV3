@@ -25,7 +25,7 @@ public class ClanImpl implements Clan {
     private String id;
     private String prefix;
     @Setter(AccessLevel.NONE)
-    private final Member leader;
+    private Member leader;
     private final Set<Member> members;
     private final Map<String, Rank> ranks;
     private Level level;
@@ -52,6 +52,18 @@ public class ClanImpl implements Clan {
                 .orElse(null);
     }
 
+    @Override
+    public synchronized void transfer(Member target) {
+        if (!members.contains(target)) return;
+
+        Member leader = this.leader;
+        leader.setRank(plugin.getCfg().getDefaultRank());
+        members.add(leader);
+
+        target.setRank(plugin.getCfg().getLeaderRank());
+        this.leader = target;
+    }
+
     public @NotNull Set<Member> getMembersWithLeader() {
         Set<Member> list = new HashSet<>(members);
         list.add(leader);
@@ -60,12 +72,6 @@ public class ClanImpl implements Clan {
 
     public void removeMember(@NotNull Member member) {
         this.members.remove(member);
-    }
-
-
-    @Override
-    public void rename(String id) {
-        this.id = id;
     }
 
     public synchronized void addExp(int amount, @NotNull Member member, @NotNull Map<Integer, Level> levels) {
