@@ -3,9 +3,11 @@ package org.jetby.clans.common.storage;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.api.service.clan.member.Member;
 import org.jetby.clans.api.storage.base.BaseSection;
+import org.jetby.clans.common.configurations.Config;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,29 +29,61 @@ public class MySQLStorageImpl extends StorageCore {
     private static final Pattern SAFE_IDENTIFIER = Pattern.compile("[A-Za-z0-9_\\-]+");
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor(
-            r -> new Thread(r, "treexclans-storage-sqlite")
+            r -> new Thread(r, "treexclans-storage-mysql")
     );
 
-    // column-existence cache: table name -> known column names (lazily loaded via PRAGMA)
+    // column-existence cache: table name -> known column names (lazily loaded via information_schema)
     private final Map<String, Set<String>> columnCache = new ConcurrentHashMap<>();
     // group EAV tables we've already confirmed exist ("<group>_data")
     private final Set<String> knownEavTables = ConcurrentHashMap.newKeySet();
 
+    private String databaseName;
     private HikariDataSource dataSource;
 
+    private final String host;
+    private final int port;
+    private final String database;
+    private final String username;
+    private final String password;
+    private final boolean useSSL;
 
+    public MySQLStorageImpl(Config cfg) {
+        this.host = cfg.getMysqlHost();
+        this.port = cfg.getMysqlPort();
+        this.database = cfg.getMysqlDatabase();
+        this.username = cfg.getMysqlUsername();
+        this.password = cfg.getMysqlPassword();
+        this.useSSL = cfg.isMysqlUseSSL();
+    }
 
     @Override
     public void initialize() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:sqlite:" + plugin.getDataFolder() + "/data.db");
-        config.setMaximumPoolSize(1);
-        config.setConnectionTimeout(5000L);
+        HikariConfig config = getHikariConfig();
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         dataSource = new HikariDataSource(config);
+
+        this.databaseName = database;
 
         createBaseTables();
         this.section = new SQLSection("");
         loadExistingClans();
+    }
+
+    private @NotNull HikariConfig getHikariConfig() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database +
+                "?useSSL=" + useSSL +
+                "&useUnicode=true&characterEncoding=utf8" +
+                "&autoReconnect=true&allowPublicKeyRetrieval=true");
+        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(1);
+        config.setConnectionTimeout(10000L);
+        return config;
     }
 
     @Override
@@ -69,13 +103,14 @@ public class MySQLStorageImpl extends StorageCore {
         CompletableFuture.runAsync(() -> {
             try (Connection connection = dataSource.getConnection()) {
                 execute(connection,
-                        "CREATE TABLE IF NOT EXISTS `clans` (`id` TEXT NOT NULL PRIMARY KEY)");
+                        "CREATE TABLE IF NOT EXISTS `clans` (`id` VARCHAR(191) NOT NULL PRIMARY KEY) " +
+                                "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
                 execute(connection,
                         "CREATE TABLE IF NOT EXISTS `clan_members` (" +
-                                "`uuid` TEXT NOT NULL PRIMARY KEY, " +
-                                "`clan_id` TEXT NOT NULL, " +
+                                "`uuid` VARCHAR(191) NOT NULL PRIMARY KEY, " +
+                                "`clan_id` VARCHAR(191) NOT NULL, " +
                                 "CONSTRAINT `clan_members_clan_id_fk` FOREIGN KEY (`clan_id`) REFERENCES `clans` (`id`)" +
-                                ")");
+                                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -313,9 +348,14 @@ public class MySQLStorageImpl extends StorageCore {
         return columnCache.computeIfAbsent(table, t -> {
             try {
                 Set<String> cols = new LinkedHashSet<>();
-                try (PreparedStatement stmt = connection.prepareStatement("PRAGMA table_info(`" + t + "`)");
-                     ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) cols.add(rs.getString("name"));
+                try (PreparedStatement stmt = connection.prepareStatement(
+                        "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` " +
+                                "WHERE `TABLE_SCHEMA` = ? AND `TABLE_NAME` = ?")) {
+                    stmt.setString(1, databaseName);
+                    stmt.setString(2, t);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        while (rs.next()) cols.add(rs.getString("COLUMN_NAME"));
+                    }
                 }
                 return cols;
             } catch (SQLException e) {
@@ -350,8 +390,8 @@ public class MySQLStorageImpl extends StorageCore {
             insertVals.append(", ?");
             insertParams[1 + i / 2] = extraCols[i + 1];
         }
-        execute(connection, "INSERT INTO `" + table + "` (" + insertCols + ") VALUES (" + insertVals + ") " +
-                "ON CONFLICT(`" + idColumn + "`) DO NOTHING", insertParams);
+        execute(connection, "INSERT IGNORE INTO `" + table + "` (" + insertCols + ") VALUES (" + insertVals + ")",
+                insertParams);
 
         execute(connection, "UPDATE `" + table + "` SET `" + key + "` = ? WHERE `" + idColumn + "` = ?",
                 serialize(value), idValue);
@@ -384,12 +424,12 @@ public class MySQLStorageImpl extends StorageCore {
         if (knownEavTables.contains(table)) return;
         execute(connection,
                 "CREATE TABLE IF NOT EXISTS `" + table + "` (" +
-                        "`clan_id` TEXT NOT NULL, " +
-                        "`path` TEXT NOT NULL, " +
-                        "`key` TEXT NOT NULL, " +
-                        "`value` TEXT, " +
-                        "PRIMARY KEY (`clan_id`, `path`, `key`)" +
-                        ")");
+                        "`clan_id` VARCHAR(191) NOT NULL, " +
+                        "`path` VARCHAR(191) NOT NULL, " +
+                        "`key_name` VARCHAR(191) NOT NULL, " +
+                        "`value` MEDIUMTEXT, " +
+                        "PRIMARY KEY (`clan_id`, `path`, `key_name`)" +
+                        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         knownEavTables.add(table);
     }
 
@@ -398,7 +438,7 @@ public class MySQLStorageImpl extends StorageCore {
         ensureEavTable(connection, table);
 
         Set<String> result = querySet(connection,
-                "SELECT `key` FROM `" + table + "` WHERE `clan_id` = ? AND `path` = ?", t.clanId, t.subPath);
+                "SELECT `key_name` FROM `" + table + "` WHERE `clan_id` = ? AND `path` = ?", t.clanId, t.subPath);
 
         String likePrefix = (t.subPath.isEmpty() ? "" : t.subPath + ".") + "%";
         try (PreparedStatement stmt = connection.prepareStatement(
@@ -422,7 +462,7 @@ public class MySQLStorageImpl extends StorageCore {
         String table = eavTable(t.group);
         ensureEavTable(connection, table);
         Object raw = queryValue(connection,
-                "SELECT `value` FROM `" + table + "` WHERE `clan_id` = ? AND `path` = ? AND `key` = ?",
+                "SELECT `value` FROM `" + table + "` WHERE `clan_id` = ? AND `path` = ? AND `key_name` = ?",
                 t.clanId, t.subPath, key);
         return raw == null ? null : deserialize(raw);
     }
@@ -437,11 +477,11 @@ public class MySQLStorageImpl extends StorageCore {
         }
 
         int updated = execute(connection,
-                "UPDATE `" + table + "` SET `value` = ? WHERE `clan_id` = ? AND `path` = ? AND `key` = ?",
+                "UPDATE `" + table + "` SET `value` = ? WHERE `clan_id` = ? AND `path` = ? AND `key_name` = ?",
                 serialize(value), t.clanId, t.subPath, key);
         if (updated == 0) {
             execute(connection,
-                    "INSERT INTO `" + table + "` (`clan_id`, `path`, `key`, `value`) VALUES (?, ?, ?, ?)",
+                    "INSERT INTO `" + table + "` (`clan_id`, `path`, `key_name`, `value`) VALUES (?, ?, ?, ?)",
                     t.clanId, t.subPath, key, serialize(value));
         }
     }
@@ -450,7 +490,7 @@ public class MySQLStorageImpl extends StorageCore {
         String table = eavTable(t.group);
         ensureEavTable(connection, table);
 
-        execute(connection, "DELETE FROM `" + table + "` WHERE `clan_id` = ? AND `path` = ? AND `key` = ?",
+        execute(connection, "DELETE FROM `" + table + "` WHERE `clan_id` = ? AND `path` = ? AND `key_name` = ?",
                 t.clanId, t.subPath, key);
         // if `key` was itself a whole nested sub-section, drop everything under it too
         String childPath = t.subPath.isEmpty() ? key : t.subPath + "." + key;
@@ -467,8 +507,16 @@ public class MySQLStorageImpl extends StorageCore {
         execute(connection, "DELETE FROM `clans` WHERE `id` = ?", clanId);
 
         // sweep every auto-created group table, not just ones seen this session
-        Set<String> tables = querySet(connection,
-                "SELECT `name` FROM `sqlite_master` WHERE `type` = 'table' AND `name` LIKE '%\\_data' ESCAPE '\\'");
+        Set<String> tables;
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT `TABLE_NAME` FROM `INFORMATION_SCHEMA`.`TABLES` " +
+                        "WHERE `TABLE_SCHEMA` = ? AND `TABLE_NAME` LIKE '%\\_data' ESCAPE '\\\\'")) {
+            stmt.setString(1, databaseName);
+            tables = new LinkedHashSet<>();
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) tables.add(rs.getString(1));
+            }
+        }
         for (String table : tables) {
             execute(connection, "DELETE FROM `" + table + "` WHERE `clan_id` = ?", clanId);
         }
