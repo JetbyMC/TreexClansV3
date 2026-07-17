@@ -1,5 +1,6 @@
 package org.jetby.clans.common.commands.clan.subcommands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -49,7 +50,7 @@ public class TransferSubcommand implements Subcommand {
                 return true;
             }
 
-            OfflinePlayer target = player.getServer().getOfflinePlayer(args[0]);
+            OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(args[0]);
             if (clan.getMember(target.getUniqueId()) == null) {
                 plugin.getMessages().of(player, "player-not-in-clan")
                         .replace("{cmd}", command.getName())
