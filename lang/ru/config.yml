@@ -11,6 +11,7 @@ storage:
   database: "treexclans"
   username: "root"
   password: ""
+  useSSL: false
 
 # Available serializers:
 # LEGACY_AMPERSAND  - "&c&lExample &c&9Text"
