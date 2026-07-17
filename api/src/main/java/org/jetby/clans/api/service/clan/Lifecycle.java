@@ -56,4 +56,13 @@ public interface Lifecycle {
      */
     boolean clanExists(@NotNull String name);
 
+    /**
+     * Renames the tag of the clan
+     *
+     * @param clan the clan.
+     * @param newId new tag.
+     * @return true if a clan with that name exists.
+     */
+    boolean renameClan(@NotNull Clan clan, @NotNull String newId);
+
 }
