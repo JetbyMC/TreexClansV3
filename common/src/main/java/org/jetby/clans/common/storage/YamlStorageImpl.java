@@ -1,8 +1,6 @@
 package org.jetby.clans.common.storage;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.api.service.clan.member.Member;
 import org.jetby.clans.api.storage.base.BaseSection;
@@ -14,23 +12,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class YamlStorageCore extends StorageCore {
+public class YamlStorageImpl extends StorageCore {
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(
+            r -> new Thread(r, "treexclans-storage-yaml")
+    );
 
     private final File file;
     private final FileConfiguration configuration;
 
-    public YamlStorageCore() {
+    public YamlStorageImpl() {
         this.configuration = FileLoader.getFileConfiguration("storage.yml");
         this.file = FileLoader.getFile("storage.yml");
     }
-
 
     @Override
     public void initialize() {
         initBaseSection();
         for (String key : configuration.getKeys(false)) {
-            getClan(key);
+            loadClan(key);
         }
     }
 
@@ -39,32 +42,17 @@ public class YamlStorageCore extends StorageCore {
         for (Clan clan : cache.values()) {
             saveClan(clan);
         }
+        CompletableFuture<Void> barrier = CompletableFuture.runAsync(() -> {}, executor);
+        barrier.join();
+
         try {
             configuration.save(file);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
 
-    @Override
-    public boolean clanExists(@NotNull String name) {
-        return cache.containsKey(name) || configuration.contains(name);
+        executor.shutdown();
     }
-
-    @Override
-    public boolean deleteClan(@NotNull String name) {
-        cache.remove(name);
-        configuration.set(name, null);
-        return true;
-    }
-
-    @Override
-    public @Nullable Clan getClan(@NotNull String name) {
-        if (cache.containsKey(name)) return cache.get(name);
-        if (!configuration.contains(name)) return null;
-        return loadClan(name);
-    }
-
 
     private void initBaseSection() {
         this.section = new YamlSection("");
@@ -95,9 +83,7 @@ public class YamlStorageCore extends StorageCore {
 
         @Override
         public BaseSection of(Clan clan, Member member) {
-
             String memberPath = clan.getId() + ".members." + member.getUuid();
-
             return new YamlSection(memberPath);
         }
 
@@ -112,60 +98,59 @@ public class YamlStorageCore extends StorageCore {
                 if (path.isEmpty()) {
                     return configuration.getKeys(false);
                 }
-
                 var section = configuration.getConfigurationSection(path);
-                if (section == null) {
-                    return Collections.emptySet();
-                }
-
-                return section.getKeys(false);
-            });
+                return section == null ? Collections.emptySet() : section.getKeys(false);
+            }, executor);
         }
 
+        @Override
+        public CompletableFuture<Void> remove(String key) {
+            return CompletableFuture.runAsync(() -> configuration.set(full(key), null), executor);
+        }
 
         @Override
         public CompletableFuture<Void> set(String key, Object value) {
-            return CompletableFuture.runAsync(() -> configuration.set(full(key), value));
+            return CompletableFuture.runAsync(() -> configuration.set(full(key), value), executor);
         }
 
         @Override
         public CompletableFuture<Object> get(String key) {
-            return CompletableFuture.supplyAsync(() -> configuration.get(full(key)));
+            return CompletableFuture.supplyAsync(() -> configuration.get(full(key)), executor);
         }
 
         @Override
         public CompletableFuture<String> getString(String key) {
-            return CompletableFuture.supplyAsync(() -> configuration.getString(full(key)));
+            return CompletableFuture.supplyAsync(() -> configuration.getString(full(key)), executor);
         }
 
         @Override
         public CompletableFuture<Integer> getInt(String key) {
-            return CompletableFuture.supplyAsync(() -> configuration.getInt(full(key)));
+            return CompletableFuture.supplyAsync(() -> configuration.getInt(full(key)), executor);
         }
 
         @Override
         public CompletableFuture<Double> getDouble(String key) {
-            return CompletableFuture.supplyAsync(() -> configuration.getDouble(full(key)));
+            return CompletableFuture.supplyAsync(() -> configuration.getDouble(full(key)), executor);
         }
 
         @Override
         public CompletableFuture<Long> getLong(String key) {
-            return CompletableFuture.supplyAsync(() -> configuration.getLong(full(key)));
+            return CompletableFuture.supplyAsync(() -> configuration.getLong(full(key)), executor);
         }
 
         @Override
         public CompletableFuture<Boolean> getBoolean(String key) {
-            return CompletableFuture.supplyAsync(() -> configuration.getBoolean(full(key)));
+            return CompletableFuture.supplyAsync(() -> configuration.getBoolean(full(key)), executor);
         }
 
         @Override
         public CompletableFuture<List<?>> getList(String key) {
-            return CompletableFuture.supplyAsync(() -> configuration.getList(full(key)));
+            return CompletableFuture.supplyAsync(() -> configuration.getList(full(key)), executor);
         }
 
         @Override
         public CompletableFuture<List<String>> getStringList(String key) {
-            return CompletableFuture.supplyAsync(() -> configuration.getStringList(full(key)));
+            return CompletableFuture.supplyAsync(() -> configuration.getStringList(full(key)), executor);
         }
     }
 }
