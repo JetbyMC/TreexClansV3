@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetby.clans.api.service.clan.level.Level;
 import org.jetby.clans.api.service.clan.member.rank.Permission;
+import org.jetby.clans.api.service.clan.member.rank.PermissionRegistry;
 import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.tools.FileLoader;
@@ -43,19 +44,16 @@ public class Config {
     private String prefixPlaceholder_hasPrefix;
     private String prefixPlaceholder_noPrefix;
     private String prefixPlaceholder_noClan;
-    private int prefixMinLength;
-    private int prefixMaxLength;
-    private String prefixRegex;
-    private String lengthIgnoredSymbols;
+
+    private StringValidationRules prefixValidation;
+    private StringValidationRules createValidation;
+    private StringValidationRules sloganValidation;
 
     private String tagPlaceholder_hasClan;
     private String tagPlaceholder_noClan;
 
     private String formattedTimeFormat;
 
-    private int minTagLength;
-    private int maxTagLength;
-    private String regex;
     private List<String> blockedTags;
     private List<Expression> requirements = new ArrayList<>();
 
@@ -123,10 +121,22 @@ public class Config {
 
         ConfigurationSection prefix = configuration.getConfigurationSection("prefix");
         if (prefix == null) prefix = configuration.createSection("prefix");
-        prefixMinLength = prefix.getInt("min-clan-prefix-length", 3);
-        prefixMaxLength = prefix.getInt("max-clan-prefix-length", 16);
-        prefixRegex = prefix.getString("regex", "^[A-Za-z0-9]+$");
-        lengthIgnoredSymbols = prefix.getString("length-ignored-symbols");
+
+        prefixValidation = new StringValidationRules(
+                prefix.getInt("min-clan-prefix-length", 3),
+                prefix.getInt("max-clan-prefix-length", 16),
+                prefix.getString("regex", "^[A-Za-z0-9]+$"),
+                prefix.getString("length-ignored-symbols")
+        );
+
+        ConfigurationSection slogan = configuration.getConfigurationSection("slogan");
+        if (slogan == null) slogan = configuration.createSection("slogan");
+        sloganValidation = new StringValidationRules(
+                slogan.getInt("min-clan-slogan-length", 3),
+                slogan.getInt("max-clan-slogan-length", 16),
+                slogan.getString("regex", "^[A-Za-z0-9]+$"),
+                slogan.getString("length-ignored-symbols")
+        );
 
         ConfigurationSection prefixPlaceholder = prefix.getConfigurationSection("placeholder");
         if (prefixPlaceholder == null) prefixPlaceholder = prefix.createSection("placeholder");
@@ -153,44 +163,17 @@ public class Config {
                 Set<Permission> perms = new HashSet<>();
                 if (permission != null) {
                     for (String perm : permission.getKeys(false)) {
-                        switch (perm.toLowerCase()) {
-                            case "invite" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.INVITE);
-                            }
-                            case "kick" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.KICK);
-                            }
-                            case "base" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.BASE);
-                            }
-                            case "setbase" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETBASE);
-                            }
-                            case "setrank" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETRANK);
-                            }
-                            case "deposit" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.DEPOSIT);
-                            }
-                            case "withdraw" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.WITHDRAW);
-                            }
-                            case "pvp" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.PVP);
-                            }
-                            case "setslogan" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETSLOGAN);
-                            }
-                            case "setprefix" -> {
-                                if (permission.getBoolean(perm)) perms.add(RankPerm.SETPREFIX);
-                            }
-                            default -> {
-                                Permission p = () -> perm;
-                                perms.add(p);
-                            }
+
+                        if (PermissionRegistry.exists(perm.toUpperCase())) {
+                            perms.add(PermissionRegistry.get(perm.toUpperCase()));
+
+                        } else {
+                            Permission p = () -> perm;
+                            perms.add(p);
                         }
 
                     }
+                    perms.add(RankPerm.ALWAYS);
 
                 }
                 this.ranks.put(key.toLowerCase(), new Rank(key.toLowerCase(), name, perms));
@@ -206,10 +189,13 @@ public class Config {
 
             defaultRank = this.ranks.get(clanCreate.getString("member-rank", "member").toLowerCase());
             leaderRank = this.ranks.get(clanCreate.getString("leader-rank", "leader").toLowerCase());
-            minTagLength = clanCreate.getInt("min-clan-tag-length", 3);
-            maxTagLength = clanCreate.getInt("max-clan-tag-length", 6);
+            createValidation = new StringValidationRules(
+                    clanCreate.getInt("min-clan-tag-length", 3),
+                    clanCreate.getInt("max-clan-tag-length", 6),
+                    clanCreate.getString("regex", "^[A-Za-z0-9]+$"),
+                    null
+            );
             blockedTags = clanCreate.getStringList("blocked-tags");
-            regex = clanCreate.getString("regex", "^[A-Za-z0-9]+$");
         }
 
         for (String id : level.getKeys(false)) {
@@ -228,4 +214,11 @@ public class Config {
         chatFormat = configuration.getString("chat-format", "<#FFE259>&l[TreexClans]</#FFA751> &e&l{player} &7▶ &f{message}");
     }
 
+
+    public record StringValidationRules(
+            int minLength,
+            int maxLength,
+            String regex,
+            String lengthIgnoredSymbols
+    ) {}
 }
