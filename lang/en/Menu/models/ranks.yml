@@ -14,6 +14,7 @@ Items:
     # Available
     # all
     # members
+    # leader
     # rank_id
     rank: leader
     display_name: "{rank}"
@@ -43,6 +44,7 @@ Items:
     # Available
     # all
     # members
+    # leader
     # rank_id
     rank: members
     flags:
