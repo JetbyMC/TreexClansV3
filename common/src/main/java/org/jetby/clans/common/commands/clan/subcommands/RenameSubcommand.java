@@ -9,6 +9,7 @@ import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.api.service.ClanManager;
 import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.TreexClans;
 
 import java.util.List;
@@ -31,12 +32,21 @@ public class RenameSubcommand implements Subcommand {
             if (!plugin.getClanManager().lookup().isInClan(player.getUniqueId())) {
                 plugin.getMessages().of(player, "your-not-in-clan")
                         .replace("{cmd}", command.getName())
-                        .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .run();
                 return true;
             }
+
             Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
+
+            if (!clan.getMember(player.getUniqueId()).getRank().perms().contains(RankPerm.RENAME)) {
+                plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
+                        .replace("{cmd}", command.getName())
+                        .replace("{arg}", sub)
+                        .with(clan)
+                        .run();
+                return true;
+            }
 
             String newTag = args[0].toLowerCase();
 
@@ -57,7 +67,7 @@ public class RenameSubcommand implements Subcommand {
                         .replace("{old}", clan.getId())
                         .replace("{new}", newTag)
                         .run();
-                clan.rename(newTag);
+                plugin.getClanManager().lifecycle().renameClan(clan, newTag);
             }
 
         }
