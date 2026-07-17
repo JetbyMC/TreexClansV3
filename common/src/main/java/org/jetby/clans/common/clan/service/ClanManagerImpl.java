@@ -27,6 +27,8 @@ import org.jetby.libb.action.ActionExecute;
 import org.jetby.libb.action.ActionUtil;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Concrete implementation of {@link ClanManager} for TreexClans.
@@ -94,122 +96,128 @@ public final class ClanManagerImpl implements Listener, ClanManager {
     }
 
     private boolean exists(@NotNull String tag) {
-        return plugin.getStorage().getClan(tag)!=null;
+        return plugin.getStorage().getCache().containsKey(tag);
     }
 
     private final class LifecycleImpl implements Lifecycle {
 
         @Override
         public boolean createClan(@NotNull String name, @NotNull Clan clan) {
-            plugin.getStorage().createClan(name, clan);
+            if (exists(name)) return false;
 
-//            if (exists(name)) return false;
-//
-//            var event = new ClanCreateEvent(clan, null);
-//            Bukkit.getPluginManager().callEvent(event);
-//
-//            if (event.isCancelled()) {
-//                return false;
-//            }
-//
-//            getClanList().put(name, clan);
+
+            var event = new ClanCreateEvent(clan, null);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) {
+                return false;
+            }
+            plugin.getStorage().saveClan(clan);
             return true;
         }
 
         @Override
         public boolean createClan(@NotNull String name, @NotNull Player leaderPlayer) {
-          return   plugin.getStorage().createClan(name, leaderPlayer);
-//            if (exists(name)) return false;
-//
-//            MemberImpl leader = new MemberImpl(
-//                    leaderPlayer.getUniqueId(),
-//                    plugin.getCfg().getLeaderRank(),
-//                    System.currentTimeMillis(),
-//                    System.currentTimeMillis(),
-//                    false,
-//                    0,
-//                    0,
-//                    0,
-//                    0
-//            );
-//
-//            Level baseLevel = plugin.getCfg().getLevels().getOrDefault(
-//                    1,
-//                    new Level("1", "1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>())
-//            );
-//
-//            Clan clan = new ClanImpl(
-//                    name,
-//                    null,
-//                    leader,
-//                    new HashSet<>(),
-//                    plugin.getCfg().getRanks(),
-//                    baseLevel,
-//                    0.0,
-//                    null,
-//                    0,
-//                    false,
-//                    new HashMap<>(),
-//                    ""
-//            );
-//
-//            var event = new ClanCreateEvent(clan, leaderPlayer);
-//            Bukkit.getPluginManager().callEvent(event);
-//
-//            if (event.isCancelled()) {
-//                return false;
-//            }
-//
-//            getClanList().put(name, clan);
-//            return true;
+            if (exists(name)) return false;
+
+            MemberImpl leader = new MemberImpl(
+                    leaderPlayer.getUniqueId(),
+                    plugin.getCfg().getLeaderRank(),
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis(),
+                    false,
+                    0,
+                    0,
+                    0,
+                    0
+            );
+
+            Level baseLevel = plugin.getCfg().getLevels().getOrDefault(
+                    1,
+                    new Level("1", "1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>())
+            );
+
+            Clan clan = new ClanImpl(
+                    name,
+                    null,
+                    leader,
+                    new HashSet<>(),
+                    plugin.getCfg().getRanks(),
+                    baseLevel,
+                    0.0,
+                    null,
+                    0,
+                    false,
+                    new HashMap<>(),
+                    ""
+            );
+
+            var event = new ClanCreateEvent(clan, leaderPlayer);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            plugin.getStorage().saveClan(clan);
+
+            return true;
         }
 
         @Override
         public boolean deleteClan(@NotNull Clan clan, @Nullable Player initiator) {
-           return plugin.getStorage().deleteClan(clan, initiator);
 
-//            var event = new ClanDeleteEvent(clan, initiator);
-//            Bukkit.getPluginManager().callEvent(event);
-//
-//            if (event.isCancelled()) {
-//                return false;
-//            }
-//
-//            getClanList().remove(clan.getId());
-//            return true;
+            var event = new ClanDeleteEvent(clan, initiator);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            plugin.getStorage().getCache().remove(clan.getId());
+            plugin.getStorage().getSection().set(clan.getId(), null);
+            return true;
         }
+
 
         @Override
         public boolean deleteClan(@NotNull String name) {
-            return plugin.getStorage().deleteClan(name);
 
-//            var clan = getClanList().get(name);
-//            if (clan == null) {
-//                return false;
-//            }
-//
-//            var event = new ClanDeleteEvent(clan, null);
-//            Bukkit.getPluginManager().callEvent(event);
-//
-//            if (event.isCancelled()) {
-//                return false;
-//            }
-//
-//            // notify members
-////            for (Member member : clan.getMembers()) {
-////                Player player = Bukkit.getPlayer(member.getUuid());
-////                if (player != null) {
-////                    player.sendMessage("Your clan was disbanded by clan leader");
-////                }
-////            }
-//
-//            getClanList().remove(clan.getId());
-//            return true;
+            var clan = plugin.getStorage().getCache().remove(name);
+            if (clan == null) {
+                return false;
+            }
+
+            var event = new ClanDeleteEvent(clan, null);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) {
+                return false;
+            }
+            plugin.getStorage().getCache().remove(clan.getId());
+            plugin.getStorage().getSection().set(clan.getId(), null);
+            return true;
         }
 
         @Override
         public boolean clanExists(@NotNull String name) {
             return exists(name);
+        }
+
+        @Override
+        public boolean renameClan(@NotNull Clan clan, @NotNull String newId) {
+            String oldId = clan.getId();
+            if (exists(newId)) return false;
+
+            Object data = plugin.getStorage().getSection().get(oldId);
+            plugin.getStorage().getSection().set(oldId, null);
+            plugin.getStorage().getSection().set(newId, data);
+            plugin.getStorage().getCache().remove(oldId);
+            ClanImpl impl = (ClanImpl) clan;
+            impl.setId(newId);
+            plugin.getStorage().getCache().put(newId, impl);
+
+            return true;
         }
     }
 
@@ -217,8 +225,8 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
         @Override
         public boolean isAllowedName(@NotNull Player player, @NotNull String clanName) {
-            int min = plugin.getCfg().getMinTagLength();
-            int max = plugin.getCfg().getMaxTagLength();
+            int min = plugin.getCfg().getCreateValidation().minLength();
+            int max = plugin.getCfg().getCreateValidation().maxLength();
 
             if (clanName.length() < min) {
                 plugin.getMessages().of(player, "clan-tag-too-short")
@@ -240,7 +248,7 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                 return false;
             }
 
-            if (!isAllowedRegex(clanName, plugin.getCfg().getRegex())) {
+            if (!isAllowedRegex(clanName, plugin.getCfg().getCreateValidation().regex())) {
                 plugin.getMessages().of(player, "disallowed-tag-regex")
                         .run();
                 return false;
@@ -255,9 +263,9 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
         @Override
         public boolean isAllowedPrefix(@NotNull Player player, @NotNull String prefix) {
-            String cleaned = removeIgnoredSymbols(prefix, plugin.getCfg().getLengthIgnoredSymbols());
-            int min = plugin.getCfg().getPrefixMinLength();
-            int max = plugin.getCfg().getPrefixMaxLength();
+            String cleaned = removeIgnoredSymbols(prefix, plugin.getCfg().getPrefixValidation().lengthIgnoredSymbols());
+            int min = plugin.getCfg().getPrefixValidation().minLength();
+            int max = plugin.getCfg().getPrefixValidation().maxLength();
 
             if (cleaned.length() < min) {
                 plugin.getMessages().of(player, "clan-prefix-too-short")
@@ -279,8 +287,37 @@ public final class ClanManagerImpl implements Listener, ClanManager {
                 return false;
             }
 
-            if (!isAllowedRegex(prefix, plugin.getCfg().getPrefixRegex())) {
+            if (!isAllowedRegex(prefix, plugin.getCfg().getPrefixValidation().regex())) {
                 plugin.getMessages().of(player, "disallowed-prefix-regex")
+                        .run();
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public boolean isAllowedSlogan(@NotNull Player player, @NotNull String slogan) {
+            String cleaned = removeIgnoredSymbols(slogan, plugin.getCfg().getSloganValidation().lengthIgnoredSymbols());
+            int min = plugin.getCfg().getPrefixValidation().minLength();
+            int max = plugin.getCfg().getPrefixValidation().maxLength();
+
+            if (cleaned.length() < min) {
+                plugin.getMessages().of(player, "clan-slogan-too-short")
+                        .replace("{min_length}", String.valueOf(min))
+                        .run();
+                return false;
+            }
+
+            if (cleaned.length() > max) {
+                plugin.getMessages().of(player, "clan-slogan-too-long")
+                        .replace("{max_length}", String.valueOf(max))
+                        .run();
+                return false;
+            }
+
+            if (!isAllowedRegex(slogan, plugin.getCfg().getPrefixValidation().regex())) {
+                plugin.getMessages().of(player, "disallowed-slogan-regex")
                         .run();
                 return false;
             }
@@ -323,11 +360,13 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
         @Override
         public void sendChat(@NotNull Clan clan, @NotNull Player sender, @NotNull String message) {
-            String format = plugin.getCfg().getChatFormat()
+            String format = Papi.set(sender, plugin.getCfg().getChatFormat());
+
+            format = format
                     .replace("{player}", sender.getName())
                     .replace("{message}", message);
 
-            Component colored = Config.CONFIG_COLORIZER.deserialize(Papi.set(sender, format));
+            Component colored = Config.CONFIG_COLORIZER.deserialize(format);
 
             for (Member member : clan.getMembers()) {
                 Player player = Bukkit.getPlayer(member.getUuid());
@@ -366,44 +405,31 @@ public final class ClanManagerImpl implements Listener, ClanManager {
 
         @Override
         public boolean isInClan(@NotNull UUID uuid) {
-            return plugin.getStorage().isInClan(uuid);
-
-//            return getClanList().values().stream()
-//                    .anyMatch(clan ->
-//                            (clan.getLeader().getUuid().equals(uuid)) ||
-//                                    clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
-//                    );
+            return getClanByMember(uuid) != null;
         }
 
         @Override
         public @Nullable Clan getClan(@NotNull String name) {
-            return plugin.getStorage().getClan(name);
-//            return getClanList().get(name);
+            if (exists(name)) return plugin.getStorage().getCache().get(name);
+            return plugin.getStorage().loadClan(name);
         }
 
-        @Override
-        public @Nullable Clan getClanByMember(@NotNull UUID uuid) {
-            return plugin.getStorage().getClanByMember(uuid);
-//            return getClanList().values().stream()
-//                    .filter(clan ->
-//                            (clan.getLeader().getUuid().equals(uuid)) ||
-//                                    clan.getMembers().stream().anyMatch(m -> m.getUuid().equals(uuid))
-//                    )
-//                    .findFirst()
-//                    .orElse(null);
-        }
 
         @Override
         public @Nullable Clan getClanByMember(@NotNull Member member) {
-            return plugin.getStorage().getClanByMember(member);
-//            return getClanList().values().stream()
-//                    .filter(clan ->
-//                            (clan.getLeader().equals(member)) ||
-//                                    clan.getMembers().contains(member)
-//                    )
-//                    .findFirst()
-//                    .orElse(null);
+            return getClanByMember(member.getUuid());
         }
+
+
+        @Override
+        public @Nullable Clan getClanByMember(@NotNull UUID uuid) {
+            for (Clan clan : plugin.getStorage().getCache().values()) {
+                if (clan.getLeader().getUuid().equals(uuid)) return clan;
+                if (clan.getMember(uuid) != null) return clan;
+            }
+            return null;
+        }
+
 
     }
 
