@@ -29,12 +29,6 @@ public interface Clan {
      * @return unique clan ID (usually its name).
      */
     @NotNull String getId();
-
-    /**
-     * Renames the clan unique ID
-     */
-    void rename(String id);
-
     /**
      * @return clan tag/prefix displayed before names.
      */
@@ -144,4 +138,9 @@ public interface Clan {
      * Finds a member by their UUID.
      */
     @Nullable Member getMember(@NotNull UUID uuid);
+
+    /**
+     * Transfer clan to other player
+     */
+    void transfer(Member member);
 }
