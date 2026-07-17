@@ -1,5 +1,7 @@
 package org.jetby.clans.common.gui.core;
 
+import org.jetby.clans.api.service.clan.member.rank.Permission;
+import org.jetby.clans.api.service.clan.member.rank.PermissionRegistry;
 import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.TreexClans;
@@ -32,6 +34,7 @@ public class RankPermissionGui extends Gui {
             } else {
                 rank.perms().add(perm);
             }
+            TreexClans.getInstance().getStorage().saveClan(getClan());
             refresh();
         });
     }
@@ -40,7 +43,7 @@ public class RankPermissionGui extends Gui {
     public void refresh() {
 
 
-        for (RankPerm perm : RankPerm.values()) {
+        for (Permission perm : PermissionRegistry.getAll()) {
 
             setReplace("{"+perm.getId().toLowerCase()+"_status}", getStatus(rank.perms().contains(perm)));
             setReplace("{"+perm.getId().toLowerCase()+"_status_boolean}",  String.valueOf(rank.perms().contains(perm)));
