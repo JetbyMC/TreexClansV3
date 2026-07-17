@@ -3,6 +3,8 @@ package org.jetby.clans.common.gui.core;
 import org.jetby.clans.api.gui.Gui;
 import org.jetby.clans.api.gui.GuiContext;
 import org.jetby.clans.api.gui.GuiModel;
+import org.jetby.clans.api.service.clan.member.rank.Permission;
+import org.jetby.clans.api.service.clan.member.rank.PermissionRegistry;
 import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.TreexClans;
@@ -26,7 +28,7 @@ public class RanksGui extends Gui {
 
         addClickHandler("rank", event -> {
             String rankName = event.getItem().type().replace("rank-", "");
-            Rank rank = plugin.getCfg().getRanks().get(rankName);
+            Rank rank = getClan().getRanks().get(rankName);
             if (rank == null) return;
             if (rank==plugin.getCfg().getLeaderRank()) return;
 
@@ -45,13 +47,13 @@ public class RanksGui extends Gui {
         if (getClan() == null) return;
 
 
-        List<Rank> members = plugin.getCfg().getRanks().values()
+        List<Rank> members = getClan().getRanks().values()
                 .stream()
                 .filter(rank ->
                         getClan().getLeader().getRank() != rank
                 ).toList();
 
-        List<Rank> ranks = plugin.getCfg().getRanks().values()
+        List<Rank> ranks = getClan().getRanks().values()
                 .stream()
                 .toList();
 
@@ -84,8 +86,14 @@ public class RanksGui extends Gui {
                     }
                  continue;
                 }
+                case "leader": {
+                    getClan().getRanks().values().stream().filter(r -> plugin.getCfg().getLeaderRank().equals(r)).findFirst().ifPresent(r -> {
+                        result.add(cloneItemForRank(item, item.slots(), r));
+                    });
+                    continue;
+                }
                 default: {
-                    Rank rank = plugin.getCfg().getRanks().get(rankName);
+                    Rank rank = getClan().getRanks().get(rankName);
                     if (rank == null) {
                         TreexClans.LOGGER.error("Rank '" + rankName + "' not found");
                         continue;
@@ -100,17 +108,9 @@ public class RanksGui extends Gui {
     }
 
     private Item cloneItemForRank(Item item, List<Integer> slots, Rank rank) {
-        Item copy = new Item(item.itemStack().clone());
+        Item copy = item.clone();
         copy.type("rank-" + rank.id());
         copy.slots(slots);
-        copy.flags(item.flags());
-        copy.enchantments(item.enchantments());
-        copy.enchanted(item.enchanted());
-        copy.customModelData(item.customModelData());
-        copy.onClick(item.onClick());
-        copy.section(item.section());
-        copy.viewRequirements(item.viewRequirements());
-        copy.priority(item.priority());
         copy.displayName(item.displayName() == null ? null : applyRankPlaceholders(applyPlaceholders(item.displayName()), rank));
         copy.lore(item.lore() == null ? null : item.lore()
                 .stream()
@@ -129,16 +129,9 @@ public class RanksGui extends Gui {
     private static Map<String, String> placeholders(Rank rank) {
         Map<String, String> placeholders = new HashMap<>();
 
-        placeholders.put("{invite_status}", getStatus(rank.perms().contains(RankPerm.INVITE)));
-        placeholders.put("{kick_status}", getStatus(rank.perms().contains(RankPerm.KICK)));
-        placeholders.put("{base_status}", getStatus(rank.perms().contains(RankPerm.BASE)));
-        placeholders.put("{setrank_status}", getStatus(rank.perms().contains(RankPerm.SETRANK)));
-        placeholders.put("{setbase_status}", getStatus(rank.perms().contains(RankPerm.SETBASE)));
-        placeholders.put("{deposit_status}", getStatus(rank.perms().contains(RankPerm.DEPOSIT)));
-        placeholders.put("{withdraw_status}", getStatus(rank.perms().contains(RankPerm.WITHDRAW)));
-        placeholders.put("{pvp_status}", getStatus(rank.perms().contains(RankPerm.PVP)));
-        placeholders.put("{setslogan_status}", getStatus(rank.perms().contains(RankPerm.SETSLOGAN)));
-        placeholders.put("{setprefix_status}", getStatus(rank.perms().contains(RankPerm.SETPREFIX)));
+        for (Permission perm : PermissionRegistry.getAll()) {
+            placeholders.put("{"+perm.getId().toLowerCase()+"_status}", getStatus(rank.perms().contains(perm)));
+        }
         placeholders.put("{rank}", rank.name());
 
         return placeholders;
