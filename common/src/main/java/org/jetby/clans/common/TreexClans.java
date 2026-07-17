@@ -16,7 +16,6 @@ import org.jetby.clans.api.addons.listener.EventRegistrar;
 import org.jetby.clans.api.gui.Gui;
 import org.jetby.clans.api.gui.GuiFactory;
 import org.jetby.clans.api.service.ClanManager;
-import org.jetby.clans.api.storage.Storage;
 import org.jetby.clans.common.actions.Actions;
 import org.jetby.clans.common.addon.AddonManagerImpl;
 import org.jetby.clans.common.clan.service.ClanManagerImpl;
@@ -34,13 +33,17 @@ import org.jetby.clans.common.hooks.ClanPlaceholder;
 import org.jetby.clans.common.hooks.Vault;
 import org.jetby.clans.common.listener.EventRegistryImpl;
 import org.jetby.clans.common.listeners.ClanListeners;
-import org.jetby.clans.common.storage.YamlStorageCore;
+import org.jetby.clans.common.storage.SQLiteStorageImpl;
+import org.jetby.clans.common.storage.StorageCore;
 import org.jetby.clans.common.tools.FormatTime;
 import org.jetby.clans.common.tools.Logger;
 import org.jetby.clans.common.tools.Speedometer;
 import org.jetby.libb.action.ActionRegistry;
+import org.jetby.libb.util.LibraryLoader;
 import org.jetby.libb.util.Metrics;
 import org.jetby.libb.util.VersionUtil;
+
+import java.util.List;
 
 @Getter
 public final class TreexClans extends JavaPlugin implements TreexClansAPI {
@@ -60,7 +63,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     private Config cfg;
     private FormatTime formatTime;
     private ClanManager clanManager;
-    private Storage storage;
+    private StorageCore storage;
 
     public static Logger LOGGER;
     @Setter
@@ -81,6 +84,11 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         INSTANCE = this;
         LOGGER = new Logger(this);
 
+        LibraryLoader.load(this, "hikari", "https://repo.maven.apache.org/maven2/",
+                List.of(new LibraryLoader.Dependency("com.zaxxer", "HikariCP",
+                        "7.0.2",
+                        "com.zaxxer.hikari.HikariConfig"))
+        );
         new UpdateConfig(getConfig().getInt("config-version", 1));
 
         cfg = new Config();
@@ -139,6 +147,11 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
     }
 
     public void loadApi() {
+        storage = new SQLiteStorageImpl();
+        storage.initialize();
+
+        LOGGER.success(" └  ✔  Storage");
+
         guiFactory = new GuiFactoryImpl();
 
         clanManager = new ClanManagerImpl(this);
@@ -171,11 +184,6 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         guiLoader = new GuiLoader(this);
         guiLoader.load();
         LOGGER.success(" └  ✔  Menus");
-
-        storage = new YamlStorageCore();
-        storage.initialize();
-
-        LOGGER.success(" └  ✔  Storage");
     }
 
     public void loadCommands() {
