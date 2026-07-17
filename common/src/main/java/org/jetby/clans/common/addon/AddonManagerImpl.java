@@ -61,7 +61,7 @@ public final class AddonManagerImpl implements AddonManager {
     public void loadAddons() {
         File[] jars = addonsFolder.listFiles((dir, name) -> name.endsWith(".jar"));
         if (jars == null || jars.length == 0) {
-            logInfo("No addons found in " + addonsFolder.getAbsolutePath());
+            logInfo("No addons has found");
             return;
         }
 
@@ -320,22 +320,22 @@ public final class AddonManagerImpl implements AddonManager {
     }
 
     private void logInfo(String msg) {
-        LOGGER.info("(Addon) " + msg);
+        LOGGER.info("&b◆ Addons: &7" + msg);
     }
 
     private void logWarn(String msg) {
-        LOGGER.warn("(Addon) " + msg);
+        LOGGER.warn("&b◆ Addons: &c" + msg);
     }
 
     private void logError(String msg, Throwable e) {
-        LOGGER.error("(Addon) " + msg, e);
+        LOGGER.error("&b◆ Addons: &4" + msg, e);
     }
 
     private void logError(String msg) {
-        LOGGER.error("(Addon) " + msg);
+        LOGGER.error("&b◆ Addons: &4" + msg);
     }
 
     private void logDebug(String msg) {
-        if (debugMode) LOGGER.info("(Addon:DEBUG) " + msg);
+        if (debugMode) LOGGER.info("&b◆ Addons Debug: &7 " + msg);
     }
 }
