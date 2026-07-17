@@ -11,14 +11,16 @@ formattedTime:
 restart-needed: "It seems the server administration loaded the plugin in an unusual way. If you are an administrator, you need to restart the server because this feature requires packet handling (packetevents)."
 
 commands:
+  transfer:
+    - "[message] &#FC835C• /{cmd} {arg} [player] &7- &fTransfer clan to other player"
   rename:
-    - "[message] &#FC835C• /{cmd} {arg} [тэг] &7- &fRename clan tag"
+    - "[message] &#FC835C• /{cmd} {arg} [tag] &7- &fRename clan tag"
   setprefix:
     - "[message] &#FC835C• /{cmd} {arg} [prefix] &7- &fSet the clan prefix"
   setslogan:
     - "[message] &#FC835C• /{cmd} {arg} [slogan] &7- &fSet the clan slogan"
   setrank:
-    - "[message] &#FC835C• /{cmd} {arg} [name] [rank] &7- &fSet a rank for a player"
+    - "[message] &#FC835C• /{cmd} {arg} [rank] [name] &7- &fSet a rank for a player"
   kick:
     - "[message] &#FC835C• /{cmd} {arg} [name] &7- &fKick a player from your clan"
   invite:
@@ -53,7 +55,7 @@ commands:
     - "[message] &#FC835C• /{cmd} kick [name] &7- &fKick a player from your clan"
     - "[message] &#FC835C• /{cmd} base &7- &fTeleport to base location"
     - "[message] &#FC835C• /{cmd} setbase &7- &fSet base location"
-    - "[message] &#FC835C• /{cmd} setrank [name] [rank] &7- &fSet a rank for a player"
+    - "[message] &#FC835C• /{cmd} setrank [rank] [name] &7- &fSet a rank for a player"
     - "[message] &#FC835C• /{cmd} disband &7- &fDisband the clan (permanently deletes it)"
     - "[message] "
     - "[message] &#FFE259◀&m                                       &#FFE259▶ "
@@ -61,10 +63,8 @@ you-cant-leave-leader:
   - "[message] {prefix} &cYou can't leave this clan because you are the leader. If you want to disband this clan you can use /{cmd} disband"
 player-not-found:
   - "[message] {prefix} &cPlayer not found"
-disallowed-tag-regex:
-  - "[message] {prefix} &cClan tag contains invalid characters"
-disallowed-prefix-regex:
-  - "[message] {prefix} &cClan prefix contains invalid characters"
+player-not-in-clan:
+  - "[message] {prefix} &cThat player is not in your clan"
 clan-does-not-exist:
   - "[message] {prefix} &cClan {clan} not found."
 clan-is-already-exists:
@@ -79,10 +79,20 @@ clan-tag-too-short:
   - "[message] {prefix} &cTag is too short. Minimum length is {min_length} characters."
 clan-tag-too-long:
   - "[message] {prefix} &cTag is too long! Maximum length is {max_length} characters."
+disallowed-tag-regex:
+  - "[message] {prefix} &cClan tag contains invalid characters"
 clan-prefix-too-short:
   - "[message] {prefix} &cPrefix is too short. Minimum length is {min_length} characters."
 clan-prefix-too-long:
   - "[message] {prefix} &cPrefix is too long! Maximum length is {max_length} characters."
+disallowed-prefix-regex:
+  - "[message] {prefix} &cClan prefix contains invalid characters"
+clan-slogan-too-short:
+  - "[message] {prefix} &cSlogan is too short. Minimum length is {min_length} characters."
+clan-slogan-too-long:
+  - "[message] {prefix} &cSlogan is too long! Maximum length is {max_length} characters."
+disallowed-slogan-regex:
+  - "[message] {prefix} &cSlogan contains invalid characters"
 clan-tag-blocked:
   - "[message] {prefix} &cThis clan tag is not allowed!"
 clan-you-cant-kick-yourself:
@@ -172,6 +182,8 @@ clan-setprefix:
   - "[message] {prefix} &fYou set the clan prefix to: &6{clan_prefix}"
 clan-renamed:
   - '[message] {prefix} &fYou changed the clan tag from {old} to {new}.'
+clan-transfer:
+  - '[team_msg] {prefix} &cClan has been handed over to {target}, meet your new leader.'
 
 
 rank-perm-yes: "&a✔"
