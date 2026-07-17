@@ -33,11 +33,12 @@ import org.jetby.clans.common.hooks.ClanPlaceholder;
 import org.jetby.clans.common.hooks.Vault;
 import org.jetby.clans.common.listener.EventRegistryImpl;
 import org.jetby.clans.common.listeners.ClanListeners;
+import org.jetby.clans.common.storage.MySQLStorageImpl;
 import org.jetby.clans.common.storage.SQLiteStorageImpl;
 import org.jetby.clans.common.storage.StorageCore;
+import org.jetby.clans.common.storage.YamlStorageImpl;
 import org.jetby.clans.common.tools.FormatTime;
 import org.jetby.clans.common.tools.Logger;
-import org.jetby.clans.common.tools.Speedometer;
 import org.jetby.libb.action.ActionRegistry;
 import org.jetby.libb.util.LibraryLoader;
 import org.jetby.libb.util.Metrics;
@@ -84,106 +85,81 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         INSTANCE = this;
         LOGGER = new Logger(this);
 
+        LOGGER.info("<#1BD9FB>╔════════════════════╗");
+        LOGGER.info("<#1BD9FB>║  &b⚡ <#1BD9FB>&lTreexClans &b⚡  <#1BD9FB>║");
+        LOGGER.info("<#1BD9FB>╚════════════════════╝");
+        LOGGER.info("&b► &fAuthor: <#1BD9FB>&lMrJetby");
+        LOGGER.info("&b► &fDiscord: <#1BD9FB>https://dsc.gg/jmdev");
+        LOGGER.info("&b► &fVersion: <#1BD9FB>"+getDescription().getVersion());
+        LOGGER.info("<#1BD9FB>══════════════════════");
+
         LibraryLoader.load(this, "hikari", "https://repo.maven.apache.org/maven2/",
                 List.of(new LibraryLoader.Dependency("com.zaxxer", "HikariCP",
                         "7.0.2",
                         "com.zaxxer.hikari.HikariConfig"))
         );
         new UpdateConfig(getConfig().getInt("config-version", 1));
-
         cfg = new Config();
         cfg.load();
-
-        LOGGER.info("&6┏ Loading hooks:");
-        Speedometer.start();
         loadHooks();
-        LOGGER.success("┗ Hooks loaded (" + Speedometer.result() + "ms)");
-        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        LOGGER.info("&6┏ Loading API:");
-        Speedometer.start();
-        loadApi();
+        storage = switch (cfg.getStorageType().toLowerCase()) {
+            case "sqlite" -> new SQLiteStorageImpl();
+            case "mysql" -> new MySQLStorageImpl(cfg);
+            default -> new YamlStorageImpl();
+        };
+        storage.initialize();
         new Actions().registerCustomActions();
-        LOGGER.success("┗ API loaded (" + Speedometer.result() + "ms)");
-        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        LOGGER.info("&6┏ Loading configurations:");
-        Speedometer.start();
+        loadApi();
         loadConfigurations();
-        LOGGER.success("Configuration loaded (" + Speedometer.result() + "ms)");
-        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        LOGGER.info("&6┏ Loading commands:");
-        Speedometer.start();
         loadCommands();
-        LOGGER.success("┗ Commands created (" + Speedometer.result() + "ms)");
-        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-        LOGGER.info("&6Last details");
         getServer().getPluginManager().registerEvents(new ClanListeners(this), this);
-
         new VersionUtil(this, getDescription().getVersion(), "https://raw.githubusercontent.com/JetbyMC/TreexClansV3/refs/heads/master/VERSION", "treexclans.admin");
-
         new Metrics(this, 27749);
-
-        LOGGER.success("⚡ TreexClans is ready");
+        LOGGER.success("<#1BD9FB>▶ TreexClans is ready");
     }
 
     public void loadHooks() {
         clanPlaceholder = new ClanPlaceholder(this);
         if (clanPlaceholder.isPapi()) {
+            LOGGER.info("<#1BD9FB>✓ PlaceholderAPI");
             clanPlaceholder.register();
-            LOGGER.success(" └  ✔  PlaceholderAPI");
         } else {
-            LOGGER.warn(" └  ✘  PlaceholderAPI");
+            LOGGER.info("<#1BD9FB>✘ PlaceholderAPI");
         }
 
         Economy economy = new Vault().load();
         if (economy == null) {
-            LOGGER.error(" └  ✘  Vault");
+            LOGGER.error("✘ Vault");
             LOGGER.error("&4&lThis plugin cannot work without Vault plugin!");
             LOGGER.error("&4&lYou can download it here https://www.spigotmc.org/resources/vault.34315/");
         } else {
             this.economy = economy;
-            LOGGER.success(" └  ✔  Vault");
+            LOGGER.info("<#1BD9FB>✓ Vault");
         }
     }
 
     public void loadApi() {
-        storage = new SQLiteStorageImpl();
-        storage.initialize();
-
-        LOGGER.success(" └  ✔  Storage");
-
         guiFactory = new GuiFactoryImpl();
-
         clanManager = new ClanManagerImpl(this);
-
         eventRegistrar = new EventRegistryImpl();
         this.commandService = new CommandServiceImpl();
         addonManager = new AddonManagerImpl(this);
-
         getServer().getServicesManager().register(
                 TreexClansAPI.class,
                 this,
                 this,
                 ServicePriority.Normal
         );
-
         ((AddonManagerImpl) addonManager).loadAddons();
     }
 
     public void loadConfigurations() {
-        LOGGER.success(" └  ✔  config.yml");
-
         messages = new MessagesConfiguration(this);
-        LOGGER.success(" └  ✔  messages.yml");
         formatTime = new FormatTime(this);
-
         modules = new ModulesConfiguration();
         modules.load();
-        LOGGER.success(" └  ✔  modules.yml");
-
         guiLoader = new GuiLoader(this);
         guiLoader.load();
-        LOGGER.success(" └  ✔  Menus");
     }
 
     public void loadCommands() {
@@ -193,11 +169,9 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
             xClanCommand.setExecutor(cmd);
             xClanCommand.setTabCompleter(cmd);
         }
-
         CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
         commandsConfiguration.load();
         new ClanCommand(commandsConfiguration, this).register();
-
     }
 
     @Override
