@@ -29,6 +29,7 @@ public class ClanImpl implements Clan {
     private final Set<Member> members;
     private final Map<String, Rank> ranks;
     private Level level;
+    @Setter(AccessLevel.NONE)
     private double balance;
     private Location base;
     private int exp;
@@ -50,6 +51,10 @@ public class ClanImpl implements Clan {
                 .filter(member -> member.getUuid().equals(uuid))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public synchronized void setBalance(double balance) {
+        this.balance = balance;
     }
 
     @Override
