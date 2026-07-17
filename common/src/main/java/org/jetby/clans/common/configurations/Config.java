@@ -37,6 +37,15 @@ public class Config {
     private Rank defaultRank;
     private Rank leaderRank;
 
+
+    private String storageType;
+    private String mysqlHost;
+    private int mysqlPort;
+    private String mysqlUsername;
+    private String mysqlPassword;
+    private String mysqlDatabase;
+    private boolean mysqlUseSSL;
+
     private boolean debug;
 
     private String chatFormat;
@@ -111,6 +120,16 @@ public class Config {
         levels.clear();
 
         debug = configuration.getBoolean("debug", false);
+
+
+        storageType = configuration.getString("storage.type", "YAML");
+        mysqlHost = configuration.getString("storage.host");
+        mysqlPort = configuration.getInt("storage.port");
+        mysqlUsername = configuration.getString("storage.username");
+        mysqlPassword = configuration.getString("storage.password");
+        mysqlDatabase = configuration.getString("storage.database");
+        mysqlUseSSL = configuration.getBoolean("storage.useSSL");
+
 
         inviteCooldown = configuration.getInt("cooldowns.invite-expiration", 60);
         disbandCooldown = configuration.getInt("cooldowns.disband-expiration", 15);
