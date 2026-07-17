@@ -41,3 +41,5 @@ args:
     - setprefix # /clan setprefix
   rename:
     - rename # /clan rename
+  transfer:
+    - transfer # /clan transfer
