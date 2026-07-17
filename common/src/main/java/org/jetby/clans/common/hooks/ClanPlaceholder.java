@@ -114,6 +114,12 @@ public class ClanPlaceholder extends PlaceholderExpansion {
                 if (member == null) yield "";
                 yield member.getRank().name();
             }
+            case "addon" -> {
+                if (args.length == 3 && args[1].equalsIgnoreCase("status")) {
+                    String addon = args[2];
+                    yield String.valueOf(plugin.getAddonManager().isAddonEnabled(addon));
+                } else yield null;
+            }
             default -> null;
         };
     }
