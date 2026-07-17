@@ -95,6 +95,15 @@ public interface ClanManager {
         boolean isAllowedPrefix(@NotNull Player player, @NotNull String prefix);
 
         /**
+         * Checks whether a clan slogan is allowed.
+         *
+         * @param player the player attempting to set the slogan.
+         * @param slogan the slogan to validate.
+         * @return true if valid, false otherwise.
+         */
+        boolean isAllowedSlogan(@NotNull Player player, @NotNull String slogan);
+
+        /**
          * Validates text using a custom regex pattern.
          *
          * @param text  the text to validate.
