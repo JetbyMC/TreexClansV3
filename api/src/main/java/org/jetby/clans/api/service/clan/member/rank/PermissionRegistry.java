@@ -1,5 +1,7 @@
 package org.jetby.clans.api.service.clan.member.rank;
 
+import org.jetby.clans.api.service.clan.member.Member;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -31,15 +33,21 @@ public class PermissionRegistry {
         REGISTRY.remove(perm.getId());
     }
 
-    public static Optional<Permission> get(String id) {
-        return Optional.ofNullable(REGISTRY.get(id));
+    public static Permission get(String id) {
+        return REGISTRY.get(id);
     }
-
     public static Collection<Permission> getAll() {
         return REGISTRY.values();
     }
 
     public static boolean exists(String id) {
         return REGISTRY.containsKey(id);
+    }
+
+    public static boolean hasPermission(Member member, Permission permission) {
+        return member.getRank().hasPermission(permission);
+    }
+    public static boolean hasPermission(Rank rank, Permission permission) {
+        return rank.hasPermission(permission);
     }
 }
