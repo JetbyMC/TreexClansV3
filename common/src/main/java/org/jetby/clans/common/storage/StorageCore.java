@@ -16,6 +16,7 @@ import org.jetby.clans.api.storage.base.BaseSection;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.clan.model.ClanImpl;
 import org.jetby.clans.common.clan.model.MemberImpl;
+import org.jetby.clans.common.tools.ItemSerializer;
 import org.jetby.clans.common.tools.LocationHandler;
 
 import java.util.*;
@@ -80,7 +81,15 @@ public abstract class StorageCore implements Storage {
         }
 
         String levelId = base.getString("level").join();
-        Level level = plugin.getCfg().getLevels().getOrDefault(Integer.parseInt(levelId), new Level("1", "1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>()));
+        Level defaultLevel = new Level("1", "1", 0, 1, 0, 1, new ArrayList<>(), new ArrayList<>());
+        Level level = defaultLevel;
+        if (levelId != null) {
+            try {
+                level = plugin.getCfg().getLevels().getOrDefault(Integer.parseInt(levelId), defaultLevel);
+            } catch (NumberFormatException e) {
+                TreexClans.LOGGER.warn("Invalid level id '" + levelId + "' for clan " + name + ", using default");
+            }
+        }
 
         double balance = base.getDouble("balance").join();
         int exp = base.getInt("exp").join();
@@ -96,7 +105,7 @@ public abstract class StorageCore implements Storage {
             if (key.startsWith("chest") && key.length() > 5) {
                 try {
                     int slot = Integer.parseInt(key.substring(5));
-                    ItemStack item = (ItemStack) chests.get(key).join();
+                    ItemStack item = ItemSerializer.itemFromBase64(chests.getString(key).join());
 
                     if (item != null) chest.put(slot, item);
                 } catch (NumberFormatException ignored) {
@@ -178,7 +187,7 @@ public abstract class StorageCore implements Storage {
         BaseSection chests = section.of(clan).section("chests");
         for (Map.Entry<Integer, ItemStack> entry : clan.getChest().entrySet()) {
             if (entry.getValue() == null || entry.getValue().getType() == Material.AIR) continue;
-            chests.set("chest" + entry.getKey(), entry.getValue());
+            chests.set("chest" + entry.getKey(), ItemSerializer.itemToBase64(entry.getValue()));
         }
 
         Location location = clan.getBase();
