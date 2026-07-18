@@ -20,8 +20,10 @@ public class Actions {
         ActionRegistry.override("treexclans", "OPEN", new OpenMenuAction());
 
 
+        ActionRegistry.register("treexclans", "EXP_GIVE", new ClanExpGiveAction());
         ActionRegistry.register("treexclans", "CLAN_EXP_GIVE", new ClanExpGiveAction());
         ActionRegistry.register("treexclans", "CLAN_EXP_TAKE", new ClanExpTakeAction());
+        ActionRegistry.register("treexclans", "EXP_TAKE", new ClanExpTakeAction());
 
         ActionRegistry.register("treexclans", "MONEY_GIVE", new MoneyGiveAction());
         ActionRegistry.register("treexclans", "MONEY_TAKE", new MoneyTakeAction());
