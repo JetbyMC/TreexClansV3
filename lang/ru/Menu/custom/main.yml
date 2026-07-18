@@ -46,7 +46,13 @@ Items:
       - "&7Нажмите чтобы открыть"
     on_click:
       any:
-        - '[open] quests'
+        - check_addon:
+            if: "%clan_addon_status_Quests% == true"
+            then:
+              - '[open] quests'
+            else:
+              - "[message] &4Аддон не установлен. &fСкачайте аддон и убедитесь что он находится в папке addons"
+
   ranks:
     material: TURTLE_HELMET
     slot: 31
@@ -69,7 +75,12 @@ Items:
       - "&7Нажмите чтобы открыть"
     on_click:
       any:
-        - '[open] choose_player_color'
+        - check_addon:
+            if: "%clan_addon_status_Glow% == true"
+            then:
+              - '[open] choose_player_color'
+            else:
+              - "[message] &4Аддон не установлен. &fСкачайте аддон и убедитесь что он находится в папке addons"
 
   orange:
     material: ORANGE_STAINED_GLASS_PANE

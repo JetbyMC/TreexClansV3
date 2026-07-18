@@ -47,7 +47,13 @@ Items:
       - "&7Click to open"
     on_click:
       any:
-        - '[open] quests'
+        - check_addon:
+            if: "%clan_addon_status_Quests% == true"
+            then:
+              - '[open] quests'
+            else:
+              - "[message] &4Addon not installed. &fPlease download the specified addon and ensure it is located in the addons folder."
+
   ranks:
     material: TURTLE_HELMET
     slot: 31
@@ -70,7 +76,14 @@ Items:
       - "&7Click to open"
     on_click:
       any:
-        - '[open] choose_player_color'
+        - check_addon:
+            if: "%clan_addon_status_Glow% == true"
+            then:
+              - '[open] choose_player_color'
+            else:
+              - "[message] &4Addon not installed. &fPlease download the specified addon and ensure it is located in the addons folder."
+
+
 
   orange:
     material: ORANGE_STAINED_GLASS_PANE
