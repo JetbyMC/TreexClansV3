@@ -1,10 +1,10 @@
 package org.jetby.clans.api.command;
 
-import org.jetby.clans.api.addons.commands.CommandService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.addons.commands.CommandService;
 
 import java.util.List;
 
@@ -45,7 +45,6 @@ import java.util.List;
  * </p>
  */
 public interface Subcommand {
-
     /**
      * Called when the subcommand is executed by a player or the console.
      * <p>
@@ -54,6 +53,8 @@ public interface Subcommand {
      * </p>
      *
      * @param sender The command sender (player or console).
+     * @param command The command name that player used.
+     * @param sub The sub command name that player used.
      * @param args   The command arguments.
      * @return {@code true} if handled successfully, {@code false} otherwise.
      */
@@ -73,10 +74,9 @@ public interface Subcommand {
      */
     @Nullable
     List<String> onTabCompleter(@NotNull CommandSender sender,
-                                @NotNull Command command,
-                                @NotNull String alias,
-                                @NotNull String[] args);
-
+                                         @NotNull Command command,
+                                         @NotNull String alias,
+                                         @NotNull String[] args);
     /**
      * Defines the subcommand type.
      * <p>
@@ -84,11 +84,28 @@ public interface Subcommand {
      * such as player-only, admin, or console.
      * </p>
      *
-     * @return The {@link CommandService.CommandType} of this subcommand.
+     * @return The {@link CommandType} of this subcommand.
      */
-    CommandService.CommandType type();
+    CommandType commandType();
+
 
     default boolean clanOnly() {
         return true;
     }
+
+    /**
+     * Defines available types of command categories managed by the service.
+     */
+    enum CommandType {
+        /**
+         * Represents player-level commands, e.g. "/clan create", "/clan join", etc.
+         */
+        CLAN,
+
+        /**
+         * Represents administrator-level commands, e.g. "/treexclans reload", "/treexclans give", etc.
+         */
+        ADMIN
+    }
+
 }
