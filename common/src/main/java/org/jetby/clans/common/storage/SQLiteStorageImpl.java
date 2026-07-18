@@ -35,6 +35,10 @@ public class SQLiteStorageImpl extends StorageCore {
     private final ExecutorService executor = Executors.newSingleThreadExecutor(
             r -> new Thread(r, "treexclans-storage-sqlite")
     );
+    @Override
+    ExecutorService executor() {
+        return executor;
+    }
 
     // column-existence cache: table name -> known column names (lazily loaded via PRAGMA)
     private final Map<String, Set<String>> columnCache = new ConcurrentHashMap<>();

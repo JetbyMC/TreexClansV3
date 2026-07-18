@@ -20,6 +20,9 @@ import org.jetby.clans.common.tools.ItemSerializer;
 import org.jetby.clans.common.tools.LocationHandler;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class StorageCore implements Storage {
 
@@ -34,6 +37,12 @@ public abstract class StorageCore implements Storage {
     @Override
     public List<Clan> getClanList(int limit) {
         return cache.values().stream().limit(limit).toList();
+    }
+
+    abstract ExecutorService executor();
+
+    public CompletableFuture<Clan> loadClanAsync(String name) {
+        return CompletableFuture.supplyAsync(() -> loadClan(name), executor());
     }
 
     public Clan loadClan(String name) {

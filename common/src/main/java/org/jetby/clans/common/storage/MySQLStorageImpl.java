@@ -31,6 +31,10 @@ public class MySQLStorageImpl extends StorageCore {
     private final ExecutorService executor = Executors.newSingleThreadExecutor(
             r -> new Thread(r, "treexclans-storage-mysql")
     );
+    @Override
+    ExecutorService executor() {
+        return executor;
+    }
 
     // column-existence cache: table name -> known column names (lazily loaded via information_schema)
     private final Map<String, Set<String>> columnCache = new ConcurrentHashMap<>();

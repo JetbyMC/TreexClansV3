@@ -58,6 +58,11 @@ public class YamlStorageImpl extends StorageCore {
         this.section = new YamlSection("");
     }
 
+    @Override
+    ExecutorService executor() {
+        return executor;
+    }
+
     private final class YamlSection implements BaseSection {
 
         private final String path;
