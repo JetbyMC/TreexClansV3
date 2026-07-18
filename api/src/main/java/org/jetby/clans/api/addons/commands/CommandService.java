@@ -1,7 +1,7 @@
 package org.jetby.clans.api.addons.commands;
 
-import org.jetby.clans.api.command.Subcommand;
 import org.jetbrains.annotations.NotNull;
+import org.jetby.clans.api.command.Subcommand;
 
 import java.util.Map;
 
@@ -43,19 +43,4 @@ public interface CommandService {
      * @param name the name of the command to remove.
      */
     void unregisterCommand(@NotNull String name);
-
-    /**
-     * Defines available types of command categories managed by the service.
-     */
-    enum CommandType {
-        /**
-         * Represents player-level commands, e.g. "/clan create", "/clan join", etc.
-         */
-        CLAN,
-
-        /**
-         * Represents administrator-level commands, e.g. "/clan admin reload", "/clan admin give", etc.
-         */
-        ADMIN
-    }
 }
