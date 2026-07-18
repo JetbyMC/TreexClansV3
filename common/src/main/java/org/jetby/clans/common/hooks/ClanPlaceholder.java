@@ -43,10 +43,14 @@ public class ClanPlaceholder extends PlaceholderExpansion {
         boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
         Clan clan = inClan ? plugin.getClanManager().lookup().getClanByMember(player.getUniqueId()) : null;
 
-        return switch (args[0].toLowerCase()) {
+        return String.valueOf(switch (args[0].toLowerCase()) {
             case "id" -> {
                 if (!inClan || clan == null) yield "";
                 yield clan.getId();
+            }
+            case "members" -> {
+                if (!inClan || clan == null) yield "";
+                yield clan.getMembers().size();
             }
             case "tag" -> {
                 if (!inClan || clan == null)
@@ -69,7 +73,7 @@ public class ClanPlaceholder extends PlaceholderExpansion {
             }
             case "coin" -> {
                 if (!inClan || clan == null) yield "0";
-                yield String.valueOf(clan.getMember(player.getUniqueId()).getCoin());
+                yield clan.getMember(player.getUniqueId()).getCoin();
             }
             case "slogan" -> {
                 if (!inClan || clan == null) yield "";
@@ -77,7 +81,7 @@ public class ClanPlaceholder extends PlaceholderExpansion {
             }
             case "balance" -> {
                 if (!inClan || clan == null) yield "0";
-                yield String.valueOf(clan.getBalance());
+                yield clan.getBalance();
             }
             case "level" -> {
                 if (!inClan || clan == null) yield "0";
@@ -90,9 +94,9 @@ public class ClanPlaceholder extends PlaceholderExpansion {
             case "exp" -> {
                 if (!inClan || clan == null) yield "0";
                 if (args.length == 1) {
-                    yield String.valueOf(clan.getExp());
+                    yield clan.getExp();
                 } else if (args.length == 2 && args[1].equalsIgnoreCase("max")) {
-                    yield String.valueOf(clan.getLevel().minExp());
+                    yield clan.getLevel().minExp();
                 } else yield null;
             }
             case "leader" -> {
@@ -117,10 +121,10 @@ public class ClanPlaceholder extends PlaceholderExpansion {
             case "addon" -> {
                 if (args.length == 3 && args[1].equalsIgnoreCase("status")) {
                     String addon = args[2];
-                    yield String.valueOf(plugin.getAddonManager().isAddonEnabled(addon));
+                    yield plugin.getAddonManager().isAddonEnabled(addon);
                 } else yield null;
             }
             default -> null;
-        };
+        });
     }
 }
