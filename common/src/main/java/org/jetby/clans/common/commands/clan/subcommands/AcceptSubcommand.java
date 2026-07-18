@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class AcceptSubcommand implements Subcommand {
@@ -87,10 +86,10 @@ public class AcceptSubcommand implements Subcommand {
     }
 
     @Override
-    public CommandService.CommandType type() {
-        return CommandService.CommandType.CLAN;
+    public CommandType commandType() {
+        return CommandType.CLAN;
     }
-
+    
     @Override
     public boolean clanOnly() {
         return false;

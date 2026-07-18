@@ -3,7 +3,6 @@ package org.jetby.clans.common.commands.clan;
 import lombok.Getter;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.common.commands.clan.subcommands.*;
-import org.jetby.clans.common.commands.clan.subcommands.*;
 
 public enum ClanSubcommand {
     CREATE(new CreateSubcommand()),

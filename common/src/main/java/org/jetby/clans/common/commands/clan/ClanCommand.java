@@ -60,7 +60,7 @@ public class ClanCommand extends AdvancedCommand {
         String[] subArgs = Arrays.copyOfRange(args, 1, args.length);
 
         Subcommand registeredSub = commandService.getCommands().get(sub);
-        if (registeredSub != null && registeredSub.type() == CommandService.CommandType.CLAN) {
+        if (registeredSub != null && registeredSub.commandType() == Subcommand.CommandType.CLAN) {
             boolean inClan = plugin.getClanManager().lookup().isInClan(player.getUniqueId());
             if (registeredSub.clanOnly() && !inClan) return true;
             if (!registeredSub.clanOnly() && inClan) return true;
@@ -170,7 +170,7 @@ public class ClanCommand extends AdvancedCommand {
         }
 
         for (Map.Entry<String, Subcommand> entry : commandService.getCommands().entrySet()) {
-            if (entry.getValue().type() == CommandService.CommandType.CLAN && !entry.getValue().clanOnly()) {
+            if (entry.getValue().commandType() == Subcommand.CommandType.CLAN && !entry.getValue().clanOnly()) {
                 completions.add(entry.getKey());
             }
         }
@@ -206,7 +206,7 @@ public class ClanCommand extends AdvancedCommand {
         }
 
         for (Map.Entry<String, Subcommand> entry : commandService.getCommands().entrySet()) {
-            if (entry.getValue().type() == CommandService.CommandType.CLAN && entry.getValue().clanOnly()) {
+            if (entry.getValue().commandType() == Subcommand.CommandType.CLAN && entry.getValue().clanOnly()) {
                 completions.add(entry.getKey());
             }
         }

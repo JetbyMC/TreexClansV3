@@ -151,8 +151,8 @@ public class ClanSubcommand implements Subcommand {
     }
 
     @Override
-    public CommandService.CommandType type() {
-        return CommandService.CommandType.ADMIN;
+    public CommandType commandType() {
+        return CommandType.ADMIN;
     }
 
     public void disband(Clan clan, Player initiator) {

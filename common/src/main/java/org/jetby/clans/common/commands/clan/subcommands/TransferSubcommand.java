@@ -11,7 +11,6 @@ import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.api.service.ClanManager;
 import org.jetby.clans.api.service.clan.Clan;
-import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.TreexClans;
 
 import java.util.List;
@@ -78,7 +77,7 @@ public class TransferSubcommand implements Subcommand {
     }
 
     @Override
-    public CommandService.CommandType type() {
-        return CommandService.CommandType.CLAN;
+    public CommandType commandType() {
+        return CommandType.CLAN;
     }
 }

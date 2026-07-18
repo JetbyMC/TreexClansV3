@@ -6,9 +6,7 @@ import org.jetby.clans.api.TreexClansAPI;
 import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.common.TreexClans;
-import org.jetby.clans.common.addon.AddonManagerImpl;
 import org.jetby.clans.common.configurations.Config;
-import org.jetby.clans.common.gui.GuiLoader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -56,8 +54,8 @@ public class ReloadSubcommand implements Subcommand {
         return List.of();
     }
 
-    @Override
-    public CommandService.CommandType type() {
-        return CommandService.CommandType.ADMIN;
+   @Override
+    public CommandType commandType() {
+        return CommandType.ADMIN;
     }
 }

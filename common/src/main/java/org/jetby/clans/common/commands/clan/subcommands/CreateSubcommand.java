@@ -69,8 +69,8 @@ public class CreateSubcommand implements Subcommand {
     }
 
     @Override
-    public CommandService.CommandType type() {
-        return CommandService.CommandType.CLAN;
+    public CommandType commandType() {
+        return CommandType.CLAN;
     }
 
 

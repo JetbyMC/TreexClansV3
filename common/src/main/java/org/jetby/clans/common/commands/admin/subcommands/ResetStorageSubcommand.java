@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.common.TreexClans;
 
@@ -18,13 +17,13 @@ public class ResetStorageSubcommand implements Subcommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
-       if (sender instanceof Player player) {
-           player.sendMessage("To reset storage, run it from console");
-           return true;
-       } else {
-           plugin.getStorage().getCache().clear();
-           sender.sendMessage("Storage successfully reset");
-       }
+        if (sender instanceof Player player) {
+            player.sendMessage("To reset storage, run it from console");
+            return true;
+        } else {
+            plugin.getStorage().getCache().clear();
+            sender.sendMessage("Storage successfully reset");
+        }
 
 
         return true;
@@ -36,7 +35,7 @@ public class ResetStorageSubcommand implements Subcommand {
     }
 
     @Override
-    public CommandService.CommandType type() {
-        return CommandService.CommandType.ADMIN;
+    public CommandType commandType() {
+        return CommandType.ADMIN;
     }
 }

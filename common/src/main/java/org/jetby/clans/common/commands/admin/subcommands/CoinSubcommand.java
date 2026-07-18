@@ -111,7 +111,7 @@ public class CoinSubcommand implements Subcommand {
     }
 
     @Override
-    public CommandService.CommandType type() {
-        return CommandService.CommandType.ADMIN;
+    public Subcommand.CommandType commandType() {
+        return CommandType.ADMIN;
     }
 }
