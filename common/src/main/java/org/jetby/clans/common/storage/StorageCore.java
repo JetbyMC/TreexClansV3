@@ -104,6 +104,7 @@ public abstract class StorageCore implements Storage {
         int exp = base.getInt("exp").join();
         boolean pvp = base.getBoolean("pvp").join();
         String slogan = base.getString("slogan").join();
+        String prefix = base.getString("prefix").join();
 
         String locStr = base.getString("base-location").join();
         Location baseLocation = locStr != null ? LocationHandler.deserialize(locStr) : null;
@@ -124,7 +125,7 @@ public abstract class StorageCore implements Storage {
 
         return cache.put(name, new ClanImpl(
                 name,
-                null,
+                prefix,
                 leader,
                 members,
                 ranks,
