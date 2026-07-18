@@ -1,17 +1,16 @@
 package org.jetby.clans.common.gui.core;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetby.clans.api.gui.Gui;
 import org.jetby.clans.api.gui.GuiContext;
 import org.jetby.clans.api.gui.GuiModel;
 import org.jetby.clans.api.service.clan.member.rank.Permission;
 import org.jetby.clans.api.service.clan.member.rank.PermissionRegistry;
 import org.jetby.clans.api.service.clan.member.rank.Rank;
-import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.configurations.Config;
 import org.jetby.clans.common.gui.GuiLoader;
 import org.jetby.libb.gui.parser.Item;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +21,7 @@ public class RanksGui extends Gui {
 
 
     private final TreexClans plugin;
+
     public RanksGui(@NotNull GuiContext ctx) {
         super(ctx);
         this.plugin = (TreexClans) getPlugin();
@@ -30,7 +30,7 @@ public class RanksGui extends Gui {
             String rankName = event.getItem().type().replace("rank-", "");
             Rank rank = getClan().getRanks().get(rankName);
             if (rank == null) return;
-            if (rank==plugin.getCfg().getLeaderRank()) return;
+            if (rank == plugin.getCfg().getLeaderRank()) return;
 
             ((TreexClans) getPlugin()).getGuiFactory().create(GuiContext.of(
                                     getPlugin(),
@@ -61,7 +61,7 @@ public class RanksGui extends Gui {
 
         for (Item item : items) {
             String rankName = item.section().getString("rank");
-            if (rankName==null) {
+            if (rankName == null) {
                 result.add(item);
                 continue;
             }
@@ -84,7 +84,7 @@ public class RanksGui extends Gui {
 
                         result.add(cloneItemForRank(item, List.of(slot), rank));
                     }
-                 continue;
+                    continue;
                 }
                 case "leader": {
                     getClan().getRanks().values().stream().filter(r -> plugin.getCfg().getLeaderRank().equals(r)).findFirst().ifPresent(r -> {
@@ -130,7 +130,7 @@ public class RanksGui extends Gui {
         Map<String, String> placeholders = new HashMap<>();
 
         for (Permission perm : PermissionRegistry.getAll()) {
-            placeholders.put("{"+perm.getId().toLowerCase()+"_status}", getStatus(rank.perms().contains(perm)));
+            placeholders.put("{" + perm.getId().toLowerCase() + "_status}", getStatus(rank.perms().contains(perm)));
         }
         placeholders.put("{rank}", rank.name());
 

@@ -1,10 +1,10 @@
 package org.jetby.clans.common.addon.configuration;
 
-import org.jetby.clans.api.addons.configuration.ServiceConfiguration;
-import org.jetby.clans.common.addon.service.ServiceManagerImpl;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetby.clans.api.addons.configuration.ServiceConfiguration;
+import org.jetby.clans.common.addon.service.ServiceManagerImpl;
 
 import java.io.File;
 import java.io.IOException;

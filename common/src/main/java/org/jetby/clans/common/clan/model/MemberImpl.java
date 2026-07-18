@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetby.clans.api.service.clan.member.Member;
 import org.jetby.clans.api.service.clan.member.rank.Rank;
-import org.bukkit.Color;
 
-import java.util.Map;
 import java.util.UUID;
 
 @AllArgsConstructor

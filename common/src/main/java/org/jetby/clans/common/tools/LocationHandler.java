@@ -41,7 +41,7 @@ public class LocationHandler {
                 World world = Bukkit.getWorld(parts[3]);
                 return world != null ? new Location(world, x, y, z) : null;
             }
-            if (parts.length==6) {
+            if (parts.length == 6) {
                 double x = Double.parseDouble(parts[0]);
                 double y = Double.parseDouble(parts[1]);
                 double z = Double.parseDouble(parts[2]);

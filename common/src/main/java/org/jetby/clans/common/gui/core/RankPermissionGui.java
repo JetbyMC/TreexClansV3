@@ -1,13 +1,13 @@
 package org.jetby.clans.common.gui.core;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetby.clans.api.gui.Gui;
+import org.jetby.clans.api.gui.GuiContext;
 import org.jetby.clans.api.service.clan.member.rank.Permission;
 import org.jetby.clans.api.service.clan.member.rank.PermissionRegistry;
 import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.jetby.clans.api.service.clan.member.rank.RankPerm;
 import org.jetby.clans.common.TreexClans;
-import org.jetby.clans.api.gui.Gui;
-import org.jetby.clans.api.gui.GuiContext;
-import org.jetbrains.annotations.NotNull;
 
 public class RankPermissionGui extends Gui {
 
@@ -45,11 +45,11 @@ public class RankPermissionGui extends Gui {
 
         for (Permission perm : PermissionRegistry.getAll()) {
 
-            setReplace("{"+perm.getId().toLowerCase()+"_status}", getStatus(rank.perms().contains(perm)));
-            setReplace("{"+perm.getId().toLowerCase()+"_status_boolean}",  String.valueOf(rank.perms().contains(perm)));
+            setReplace("{" + perm.getId().toLowerCase() + "_status}", getStatus(rank.perms().contains(perm)));
+            setReplace("{" + perm.getId().toLowerCase() + "_status_boolean}", String.valueOf(rank.perms().contains(perm)));
 
-            setReplace("%"+perm.getId().toLowerCase()+"_status%", getStatus(rank.perms().contains(perm)));
-            setReplace("%"+perm.getId().toLowerCase()+"_status_boolean%",  String.valueOf(rank.perms().contains(perm)));
+            setReplace("%" + perm.getId().toLowerCase() + "_status%", getStatus(rank.perms().contains(perm)));
+            setReplace("%" + perm.getId().toLowerCase() + "_status_boolean%", String.valueOf(rank.perms().contains(perm)));
         }
 
         setReplace("{rank}", rank.name());

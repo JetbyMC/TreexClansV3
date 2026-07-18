@@ -1,16 +1,15 @@
 package org.jetby.clans.common.commands.admin.subcommands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetby.clans.api.TreexClansAPI;
-import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.configurations.Config;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class ReloadSubcommand implements Subcommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
         try {
             long start = System.currentTimeMillis();
@@ -54,7 +53,7 @@ public class ReloadSubcommand implements Subcommand {
         return List.of();
     }
 
-   @Override
+    @Override
     public CommandType commandType() {
         return CommandType.ADMIN;
     }

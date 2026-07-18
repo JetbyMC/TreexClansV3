@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.api.gui.GuiContext;
 import org.jetby.clans.api.gui.GuiModel;
@@ -25,15 +24,15 @@ public class ClanSubcommand implements Subcommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
-        if (args.length==0) return true;
+        if (args.length == 0) return true;
 
         Clan clan = plugin.getClanManager().lookup().getClan(args[0]);
-        if (clan==null) {
+        if (clan == null) {
             sender.sendMessage("Clan not found");
             return true;
         }
 
-        if (args.length<2) return true;
+        if (args.length < 2) return true;
         switch (args[1].toLowerCase()) {
             case "disband" -> {
                 if (sender instanceof Player initiator) {
@@ -74,17 +73,17 @@ public class ClanSubcommand implements Subcommand {
             }
             case "withdraw" -> {
                 double toRemove = Double.parseDouble(args[2]);
-                clan.setBalance(clan.getBalance()-toRemove);
-                sender.sendMessage("Successfully withdrawn "+toRemove+" money");
+                clan.setBalance(clan.getBalance() - toRemove);
+                sender.sendMessage("Successfully withdrawn " + toRemove + " money");
             }
             case "deposit" -> {
                 double toAdd = Double.parseDouble(args[2]);
-                clan.setBalance(clan.getBalance()+toAdd);
-                sender.sendMessage("Successfully deposited "+toAdd+" money");
+                clan.setBalance(clan.getBalance() + toAdd);
+                sender.sendMessage("Successfully deposited " + toAdd + " money");
             }
             case "base" -> {
                 if (sender instanceof Player player) {
-                    if (clan.getBase()==null) {
+                    if (clan.getBase() == null) {
                         sender.sendMessage("Clan has no base set yet");
                         break;
                     }
@@ -162,12 +161,15 @@ public class ClanSubcommand implements Subcommand {
                     .run();
         }
     }
+
     public void rename(Clan clan, String newTag) {
         plugin.getClanManager().lifecycle().renameClan(clan, newTag);
     }
+
     public void setPrefix(Clan clan, String prefix) {
         clan.setPrefix(prefix);
     }
+
     public void setSlogan(Clan clan, String slogan) {
         clan.setSlogan(slogan);
     }

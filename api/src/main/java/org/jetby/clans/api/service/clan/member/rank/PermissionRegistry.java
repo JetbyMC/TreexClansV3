@@ -4,7 +4,6 @@ import org.jetby.clans.api.service.clan.member.Member;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PermissionRegistry {
@@ -36,6 +35,7 @@ public class PermissionRegistry {
     public static Permission get(String id) {
         return REGISTRY.get(id);
     }
+
     public static Collection<Permission> getAll() {
         return REGISTRY.values();
     }
@@ -47,6 +47,7 @@ public class PermissionRegistry {
     public static boolean hasPermission(Member member, Permission permission) {
         return member.getRank().hasPermission(permission);
     }
+
     public static boolean hasPermission(Rank rank, Permission permission) {
         return rank.hasPermission(permission);
     }

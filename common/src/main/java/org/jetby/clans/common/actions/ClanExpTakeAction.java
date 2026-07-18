@@ -20,7 +20,7 @@ public class ClanExpTakeAction implements Action {
         Player player = ctx.getPlayer();
         Clan clan = ctx.get(ClanImpl.class);
         if (clan == null) {
-            if (player!=null) {
+            if (player != null) {
                 clan = TreexClans.getInstance().getClanManager().lookup().getClanByMember(player.getUniqueId());
             }
         }

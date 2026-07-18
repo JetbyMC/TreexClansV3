@@ -1,9 +1,9 @@
 package org.jetby.clans.common.actions;
 
 
+import org.bukkit.entity.Player;
 import org.jetby.clans.api.gui.Gui;
 import org.jetby.libb.action.ActionRegistry;
-import org.bukkit.entity.Player;
 
 public class Actions {
 

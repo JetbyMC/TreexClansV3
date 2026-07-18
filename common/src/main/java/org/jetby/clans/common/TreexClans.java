@@ -90,7 +90,7 @@ public final class TreexClans extends JavaPlugin implements TreexClansAPI {
         LOGGER.info("<#1BD9FB>╚════════════════════╝");
         LOGGER.info("&b► &fAuthor: <#1BD9FB>&lMrJetby");
         LOGGER.info("&b► &fDiscord: <#1BD9FB>https://dsc.gg/jmdev");
-        LOGGER.info("&b► &fVersion: <#1BD9FB>"+getDescription().getVersion());
+        LOGGER.info("&b► &fVersion: <#1BD9FB>" + getDescription().getVersion());
         LOGGER.info("<#1BD9FB>══════════════════════");
 
         LibraryLoader.load(this, "hikari", "https://repo.maven.apache.org/maven2/",

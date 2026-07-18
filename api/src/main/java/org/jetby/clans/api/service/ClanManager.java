@@ -1,16 +1,13 @@
 package org.jetby.clans.api.service;
 
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.api.service.clan.Lifecycle;
 import org.jetby.clans.api.service.clan.Lookup;
 import org.jetby.clans.api.service.clan.member.Member;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Central API for interacting with clans in TreexClans.
@@ -27,6 +24,7 @@ import java.util.UUID;
 public interface ClanManager {
 
     @NotNull List<Clan> getClanList(int limit);
+
     /**
      * Provides access to the clan creation and deletion lifecycle.
      *

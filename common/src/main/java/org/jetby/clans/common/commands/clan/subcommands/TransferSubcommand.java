@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.api.service.ClanManager;
 import org.jetby.clans.api.service.clan.Clan;
@@ -40,7 +39,7 @@ public class TransferSubcommand implements Subcommand {
 
             Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
 
-            if (clan.getLeader()!=clan.getMember(player.getUniqueId())) {
+            if (clan.getLeader() != clan.getMember(player.getUniqueId())) {
                 plugin.getMessages().of(player, "your-rank-is-not-allowed-to-do-that")
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)

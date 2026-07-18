@@ -31,6 +31,7 @@ public class MySQLStorageImpl extends StorageCore {
     private final ExecutorService executor = Executors.newSingleThreadExecutor(
             r -> new Thread(r, "treexclans-storage-mysql")
     );
+
     @Override
     ExecutorService executor() {
         return executor;
@@ -95,7 +96,8 @@ public class MySQLStorageImpl extends StorageCore {
         for (Clan clan : cache.values()) {
             saveClan(clan);
         }
-        CompletableFuture.runAsync(() -> {}, executor).join();
+        CompletableFuture.runAsync(() -> {
+        }, executor).join();
 
         executor.shutdown();
         if (dataSource != null) {
@@ -308,7 +310,7 @@ public class MySQLStorageImpl extends StorageCore {
     //  path -> target resolution
     // ==================================================================
 
-    private enum Kind { ROOT, CLAN, MEMBERS_ROOT, MEMBER, GROUP }
+    private enum Kind {ROOT, CLAN, MEMBERS_ROOT, MEMBER, GROUP}
 
     private static final class Target {
         final Kind kind;

@@ -1,16 +1,15 @@
 package org.jetby.clans.common.commands.clan.subcommands;
 
 
-import org.jetby.clans.api.addons.commands.CommandService;
-import org.jetby.clans.api.command.Subcommand;
-import org.jetby.clans.api.service.ClanManager;
-import org.jetby.clans.api.service.clan.Clan;
-import org.jetby.clans.common.TreexClans;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.command.Subcommand;
+import org.jetby.clans.api.service.ClanManager;
+import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.common.TreexClans;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class CreateSubcommand implements Subcommand {
     private final ClanManager clanManager = plugin.getClanManager();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
         if (sender instanceof Player player) {
 
             if (clanManager.lookup().isInClan(player.getUniqueId())) {
@@ -38,7 +37,7 @@ public class CreateSubcommand implements Subcommand {
                 }
                 String clanName = args[0].toLowerCase();
                 if (clanManager.lifecycle().clanExists(clanName)) {
-                    plugin.getMessages().of(player,  "clan-is-already-exists")
+                    plugin.getMessages().of(player, "clan-is-already-exists")
                             .replace("{cmd}", command.getName())
                             .replace("{arg}", sub)
                             .run();

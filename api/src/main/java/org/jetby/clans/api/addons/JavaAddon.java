@@ -1,11 +1,11 @@
 package org.jetby.clans.api.addons;
 
 import lombok.Getter;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.jetby.clans.api.TreexClansAPI;
 import org.jetby.clans.api.addons.annotations.ClanAddon;
 import org.jetby.clans.api.addons.service.ServiceManager;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -123,6 +123,7 @@ public abstract class JavaAddon {
     public void saveConfig() {
         serviceManager.getServiceConfiguration().saveConfig();
     }
+
     public void saveDefaultConfig() {
         serviceManager.getServiceConfiguration().saveDefaultConfig();
     }

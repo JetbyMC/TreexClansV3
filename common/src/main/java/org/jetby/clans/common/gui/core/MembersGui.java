@@ -1,19 +1,22 @@
 package org.jetby.clans.common.gui.core;
 
-import org.jetby.clans.api.gui.Gui;
-import org.jetby.clans.api.gui.GuiContext;
-import org.jetby.clans.api.service.clan.member.Member;
-import org.jetby.clans.common.TreexClans;
-import org.jetby.clans.common.tools.NumberUtils;
-import org.jetby.libb.gui.parser.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetby.clans.api.gui.Gui;
+import org.jetby.clans.api.gui.GuiContext;
+import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.common.TreexClans;
+import org.jetby.clans.common.tools.NumberUtils;
+import org.jetby.libb.gui.parser.Item;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MembersGui extends Gui {
 

@@ -1,16 +1,15 @@
 package org.jetby.clans.common.commands.admin.subcommands;
 
-import org.jetby.clans.api.addons.commands.CommandService;
-import org.jetby.clans.api.command.Subcommand;
-import org.jetby.clans.api.service.clan.Clan;
-import org.jetby.clans.api.service.clan.member.Member;
-import org.jetby.clans.common.TreexClans;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.command.Subcommand;
+import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.common.TreexClans;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -24,7 +23,7 @@ public class CoinSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
         if (args.length == 0) {
             sender.sendMessage("/xclan coin give/set/take <player> <amount>");

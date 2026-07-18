@@ -1,5 +1,7 @@
 package org.jetby.clans.common.actions;
 
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetby.clans.api.gui.ClanGuiData;
 import org.jetby.clans.api.gui.GuiContext;
 import org.jetby.clans.api.gui.GuiModel;
@@ -11,8 +13,6 @@ import org.jetby.clans.common.gui.GuiLoader;
 import org.jetby.libb.action.Action;
 import org.jetby.libb.action.ActionContext;
 import org.jetby.libb.action.ActionInput;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 public class OpenMenuAction implements Action {
 
@@ -20,8 +20,8 @@ public class OpenMenuAction implements Action {
     public void execute(@NotNull ActionContext ctx, @NotNull ActionInput input) {
         Player player = ctx.getPlayer();
         Clan clan = ctx.get(ClanImpl.class);
-        if (clan==null) {
-            if (player!=null) {
+        if (clan == null) {
+            if (player != null) {
                 clan = TreexClans.getInstance().getClanManager().lookup().getClanByMember(player.getUniqueId());
             }
         }

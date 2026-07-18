@@ -38,7 +38,7 @@ Items:
               - "[message] &cYou do not have enough coins."
 
 
- ### Decoration
+  ### Decoration
 
   orange:
     material: ORANGE_STAINED_GLASS_PANE

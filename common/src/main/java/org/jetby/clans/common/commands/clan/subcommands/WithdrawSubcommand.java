@@ -1,25 +1,22 @@
 package org.jetby.clans.common.commands.clan.subcommands;
 
-import org.jetby.clans.api.addons.commands.CommandService;
-import org.jetby.clans.api.command.Subcommand;
-import org.jetby.clans.api.service.clan.Clan;
-import org.jetby.clans.api.service.clan.member.rank.RankPerm;
-import org.jetby.clans.common.TreexClans;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.command.Subcommand;
+import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.api.service.clan.member.rank.RankPerm;
+import org.jetby.clans.common.TreexClans;
 
 import java.util.List;
-
-;
 
 public class WithdrawSubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
 
         if (sender instanceof Player player) {

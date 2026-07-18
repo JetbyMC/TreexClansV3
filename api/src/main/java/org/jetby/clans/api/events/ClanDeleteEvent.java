@@ -1,13 +1,13 @@
 package org.jetby.clans.api.events;
 
 import lombok.Getter;
-import org.jetby.clans.api.service.clan.Clan;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.service.clan.Clan;
 
 @Getter
 public class ClanDeleteEvent extends Event implements Cancellable {

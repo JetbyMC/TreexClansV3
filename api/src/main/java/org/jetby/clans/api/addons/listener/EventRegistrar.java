@@ -1,8 +1,8 @@
 package org.jetby.clans.api.addons.listener;
 
-import org.jetby.clans.api.addons.JavaAddon;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+import org.jetby.clans.api.addons.JavaAddon;
 
 /**
  * Provides a unified interface for managing event listeners across addons.

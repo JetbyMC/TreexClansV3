@@ -2,12 +2,12 @@ package org.jetby.clans.api.gui;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.jetby.clans.api.service.clan.Clan;
-import org.jetby.libb.color.Serializer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.libb.color.Serializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +59,7 @@ public class GuiContext {
     public static GuiContext of(@NotNull JavaPlugin plugin, @NotNull ClanGuiData gui, @NotNull Player player, @Nullable Clan clan) {
         return new GuiContext(plugin, gui, player, clan, Serializer.UNIFIED);
     }
+
     public static GuiContext of(@NotNull JavaPlugin plugin,
                                 @NotNull ClanGuiData gui,
                                 @NotNull Player player,

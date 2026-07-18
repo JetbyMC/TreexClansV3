@@ -1,13 +1,13 @@
 package org.jetby.clans.common.commands.admin;
 
 import lombok.AllArgsConstructor;
-import org.jetby.clans.api.addons.commands.CommandService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 
 import java.util.ArrayList;

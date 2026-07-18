@@ -1,17 +1,16 @@
 package org.jetby.clans.common.commands.clan.subcommands;
 
-import org.jetby.clans.api.addons.commands.CommandService;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.api.service.clan.member.Member;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.clan.model.MemberImpl;
 import org.jetby.clans.common.tools.Cooldown;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -89,7 +88,7 @@ public class AcceptSubcommand implements Subcommand {
     public CommandType commandType() {
         return CommandType.CLAN;
     }
-    
+
     @Override
     public boolean clanOnly() {
         return false;

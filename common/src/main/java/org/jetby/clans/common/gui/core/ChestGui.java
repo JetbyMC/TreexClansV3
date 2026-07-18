@@ -1,24 +1,20 @@
 package org.jetby.clans.common.gui.core;
 
 import com.google.common.annotations.Beta;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetby.clans.api.gui.Gui;
 import org.jetby.clans.api.gui.GuiContext;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.libb.gui.item.ItemWrapper;
 import org.jetby.libb.gui.parser.Item;
-import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 

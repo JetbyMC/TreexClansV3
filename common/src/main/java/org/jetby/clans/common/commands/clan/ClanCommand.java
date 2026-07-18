@@ -1,5 +1,10 @@
 package org.jetby.clans.common.commands.clan;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.api.gui.ClanGuiData;
@@ -14,11 +19,6 @@ import org.jetby.clans.common.configurations.Config;
 import org.jetby.clans.common.gui.GuiLoader;
 import org.jetby.libb.action.ActionUtil;
 import org.jetby.libb.command.AdvancedCommand;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -50,7 +50,7 @@ public class ClanCommand extends AdvancedCommand {
 
         if (args.length == 0) {
             Clan clan = plugin.getClanManager().lookup().getClanByMember(player.getUniqueId());
-            plugin.getMessages().of(player, clan==null ? "commands.help-no-clan" : "commands.help")
+            plugin.getMessages().of(player, clan == null ? "commands.help-no-clan" : "commands.help")
                     .replace("{cmd}", command.getName())
                     .run();
             return true;

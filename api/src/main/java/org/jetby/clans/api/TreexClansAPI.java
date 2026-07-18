@@ -1,15 +1,15 @@
 package org.jetby.clans.api;
 
 
-import org.jetby.clans.api.addons.AddonManager;
-import org.jetby.clans.api.addons.commands.CommandService;
-import org.jetby.clans.api.addons.listener.EventRegistrar;
-import org.jetby.clans.api.service.ClanManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.addons.AddonManager;
+import org.jetby.clans.api.addons.commands.CommandService;
+import org.jetby.clans.api.addons.listener.EventRegistrar;
+import org.jetby.clans.api.service.ClanManager;
 import org.jetby.clans.api.storage.Storage;
 
 /**

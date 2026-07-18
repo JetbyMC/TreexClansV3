@@ -4,6 +4,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.api.service.clan.level.Level;
 import org.jetby.clans.api.service.clan.member.Member;
@@ -11,12 +15,11 @@ import org.jetby.clans.api.service.clan.member.rank.Rank;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.libb.action.ActionContext;
 import org.jetby.libb.action.ActionExecute;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Getter

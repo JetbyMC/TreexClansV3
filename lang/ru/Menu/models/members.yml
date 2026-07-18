@@ -103,7 +103,7 @@ Items:
     display_name: "&6Вернуться в меню"
     on_click:
       any:
-      - "[open] main"
+        - "[open] main"
 
 
 

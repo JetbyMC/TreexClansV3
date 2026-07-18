@@ -1,5 +1,9 @@
 package org.jetby.clans.common.gui;
 
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetby.clans.api.gui.ClanGuiData;
 import org.jetby.clans.api.gui.GuiModel;
 import org.jetby.clans.common.TreexClans;
@@ -9,10 +13,6 @@ import org.jetby.libb.command.CommandRegistrar;
 import org.jetby.libb.gui.parser.Item;
 import org.jetby.libb.gui.parser.ParseUtil;
 import org.jetby.libb.util.Logger;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;

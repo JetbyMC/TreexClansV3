@@ -1,13 +1,13 @@
 package org.jetby.clans.common.configurations;
 
 import lombok.Getter;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.jetby.clans.api.service.clan.Clan;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.tools.FileLoader;
 import org.jetby.libb.action.ActionContext;
 import org.jetby.libb.action.ActionExecute;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -36,6 +36,7 @@ public class MessagesConfiguration {
             this.ctx = ctx;
             this.path = path;
         }
+
         public Action replace(String target, String replacement) {
             ctx = ctx.replace(target, replacement);
             return this;
@@ -45,6 +46,7 @@ public class MessagesConfiguration {
             ctx = ctx.with(clan);
             return this;
         }
+
         public void run() {
             ActionExecute.run(ctx, getMessageList(path));
         }

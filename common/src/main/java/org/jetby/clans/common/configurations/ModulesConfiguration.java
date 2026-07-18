@@ -2,8 +2,8 @@ package org.jetby.clans.common.configurations;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.jetby.clans.common.tools.FileLoader;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetby.clans.common.tools.FileLoader;
 
 @Getter
 public class ModulesConfiguration {

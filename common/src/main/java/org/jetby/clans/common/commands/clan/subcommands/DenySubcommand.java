@@ -1,15 +1,14 @@
 package org.jetby.clans.common.commands.clan.subcommands;
 
 
-import org.jetby.clans.api.addons.commands.CommandService;
-import org.jetby.clans.api.command.Subcommand;
-import org.jetby.clans.common.TreexClans;
-import org.jetby.clans.common.tools.Cooldown;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.command.Subcommand;
+import org.jetby.clans.common.TreexClans;
+import org.jetby.clans.common.tools.Cooldown;
 
 import java.util.List;
 
@@ -17,12 +16,12 @@ public class DenySubcommand implements Subcommand {
     private final TreexClans plugin = TreexClans.getInstance();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub,  @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args) {
 
 
         if (sender instanceof Player player) {
             if (args.length == 0) {
-                plugin.getMessages().of(player,  "commands.deny")
+                plugin.getMessages().of(player, "commands.deny")
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .run();
@@ -31,7 +30,7 @@ public class DenySubcommand implements Subcommand {
 
             var clanId = args[0];
             if (!plugin.getClanManager().lifecycle().clanExists(clanId)) {
-                plugin.getMessages().of(player,  "clan-does-not-exist")
+                plugin.getMessages().of(player, "clan-does-not-exist")
                         .replace("{clan}", clanId)
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
@@ -41,7 +40,7 @@ public class DenySubcommand implements Subcommand {
 
             if (!Cooldown.isOnCooldown("invite_" + player.getUniqueId() + "_" + clanId)) {
                 plugin.getMessages().of(player, "no-invite")
-                        .replace("{clan}",clanId)
+                        .replace("{clan}", clanId)
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .run();

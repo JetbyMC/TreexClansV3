@@ -1,9 +1,9 @@
 package org.jetby.clans.common.tools;
 
 import lombok.experimental.UtilityClass;
-import org.jetby.clans.common.TreexClans;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetby.clans.common.TreexClans;
 
 import java.io.File;
 

@@ -7,6 +7,7 @@ public class Speedometer {
     public static void start() {
         MS = System.currentTimeMillis();
     }
+
     public static long result() {
         return System.currentTimeMillis() - MS;
     }

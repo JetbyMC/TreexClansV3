@@ -1,7 +1,7 @@
 package org.jetby.clans.common.tools;
 
-import org.jetby.libb.color.Serializer;
 import org.bukkit.plugin.Plugin;
+import org.jetby.libb.color.Serializer;
 
 public final class Logger {
 
@@ -13,7 +13,7 @@ public final class Logger {
     }
 
     public void warn(String message) {
-        org.jetby.libb.util.Logger.warn(plugin, Serializer.UNIFIED.deserialize("&c"+message));
+        org.jetby.libb.util.Logger.warn(plugin, Serializer.UNIFIED.deserialize("&c" + message));
     }
 
     public void info(String message) {
@@ -27,6 +27,7 @@ public final class Logger {
     public void error(String message) {
         org.jetby.libb.util.Logger.error(plugin, Serializer.UNIFIED.deserialize(message));
     }
+
     public void error(String message, Object... objects) {
         org.jetby.libb.util.Logger.error(plugin, message, objects);
     }

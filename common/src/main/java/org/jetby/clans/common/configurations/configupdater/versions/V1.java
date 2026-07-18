@@ -1,10 +1,10 @@
 package org.jetby.clans.common.configurations.configupdater.versions;
 
-import org.jetby.clans.common.configurations.configupdater.Updater;
-import org.jetby.clans.common.tools.FileLoader;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetby.clans.common.configurations.configupdater.Updater;
+import org.jetby.clans.common.tools.FileLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +24,8 @@ public class V1 implements Updater {
 
             ConfigurationSection ranks = configuration.getConfigurationSection("ranks");
             for (String key : ranks.getKeys(false)) {
-                configuration.set("ranks."+key+".permissions.setslogan", false);
-                configuration.set("ranks."+key+".permissions.setprefix", false);
+                configuration.set("ranks." + key + ".permissions.setslogan", false);
+                configuration.set("ranks." + key + ".permissions.setprefix", false);
             }
             configuration.set("config-version", 2);
 
@@ -41,7 +41,8 @@ public class V1 implements Updater {
             configuration.set("tag-placeholder.no_clan", "");
 
             configuration.save(file);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     @Override

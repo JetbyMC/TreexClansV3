@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 import org.jetby.clans.api.service.ClanManager;
 import org.jetby.clans.api.service.clan.Clan;
@@ -51,7 +50,7 @@ public class RenameSubcommand implements Subcommand {
             String newTag = args[0].toLowerCase();
 
             if (clanManager.lifecycle().clanExists(newTag)) {
-                plugin.getMessages().of(player,  "clan-is-already-exists")
+                plugin.getMessages().of(player, "clan-is-already-exists")
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .replace("{old}", clan.getId())
@@ -61,7 +60,7 @@ public class RenameSubcommand implements Subcommand {
             }
 
             if (clanManager.validation().isAllowedName(player, newTag)) {
-                plugin.getMessages().of(player,  "clan-renamed")
+                plugin.getMessages().of(player, "clan-renamed")
                         .replace("{cmd}", command.getName())
                         .replace("{arg}", sub)
                         .replace("{old}", clan.getId())

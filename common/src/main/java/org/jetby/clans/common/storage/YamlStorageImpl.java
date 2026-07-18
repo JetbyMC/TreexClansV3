@@ -42,7 +42,8 @@ public class YamlStorageImpl extends StorageCore {
         for (Clan clan : cache.values()) {
             saveClan(clan);
         }
-        CompletableFuture<Void> barrier = CompletableFuture.runAsync(() -> {}, executor);
+        CompletableFuture<Void> barrier = CompletableFuture.runAsync(() -> {
+        }, executor);
         barrier.join();
 
         try {

@@ -1,6 +1,8 @@
 package org.jetby.clans.common.addon.service;
 
 import lombok.Getter;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetby.clans.api.addons.AddonManager;
 import org.jetby.clans.api.addons.annotations.ClanAddon;
 import org.jetby.clans.api.addons.commands.CommandService;
@@ -11,8 +13,6 @@ import org.jetby.clans.api.gui.GuiFactory;
 import org.jetby.clans.api.service.ClanManager;
 import org.jetby.clans.common.TreexClans;
 import org.jetby.clans.common.addon.configuration.ServiceConfigurationImpl;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 

@@ -52,13 +52,14 @@ public interface Subcommand {
      * Return {@code true} if the command was handled successfully.
      * </p>
      *
-     * @param sender The command sender (player or console).
+     * @param sender  The command sender (player or console).
      * @param command The command name that player used.
-     * @param sub The sub command name that player used.
-     * @param args   The command arguments.
+     * @param sub     The sub command name that player used.
+     * @param args    The command arguments.
      * @return {@code true} if handled successfully, {@code false} otherwise.
      */
     boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String sub, @NotNull String[] args);
+
     /**
      * Provides tab-completion suggestions for this subcommand.
      * <p>
@@ -74,9 +75,10 @@ public interface Subcommand {
      */
     @Nullable
     List<String> onTabCompleter(@NotNull CommandSender sender,
-                                         @NotNull Command command,
-                                         @NotNull String alias,
-                                         @NotNull String[] args);
+                                @NotNull Command command,
+                                @NotNull String alias,
+                                @NotNull String[] args);
+
     /**
      * Defines the subcommand type.
      * <p>

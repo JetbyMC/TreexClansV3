@@ -1,9 +1,5 @@
 package org.jetby.clans.common.listeners;
 
-import org.jetby.clans.api.service.ClanManager;
-import org.jetby.clans.api.service.clan.Clan;
-import org.jetby.clans.api.service.clan.member.Member;
-import org.jetby.clans.common.TreexClans;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -11,6 +7,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jetby.clans.api.service.ClanManager;
+import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.common.TreexClans;
 
 
 public class ClanListeners implements Listener {
@@ -46,7 +46,7 @@ public class ClanListeners implements Listener {
             damager = p;
         }
 
-        if (damager==e.getEntity()) return;
+        if (damager == e.getEntity()) return;
 
         if (damager == null) return;
         if (!(e.getEntity() instanceof Player target)) return;

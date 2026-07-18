@@ -3,6 +3,9 @@ package org.jetby.clans.common.configurations;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetby.clans.api.service.clan.level.Level;
 import org.jetby.clans.api.service.clan.member.rank.Permission;
 import org.jetby.clans.api.service.clan.member.rank.PermissionRegistry;
@@ -13,9 +16,6 @@ import org.jetby.libb.action.record.Expression;
 import org.jetby.libb.color.HashedSerializer;
 import org.jetby.libb.color.SerializerType;
 import org.jetby.libb.gui.parser.ParseUtil;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.util.*;
@@ -239,5 +239,6 @@ public class Config {
             int maxLength,
             String regex,
             String lengthIgnoredSymbols
-    ) {}
+    ) {
+    }
 }

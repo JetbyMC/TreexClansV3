@@ -1,10 +1,10 @@
 package org.jetby.clans.common.tools;
 
 
-import org.jetby.clans.common.TreexClans;
-import org.jetby.clans.common.configurations.Config;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetby.clans.common.TreexClans;
+import org.jetby.clans.common.configurations.Config;
 
 import java.util.HashMap;
 import java.util.List;

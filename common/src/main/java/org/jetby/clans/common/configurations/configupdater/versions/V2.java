@@ -1,9 +1,9 @@
 package org.jetby.clans.common.configurations.configupdater.versions;
 
-import org.jetby.clans.common.configurations.configupdater.Updater;
-import org.jetby.clans.common.tools.FileLoader;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetby.clans.common.configurations.configupdater.Updater;
+import org.jetby.clans.common.tools.FileLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,7 @@ public class V2 implements Updater {
     public V2() {
         this.configuration = YamlConfiguration.loadConfiguration(file);
     }
+
     @Override
     public void load() {
         try {

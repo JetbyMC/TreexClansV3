@@ -29,6 +29,7 @@ public interface Clan {
      * @return unique clan ID (usually its name).
      */
     @NotNull String getId();
+
     /**
      * @return clan tag/prefix displayed before names.
      */

@@ -59,7 +59,7 @@ public interface Lifecycle {
     /**
      * Renames the tag of the clan
      *
-     * @param clan the clan.
+     * @param clan  the clan.
      * @param newId new tag.
      * @return true if a clan with that name exists.
      */

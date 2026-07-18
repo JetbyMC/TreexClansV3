@@ -2,10 +2,10 @@ package org.jetby.clans.common.configurations;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.jetby.clans.common.commands.clan.ClanSubcommand;
-import org.jetby.clans.common.tools.FileLoader;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetby.clans.common.commands.clan.ClanSubcommand;
+import org.jetby.clans.common.tools.FileLoader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ public class CommandsConfiguration {
 
 
         ConfigurationSection argsSection = configuration.getConfigurationSection("args");
-        if (argsSection==null) {
+        if (argsSection == null) {
             throw new RuntimeException("Section 'args' is missing");
         }
         for (String key : argsSection.getKeys(false)) {

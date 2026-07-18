@@ -1,14 +1,14 @@
 package org.jetby.clans.api.addons.service;
 
 
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetby.clans.api.addons.AddonManager;
 import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.addons.configuration.ServiceConfiguration;
 import org.jetby.clans.api.addons.listener.EventRegistrar;
 import org.jetby.clans.api.gui.GuiFactory;
 import org.jetby.clans.api.service.ClanManager;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
@@ -71,6 +71,7 @@ public interface ServiceManager {
      * @return The {@link ClanManager} instance.
      */
     ClanManager getClanManager();
+
     /**
      * Provides access to the command management system.
      * <p>

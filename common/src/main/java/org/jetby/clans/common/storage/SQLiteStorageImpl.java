@@ -15,13 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -35,6 +29,7 @@ public class SQLiteStorageImpl extends StorageCore {
     private final ExecutorService executor = Executors.newSingleThreadExecutor(
             r -> new Thread(r, "treexclans-storage-sqlite")
     );
+
     @Override
     ExecutorService executor() {
         return executor;
@@ -65,7 +60,8 @@ public class SQLiteStorageImpl extends StorageCore {
         for (Clan clan : cache.values()) {
             saveClan(clan);
         }
-        CompletableFuture.runAsync(() -> {}, executor).join();
+        CompletableFuture.runAsync(() -> {
+        }, executor).join();
 
         executor.shutdown();
         if (dataSource != null) {
@@ -277,7 +273,7 @@ public class SQLiteStorageImpl extends StorageCore {
     //  path -> target resolution
     // ==================================================================
 
-    private enum Kind { ROOT, CLAN, MEMBERS_ROOT, MEMBER, GROUP }
+    private enum Kind {ROOT, CLAN, MEMBERS_ROOT, MEMBER, GROUP}
 
     private static final class Target {
         final Kind kind;

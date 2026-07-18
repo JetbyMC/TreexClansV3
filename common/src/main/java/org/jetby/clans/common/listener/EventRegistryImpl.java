@@ -1,11 +1,11 @@
 package org.jetby.clans.common.listener;
 
-import org.jetby.clans.api.addons.JavaAddon;
-import org.jetby.clans.api.addons.listener.EventRegistrar;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+import org.jetby.clans.api.addons.JavaAddon;
+import org.jetby.clans.api.addons.listener.EventRegistrar;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +23,9 @@ import java.util.Set;
  */
 public class EventRegistryImpl implements EventRegistrar {
 
-    /** Stores all listeners grouped by owning addon. */
+    /**
+     * Stores all listeners grouped by owning addon.
+     */
     private final Map<JavaAddon, Set<Listener>> addonListeners = new HashMap<>();
 
     /**

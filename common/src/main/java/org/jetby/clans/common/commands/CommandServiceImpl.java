@@ -1,8 +1,8 @@
 package org.jetby.clans.common.commands;
 
 import lombok.Getter;
-import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetbrains.annotations.NotNull;
+import org.jetby.clans.api.addons.commands.CommandService;
 import org.jetby.clans.api.command.Subcommand;
 
 import java.util.Map;

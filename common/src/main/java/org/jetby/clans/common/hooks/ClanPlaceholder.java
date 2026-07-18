@@ -2,14 +2,14 @@ package org.jetby.clans.common.hooks;
 
 import lombok.Getter;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.jetby.clans.api.service.clan.Clan;
-import org.jetby.clans.api.service.clan.member.Member;
-import org.jetby.clans.common.TreexClans;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.service.clan.Clan;
+import org.jetby.clans.api.service.clan.member.Member;
+import org.jetby.clans.common.TreexClans;
 
 public class ClanPlaceholder extends PlaceholderExpansion {
     private final TreexClans plugin;
