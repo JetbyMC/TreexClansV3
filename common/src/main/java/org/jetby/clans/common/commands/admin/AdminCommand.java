@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetby.clans.api.command.Subcommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ public class AdminCommand implements CommandExecutor, TabCompleter {
         }
         try {
             var apiArg = commandService.getCommands().get(args[0]);
-            if (apiArg != null && apiArg.type() == CommandService.CommandType.ADMIN) {
+            if (apiArg != null && apiArg.commandType() == Subcommand.CommandType.ADMIN) {
                 apiArg.onCommand(sender, command, args[0], Arrays.copyOfRange(args, 1, args.length));
                 return true;
             }
